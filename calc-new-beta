@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elan's BMI calculators</title>
+    <style>
+		/* Your existing CSS */
+    </style>
+</head>
+<body>
+    <div class="header">
+        Elan's BMI Calculators
+    </div>
+    
+    <div class="nav-buttons">
+        <button onclick="showCalculator('bmiCalculator')">SIMPLE</button>
+		<button onclick="showCalculator('preopCalculator')">PREOP</button>
+        <button onclick="showCalculator('postopCalculator')">POSTOP</button>
+    </div>
+    
+    <div id="bmiCalculator" class="container">
+        <h1>BMI - SIMPLE</h1>
+        <form id="bmiForm">
+            <label for="weight">Weight (lbs):</label>
+            <input type="number" id="weight" placeholder="Pounds" step="0.1" required inputmode="numeric">
+            <label for="feet">Height:</label>
+            <input type="number" id="feet" placeholder="Feet" step="1" required inputmode="numeric">
+            <input type="number" id="inches" placeholder="Inches" step="0.1" required inputmode="decimal">
+            <button type="button" class="calculateBMI" onclick="calculateBMI()">Calculate BMI</button>
+        </form>
+        <div class="result" id="result"></div>
+        <button class="copy-button" onclick="copyToClipboard('result')">Copy Results</button>
+		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+    </div>
+	
+	    <div id="preopCalculator" class="container">
+        <h1>BMI - PREOP</h1>
+        <form id="preopForm">
+            <label for="weightp">Weight (lbs):</label>
+            <input type="number" id="weightp" placeholder="Pounds" step="0.1" required inputmode="numeric">
+            <label for="feetp">Height:</label>
+            <input type="number" id="feetp" placeholder="Feet" step="1" required inputmode="numeric">
+            <input type="number" id="inchesp" placeholder="Inches" step="0.1" required inputmode="decimal">
+            <button type="button" class="calculatePreop" onclick="calculatePreop()">Calculate Preop</button>
+        </form>
+        <div class="result" id="preopResult"></div>
+        <button class="copy-button" onclick="copyToClipboard('preopResult')">Copy Results</button>
+		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+    </div>
+
+    <div id="postopCalculator" class="container">
+        <h1>BMI - POSTOP</h1>
+        <form id="postopForm">
+            <label for="preopWeight">Preop Weight (lbs):</label>
+            <input type="number" id="preopWeight" placeholder="Pounds - Preop" step="0.1" required inputmode="numeric">
+            <label for="lowestPostopWeight">Lowest Postop Weight (lbs) - optional:</label>
+            <input type="number" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" step="0.1" required inputmode="numeric">
+            <label for="currentWeight">Current Weight (lbs):</label>
+            <input type="number" id="currentWeight" placeholder="Pounds - Current" step="0.1" required inputmode="numeric">
+            <label for="postopFeet">Height:</label>
+            <input type="number" id="postopFeet" placeholder="Feet" step="1" required inputmode="numeric">
+            <input type="number" id="postopInches" placeholder="Inches" step="1" required inputmode="decimal">
+            <button type="button" class="calculatePostop" onclick="calculatePostop()">Calculate Postop</button>
+        </form>
+        <div class="result" id="postopResult"></div>
+        <button class="copy-button" onclick="copyToClipboard('postopResult')">Copy Results</button>        
+		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+    </div>
+
+    <script>
+        function showCalculator(calculatorId) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(calculatorId).classList.add('active');
+        }
+
+        function calculateBMI() {
+            // Your existing calculateBMI function
+        }
+
+        function calculatePreop() {
+            // Your existing calculatePreop function
+        }
+
+        function calculatePostop() {
+            // Your existing calculatePostop function
+        }
+
+        function copyToClipboard(resultId) {
+            // Your existing copyToClipboard function
+        }
+
+        // Event listener for Enter key to trigger button clicks
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const activeCalculator = document.querySelector('.container.active');
+                if (activeCalculator) {
+                    const activeButton = activeCalculator.querySelector('button[class*="calculate"]');
+                    if (activeButton) {
+                        activeButton.click();
+                    }
+                }
+            }
+        });
+
+        // Show the default calculator
+        showCalculator('bmiCalculator');
+    </script>
+</body>
+</html>
