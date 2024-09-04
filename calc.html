@@ -171,8 +171,9 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
     
     <div class="nav-buttons">
         <button onclick="showCalculator('bmiCalculator')">SIMPLE</button>
-		<button onclick="showCalculator('preopCalculator')">PREOP</button>
+	<button onclick="showCalculator('preopCalculator')">PREOP</button>
         <button onclick="showCalculator('postopCalculator')">POSTOP</button>
+	<button onclick="showCalculator('criteria')">CRITERIA</button>
     </div>
     
     <div id="bmiCalculator" class="container">
@@ -224,6 +225,15 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
 		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
 
     </div>
+	    <div id="criteria" class="container">
+        <h1>CRITERIA AND BACKGROUND</h1>
+  		<em>**Criteria for treatment without / with weight-related comorbiditity: Medication BMI <span>&#8805;</span> 27 / 30, Surgery BMI <span>&#8805;</span> 30 / 35 </em>
+  		<br>
+
+		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+
+    </div>
+
 
     <script>
 					
