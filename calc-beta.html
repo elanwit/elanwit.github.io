@@ -1,1 +1,555 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI calculators by Elan Witkowski</title>
+    <style>
+		body {
+    font-family: Arial, sans-serif;
+    background-color: #007BFF;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 30px;
+	padding-bottom: 60px;
+    box-sizing: border-box;
+    height: 100vh;
+    margin: 0;
+}
+
+.header {
+    background: #0056b3;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    position:relative; 
+    top: 0;
+    left: 0;
+}
+
+.nav-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+
+.nav-buttons button {
+	padding: 15px;
+	font-size: 20px;
+	
+	background-color: #2A3235;
+	border: none;
+	color: white;
+	border-radius: 12px;
+	cursor: pointer;
+	margin-bottom: 10px;
+36454F}
+
+.nav-buttons button:hover {
+    background-color: #000000;
+}
+
+.container {
+    background: #fff;
+    color: #000;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
+    display: none;
+}
+
+.container.active {
+    display: block;
+}
+
+h1 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input[type="number"] {
+    width: 88%;
+    padding: 20px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+input[type="number"] {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+label {
+    font-size: 18px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+button, .copy-button {
+    padding: 15px;
+    font-size: 18px;
+    background-color: #007BFF;
+    border: none;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+button:hover, .copy-button:hover {
+    background-color: #0056b3;
+}
+		
+button, .reset-button {
+    padding: 15px;
+    font-size: 18px;
+    background-color: #2A3235;
+    border: none;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+button:hover, .reset-button:hover {
+    background-color: #000000;
+}
+		
+button, .calculateBMI, .calculatePreop, .CalculatePostop {
+    padding: 15px;
+    font-size: 18px;
+    background-color: #28a745;
+    border: none;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
+    background-color: #218838;
+}
+		
+.result {
+    font-size: 16px;
+    margin-top: 20px;
+    text-align: left;
+}
+        /* Ensure images don't overflow */
+        img {
+            max-width: 95%;
+            height: auto;
+            display: block;
+           	margin-top: 10px;
+		margin-bottom: 10px;
+		margin-left: auto;
+		margin-right: auto
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        Elan's BMI Calculators
+    </div>
+    
+    <div class="nav-buttons">
+        <button onclick="showCalculator('bmiCalculator')">SIMPLE</button>
+	<button onclick="showCalculator('preopCalculator')">PREOP</button>
+        <button onclick="showCalculator('postopCalculator')">POSTOP</button>
+	<button onclick="showCalculator('resources')">RESOURCES</button>
+    </div>
+    
+    <div id="bmiCalculator" class="container">
+        <h1>BMI - SIMPLE</h1>
+        <form id="bmiForm">
+            <label for="weight">Weight (lbs):</label>
+            <input type="number" id="weight" placeholder="Pounds" step="0.1" required inputmode="numeric">
+            <label for="feet">Height:</label>
+            <input type="number" id="feet" placeholder="Feet" step="1" required inputmode="numeric">
+            <input type="number" id="inches" placeholder="Inches" step="0.1" required inputmode="decimal">
+            <button type="button" id="simplebutton" onclick="calculateBMI()">Calculate BMI</button>
+        </form>
+        <div class="result" id="result"></div>
+        <button class="copy-button" onclick="copyToClipboard('result')">Copy Results</button>
+		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+    </div>
+	
+	    <div id="preopCalculator" class="container">
+        <h1>BMI - PREOP</h1>
+        <form id="preopForm">
+            <label for="weightp">Weight (lbs):</label>
+            <input type="number" id="weightp" placeholder="Pounds" step="0.1" required inputmode="numeric">
+            <label for="feetp">Height:</label>
+            <input type="number" id="feetp" placeholder="Feet" step="1" required inputmode="numeric">
+            <input type="number" id="inchesp" placeholder="Inches" step="0.1" required inputmode="decimal">
+            <button type="button" onclick="calculatePreop()">Calculate Preop</button>
+        </form>
+        <div class="result" id="preopResult"></div>
+        <button class="copy-button" onclick="copyToClipboard('preopResult')">Copy Results</button>
+		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+    </div>
+
+    <div id="postopCalculator" class="container">
+        <h1>BMI - POSTOP</h1>
+        <form id="postopForm">
+            <label for="preopWeight">Preop Weight (lbs):</label>
+            <input type="number" id="preopWeight" placeholder="Pounds - Preop" step="0.1" required inputmode="numeric">
+            <label for="lowestPostopWeight">Lowest Postop Weight (lbs) - optional:</label>
+            <input type="number" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" step="0.1" required inputmode="numeric">
+            <label for="currentWeight">Current Weight (lbs):</label>
+            <input type="number" id="currentWeight" placeholder="Pounds - Current" step="0.1" required inputmode="numeric">
+            <label for="postopFeet">Height:</label>
+            <input type="number" id="postopFeet" placeholder="Feet" step="1" required inputmode="numeric">
+            <input type="number" id="postopInches" placeholder="Inches" step="1" required inputmode="decimal">
+            <button type="button" onclick="calculatePostop()">Calculate Postop</button>
+        </form>
+        <div class="result" id="postopResult"></div>
+        <button class="copy-button" onclick="copyToClipboard('postopResult')">Copy Results</button>        
+		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+
+    </div>
+	    <div id="resources" class="container">
+        <h1>WEIGHT LOSS RESOURCES</h1>
+		    <br>
+  		<b><p style="text-align: center">Criteria for treatment with / without weight-related comorbiditity </p></b>
+		    
+			<br>
+		<em>	Medication: DM2 or BMI <span>&#8805;</span> 27 / 30
+			<br> 
+			Surgery: BMI <span>&#8805;</span> 30 / 35 </em>
+		    	<br><br>
+		    	<hr>
+			<b>
+		    <p style="text-align: center">Links </p></b>
+		    <br>
+		    <em><a href="https://asmbs.org/cp_type/procedure/" target="_blank">LINK to ASMBS Procedure Info</a></em>
+			<br><br>  
+		    	<hr>
+			<b>
+		    	<p style="text-align: center"> Surgical Diagrams </p></b>
+		 	<br>	
+		<b>Sleeve:</b>  
+		    <br>
+		    <img src="Sleeve2.png" alt="Sleeve" 
+		    <br><br>
+		<b>Bypass:</b>  
+		    <br>
+		    <img src="RYGB2.png" alt="Bypass">
+		    <br><br>
+		<b>SADI-S:</b>  
+		    <br>
+		    <img src="SADI-S.jpeg" alt="SADI-S">
+		    <br><br>
+		<b>BPD-DS:</b>  
+		    <br>
+		    <img src="BPD-DS.png" alt="BPD-DS">
+		    <br><br>
+		<b>Band:</b>  
+		    <br>
+		    <img src="Band.png" alt="Band">
+		    <br><br>
+		<b>OABG / "mini gastric bypass":</b>  
+		    <br>
+		    <img src="OABG.png" alt="OABG">
+		    <br><br>
+	    <br>
+
+		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+
+    </div>
+
+
+    <script>
+					document.getElementById("bmiForm").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();  // Prevents the form from submitting
+        document.getElementById("simplebutton").click();  // Triggers the button click
+    }
+});
+   
+        function showCalculator(calculatorId) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(calculatorId).classList.add('active');
+        }
+
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const feet = parseFloat(document.getElementById('feet').value);
+            const inches = parseFloat(document.getElementById('inches').value);
+
+            if (isNaN(weight) || isNaN(feet) || isNaN(inches)) {
+                alert('Please enter valid numbers for all fields.');
+                return;
+            }
+
+            // Convert height to inches and then to meters
+            const totalHeightInInches = (feet * 12) + inches;
+            const heightInMeters = totalHeightInInches * 0.0254;
+
+            // Convert weight to kilograms
+            const weightInKg = weight * 0.453592;
+
+            // Calculate BMI
+            const bmi = weightInKg / (heightInMeters * heightInMeters);
+
+            // Calculate IBW for BMI of 25
+            const targetBmi = 25;
+            const ibwKg = targetBmi * (heightInMeters * heightInMeters);
+            const ibwLbs = ibwKg / 0.453592;
+
+            // Calculate EBW
+            const ebw = weight - ibwLbs;
+
+            // Calculate EWL for sleeve gastrectomy and gastric bypass
+            const ewlSleeve = ebw * 0.55;
+            const ewlBypass = ebw * 0.72;
+
+			// Calculate weight for a BMI of 25
+            const bmi25 = 25;
+            const weightForBmi25Kg = bmi25 * (heightInMeters * heightInMeters);
+            const weightForBmi25Lbs = weightForBmi25Kg / 0.453592;
+			
+            // Calculate weight for a BMI of 30
+            const bmi30 = 30;
+            const weightForBmi30Kg = bmi30 * (heightInMeters * heightInMeters);
+            const weightForBmi30Lbs = weightForBmi30Kg / 0.453592;
+			
+			// Calculate weight for a BMI of 35
+            const bmi35 = 35;
+            const weightForBmi35Kg = bmi35 * (heightInMeters * heightInMeters);
+            const weightForBmi35Lbs = weightForBmi35Kg / 0.453592;
+			
+						// target weight after sleeve
+            const targetsleeve = weight - ewlSleeve;
+			
+						// target weight after bypass
+            const targetbypass = weight - ewlBypass;
+			
+			const d1 = new Date();
+			const formattedDate1 = `${(d1.getMonth() + 1).toString().padStart(2, '0')}/${d1.getDate().toString().padStart(2, '0')}/${d1.getFullYear()}`;
+
+
+            // Display the result
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `--------------------------------
+<br>
+<font size="24"><b>${bmi.toFixed(1)}</font></b><br>
+                Calculated on ${formattedDate1}: <br>
+			<br>
+			Current BMI is <b>${bmi.toFixed(1)}</b><br>
+    			Current weight is ${weight.toFixed(0)} lbs<br>
+			Current height is ${feet.toFixed(0)}' ${inches.toFixed(1)}''<br>	
+				<br>
+				Excess Body Weight (EBW) is ${ebw.toFixed(0)} lbs<br>
+                Weight for BMI of 25 is ${ibwLbs.toFixed(0)} lbs<br>
+                Weight for BMI of 30 is ${weightForBmi30Lbs.toFixed(0)} lbs<br>
+                Weight for BMI of 35 is ${weightForBmi35Lbs.toFixed(0)} lbs<br>
+--------------------------------<br><br><br>
+            `;
+        }
+		
+		
+        function calculatePreop() {
+            const weightp = parseFloat(document.getElementById('weightp').value);
+            const feetp = parseFloat(document.getElementById('feetp').value);
+            const inchesp = parseFloat(document.getElementById('inchesp').value);
+
+            if (isNaN(weightp) || isNaN(feetp) || isNaN(inchesp)) {
+                alert('Please enter valid numbers for all fields.');
+                return;
+            }
+
+            // Convert height to inches and then to meters
+            const totalHeightInInchesp = (feetp * 12) + inchesp;
+            const heightInMetersp = totalHeightInInchesp * 0.0254;
+
+            // Convert weight to kilograms
+            const weightInKgp = weightp * 0.453592;
+
+            // Calculate BMI
+            const bmip = weightInKgp / (heightInMetersp * heightInMetersp);
+
+            // Calculate IBW for BMI of 25
+            const targetBmip = 25;
+            const ibwKgp = targetBmip * (heightInMetersp * heightInMetersp);
+            const ibwLbsp = ibwKgp / 0.453592;
+
+            // Calculate EBW
+            const ebwp = weightp - ibwLbsp;
+
+            // Calculate EWL for sleeve gastrectomy and gastric bypass
+            const ewlSleevep = ebwp * 0.55;
+            const ewlBypassp = ebwp * 0.72;
+
+			// Calculate weight for a BMI of 25
+            const bmi25p = 25;
+            const weightForBmi25Kgp = bmi25p * (heightInMetersp * heightInMetersp);
+            const weightForBmi25Lbsp = weightForBmi25Kgp / 0.453592;
+			
+            // Calculate weight for a BMI of 30
+            const bmi30p = 30;
+            const weightForBmi30Kgp = bmi30p * (heightInMetersp * heightInMetersp);
+            const weightForBmi30Lbsp = weightForBmi30Kgp / 0.453592;
+			
+			// Calculate weight for a BMI of 35
+            const bmi35p = 35;
+            const weightForBmi35Kgp = bmi35p * (heightInMetersp * heightInMetersp);
+            const weightForBmi35Lbsp = weightForBmi35Kgp / 0.453592;
+			
+						// target weight after sleeve
+            const targetsleevep = weightp - ewlSleevep;
+			
+						// target weight after bypass
+            const targetbypassp = weightp - ewlBypassp;
+			
+			const d2 = new Date();
+			const formattedDate2 = `${(d2.getMonth() + 1).toString().padStart(2, '0')}/${d2.getDate().toString().padStart(2, '0')}/${d2.getFullYear()}`;
+			
+            // Display the result
+				const preopResultDiv = document.getElementById('preopResult');
+            preopResultDiv.innerHTML = `--------------------------------
+<br>
+<font size="24"><b>${bmip.toFixed(1)}</font></b><br>
+                Calculated on ${formattedDate2}: <br>
+			<br>
+				Current BMI is <b>${bmip.toFixed(1)}</b><br>
+    				Current weight is ${weightp.toFixed(0)} lbs<br>
+				Current height is ${feetp.toFixed(0)}' ${inchesp.toFixed(1)}''<br>				
+				<br>
+                Weight for BMI of 25 is ${ibwLbsp.toFixed(0)} lbs<br>
+                Weight for BMI of 30 is ${weightForBmi30Lbsp.toFixed(0)} lbs<br>
+                Weight for BMI of 35 is ${weightForBmi35Lbsp.toFixed(0)} lbs<br>
+				<br>
+				Excess Body Weight (EBW) is ${ebwp.toFixed(0)} lbs<br>
+                Sleeve (55%): Est WL ${ewlSleevep.toFixed(0)} lbs, goal ${targetsleevep.toFixed(0)} lbs<br>
+                Bypass (72%): Est WL ${ewlBypassp.toFixed(0)} lbs, goal ${targetbypassp.toFixed(0)} lbs<br>
+
+--------------------------------<br><br><br>
+            `;
+        }
+
+			
+			function calculatePostop() {
+            const preopWeight = parseFloat(document.getElementById('preopWeight').value);
+            const lowestPostopWeight = parseFloat(document.getElementById('lowestPostopWeight').value);
+            const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+            const feet = parseFloat(document.getElementById('postopFeet').value);
+            const inches = parseFloat(document.getElementById('postopInches').value);
+
+            if (isNaN(preopWeight) || isNaN(currentWeight) || isNaN(feet) || isNaN(inches)) {
+                alert('Please enter valid numbers for all fields.');
+                return;
+            }
+
+            // Convert height to inches and then to meters
+            const totalHeightInInches = (feet * 12) + inches;
+            const heightInMeters = totalHeightInInches * 0.0254;
+
+            // Calculate IBW for BMI of 25 and 30
+            const bmi25 = 25;
+            const bmi30 = 30;
+            const ibw25Kg = bmi25 * (heightInMeters * heightInMeters);
+            const ibw30Kg = bmi30 * (heightInMeters * heightInMeters);
+            const ibw25Lbs = ibw25Kg / 0.453592;
+            const ibw30Lbs = ibw30Kg / 0.453592;
+
+            // Calculate Preop EBW
+            const preopIbw = ibw25Lbs; // Assume IBW for BMI 25 is used as reference
+            const preopEbwt = preopWeight - preopIbw;
+
+            // Calculate current EBW
+            const currentEbwt = currentWeight - preopIbw;
+
+            // Calculate values
+            const maxWeightLoss = preopWeight - lowestPostopWeight;
+            const currentWeightLoss = preopWeight - currentWeight;
+            const percentExcessBodyWeightLoss = (currentWeightLoss / preopEbwt) * 100;
+            const percentTotalBodyWeightLoss = (currentWeightLoss / preopWeight) * 100;				
+
+			// New calculations
+            const currentweightkg = currentWeight * 0.453592 ;
+	        const preopweightkg = preopWeight * 0.453592 ;
+			const currentbmi = currentweightkg / (heightInMeters * heightInMeters);
+			const preopbmi = preopweightkg / (heightInMeters * heightInMeters);
+			const d3 = new Date();
+			const formattedDate3 = `${(d3.getMonth() + 1).toString().padStart(2, '0')}/${d3.getDate().toString().padStart(2, '0')}/${d3.getFullYear()}`;
+
+            // Display the result
+
+				const postopResultDiv = document.getElementById('postopResult');
+            postopResultDiv.innerHTML = `
+--------------------------------
+<br>
+<font size="24"><b>${currentbmi.toFixed(1)}</font></b><br>
+Calculated on ${formattedDate3}: <br>
+				<br>
+    				Current BMI is <b>${currentbmi.toFixed(1)} </b><br>
+				Current weight is ${currentWeight.toFixed(0)} lbs<br>
+				Current height is ${feet.toFixed(0)}' ${inches.toFixed(1)}''<br>	
+				Current weight loss is ${currentWeightLoss.toFixed(0)} lbs<br>
+				<br>				
+				Preop BMI was ${preopbmi.toFixed(1)} <br>
+    				Preop weight was ${preopWeight.toFixed(0)} lbs<br>
+    				Preop EWB was ${preopEbwt.toFixed(0)} lbs<br>
+
+				<br>
+				Nadir weight (if specified) was ${lowestPostopWeight.toFixed(0)} lbs<br>
+				Max weight loss (if specified) was ${maxWeightLoss.toFixed(0)} lbs<br>				
+				<br>
+                Current %TBWL is ${percentTotalBodyWeightLoss.toFixed(0)}%<br>
+				Current %EBWL is ${percentExcessBodyWeightLoss.toFixed(0)}%<br>
+--------------------------------<br><br><br>
+				<br>
+
+            `;
+
+			//
+			
+			
+        }
+
+        function copyToClipboard(resultId) {
+            const resultDiv = document.getElementById(resultId);
+            if (resultDiv) {
+                const textToCopy = resultDiv.innerText || resultDiv.textContent;
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        alert('Results copied to clipboard!');
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+            }
+			
+        }
+
+        // Show the default calculator
+        showCalculator('bmiCalculator');
+    </script>
+</body>
+</html>
