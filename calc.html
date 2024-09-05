@@ -351,6 +351,7 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = `--------------------------------
 <br>
+<font size="24"><b>${bmi.toFixed(1)}</font></b><br>
                 Calculated on ${formattedDate1}: <br>
 			<br>
 			Current BMI is <b>${bmi.toFixed(1)}</b><br>
@@ -426,10 +427,10 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
 				const preopResultDiv = document.getElementById('preopResult');
             preopResultDiv.innerHTML = `--------------------------------
 <br>
+<font size="24"><b>${bmip.toFixed(1)}</font></b><br>
                 Calculated on ${formattedDate2}: <br>
 			<br>
 				Current BMI is <b>${bmip.toFixed(1)}</b><br>
-<font size="28">Current BMI is <b>${bmip.toFixed(1)}</font></b><br>
     				Current weight is ${weightp.toFixed(0)} lbs<br>
 				Current height is ${feetp.toFixed(0)}' ${inchesp.toFixed(1)}''<br>				
 				<br>
@@ -497,7 +498,8 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
             postopResultDiv.innerHTML = `
 --------------------------------
 <br>
-                Calculated on ${formattedDate3}: <br>
+<font size="24"><b>${currentbmi.toFixed(1)}</font></b><br>
+Calculated on ${formattedDate3}: <br>
 				<br>
     				Current BMI is <b>${currentbmi.toFixed(1)} </b><br>
 				Current weight is ${currentWeight.toFixed(0)} lbs<br>
