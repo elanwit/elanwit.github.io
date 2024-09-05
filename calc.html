@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -189,7 +190,7 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
             <label for="feet">Height:</label>
             <input type="number" id="feet" placeholder="Feet" step="1" required inputmode="numeric">
             <input type="number" id="inches" placeholder="Inches" step="0.1" required inputmode="decimal">
-            <button type="button" onclick="calculateBMI()">Calculate BMI</button>
+            <button type="button" id="simpleButton" onclick="calculateBMI()">Calculate BMI</button>
         </form>
         <div class="result" id="result"></div>
         <button class="copy-button" onclick="copyToClipboard('result')">Copy Results</button>
@@ -204,7 +205,7 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
             <label for="feetp">Height:</label>
             <input type="number" id="feetp" placeholder="Feet" step="1" required inputmode="numeric">
             <input type="number" id="inchesp" placeholder="Inches" step="0.1" required inputmode="decimal">
-            <button type="button" onclick="calculatePreop()">Calculate Preop</button>
+            <button type="button" id="preopButton" onclick="calculatePreop()">Calculate Preop</button>
         </form>
         <div class="result" id="preopResult"></div>
         <button class="copy-button" onclick="copyToClipboard('preopResult')">Copy Results</button>
@@ -223,7 +224,7 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
             <label for="postopFeet">Height:</label>
             <input type="number" id="postopFeet" placeholder="Feet" step="1" required inputmode="numeric">
             <input type="number" id="postopInches" placeholder="Inches" step="1" required inputmode="decimal">
-            <button type="button" onclick="calculatePostop()">Calculate Postop</button>
+            <button type="button" id="postopButton" onclick="calculatePostop()">Calculate Postop</button>
         </form>
         <div class="result" id="postopResult"></div>
         <button class="copy-button" onclick="copyToClipboard('postopResult')">Copy Results</button>        
@@ -282,7 +283,25 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
 
 
     <script>
-					
+	document.getElementById("bmiForm").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();  // Prevents the form from submitting
+        document.getElementById("simpleButton").click();  // Triggers the button click
+    }
+});
+	    	document.getElementById("preopForm").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();  // Prevents the form from submitting
+        document.getElementById("preopButton").click();  // Triggers the button click
+    }
+});
+	    	document.getElementById("postopForm").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();  // Prevents the form from submitting
+        document.getElementById("postopButton").click();  // Triggers the button click
+    }
+});
+   
         function showCalculator(calculatorId) {
             document.querySelectorAll('.container').forEach(container => {
                 container.classList.remove('active');
