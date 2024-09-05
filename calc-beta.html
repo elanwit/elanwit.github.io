@@ -194,18 +194,6 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
         <div class="result" id="result"></div>
         <button class="copy-button" onclick="copyToClipboard('result')">Copy Results</button>
 		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
-
-// Execute a function when the user presses a key on the keyboard
-input.addEventListener("keypress", function(event) {
-  // If the user presses the "Enter" key on the keyboard
-  if (event.key === "Enter") {
-    // Cancel the default action, if needed
-    event.preventDefault();
-    // Trigger the button element with a click
-    document.getElementById("button").click();
-  }
-});
-	    
     </div>
 	
 	    <div id="preopCalculator" class="container">
@@ -376,7 +364,15 @@ input.addEventListener("keypress", function(event) {
                 Weight for BMI of 35 is ${weightForBmi35Lbs.toFixed(0)} lbs<br>
 --------------------------------<br><br><br>
             `;
+    }
+
+    document.getElementById("bmiForm").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            calculateBMI();
         }
+    });
+	    }
 		
 		
         function calculatePreop() {
@@ -456,7 +452,15 @@ input.addEventListener("keypress", function(event) {
 
 --------------------------------<br><br><br>
             `;
+          }
+
+    document.getElementById("bmiForm").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            calculatePreop();
         }
+    });
+	    }
 
 			
 			function calculatePostop() {
@@ -533,7 +537,14 @@ Calculated on ${formattedDate3}: <br>
 
             `;
 
-			//
+   }
+
+    document.getElementById("bmiForm").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            calculatePostop();
+        }
+    });
 			
 			
         }
