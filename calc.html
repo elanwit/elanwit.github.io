@@ -216,15 +216,15 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
     <div id="postopCalculator" class="container">
         <h1>BMI - POSTOP</h1>
         <form id="postopForm">
-            <label for="preopWeight">Preop Weight (lbs):</label>
-            <input type="number" id="preopWeight" placeholder="Pounds - Preop" step="0.1" required inputmode="numeric">
-            <label for="lowestPostopWeight">Lowest Postop Weight (lbs) - optional:</label>
-            <input type="number" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" step="0.1" required inputmode="numeric">
             <label for="currentWeight">Current Weight (lbs):</label>
             <input type="number" id="currentWeight" placeholder="Pounds - Current" step="0.1" required inputmode="numeric">
             <label for="postopFeet">Height:</label>
             <input type="number" id="postopFeet" placeholder="Feet" step="1" required inputmode="numeric">
             <input type="number" id="postopInches" placeholder="Inches" step="1" required inputmode="decimal">
+	    <label for="preopWeight">Preop Weight (lbs):</label>
+            <input type="number" id="preopWeight" placeholder="Pounds - Preop" step="0.1" required inputmode="numeric">
+            <label for="lowestPostopWeight">Lowest Postop Weight (lbs) - optional:</label>
+            <input type="number" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" step="0.1" required inputmode="numeric">
             <button type="button" id="postopButton" onclick="calculatePostop()">Calculate Postop</button>
         </form>
         <div class="result" id="postopResult"></div>
