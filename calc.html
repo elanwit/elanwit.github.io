@@ -52,7 +52,7 @@
 	border-radius: 12px;
 	cursor: pointer;
 	margin-bottom: 10px;
-36454F}
+}
 
 .nav-buttons button:hover {
     background-color: #000000;
@@ -150,7 +150,7 @@ button, .calculateBMI, .calculatePreop, .CalculatePostop {
     width: 100%;
 }
 
-button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
+button:hover {
     background-color: #218838;
 }
 		
@@ -167,7 +167,8 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
            	margin-top: 10px;
 		margin-bottom: 10px;
 		margin-left: auto;
-		margin-right: auto
+		margin-right: auto;
+        }
 
     </style>
 </head>
@@ -187,7 +188,7 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
         <h1>BMI - SIMPLE</h1>
         <form id="bmiForm">
             <label for="weight">Weight (lbs):</label>
-            <input type="number" id="weight" placeholder="Pounds" step="0.1" required inputmode="numeric">
+            <input type="number" id="weight" placeholder="Pounds" step="0.1" required inputmode="decimal">
             <label for="feet">Height:</label>
             <input type="number" id="feet" placeholder="Feet" step="1" required inputmode="numeric">
             <input type="number" id="inches" placeholder="Inches" step="0.1" required inputmode="decimal">
@@ -195,14 +196,14 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
         </form>
         <div class="result" id="result"></div>
         <button class="copy-button" onclick="copyToClipboard('result')">Copy Results</button>
-		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+		<button class="reset-button" onclick="resetCalculator('bmiForm', 'result')">Start Over</button>
     </div>
 	
 	    <div id="preopCalculator" class="container">
         <h1>BMI - PREOP</h1>
         <form id="preopForm">
             <label for="weightp">Weight (lbs):</label>
-            <input type="number" id="weightp" placeholder="Pounds" step="0.1" required inputmode="numeric">
+            <input type="number" id="weightp" placeholder="Pounds" step="0.1" required inputmode="decimal">
             <label for="feetp">Height:</label>
             <input type="number" id="feetp" placeholder="Feet" step="1" required inputmode="numeric">
             <input type="number" id="inchesp" placeholder="Inches" step="0.1" required inputmode="decimal">
@@ -210,32 +211,32 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
         </form>
         <div class="result" id="preopResult"></div>
         <button class="copy-button" onclick="copyToClipboard('preopResult')">Copy Results</button>
-		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+		<button class="reset-button" onclick="resetCalculator('preopForm', 'preopResult')">Start Over</button>
     </div>
 
     <div id="postopCalculator" class="container">
         <h1>BMI - POSTOP</h1>
         <form id="postopForm">
             <label for="currentWeight">Current Weight (lbs):</label>
-            <input type="number" id="currentWeight" placeholder="Pounds - Current" step="0.1" required inputmode="numeric">
+            <input type="number" id="currentWeight" placeholder="Pounds - Current" step="0.1" required inputmode="decimal">
             <label for="postopFeet">Height:</label>
             <input type="number" id="postopFeet" placeholder="Feet" step="1" required inputmode="numeric">
-            <input type="number" id="postopInches" placeholder="Inches" step="1" required inputmode="decimal">
+            <input type="number" id="postopInches" placeholder="Inches" step="0.1" required inputmode="decimal">
 	    <label for="preopWeight">Preop Weight (lbs):</label>
-            <input type="number" id="preopWeight" placeholder="Pounds - Preop" step="0.1" required inputmode="numeric">
+            <input type="number" id="preopWeight" placeholder="Pounds - Preop" step="0.1" required inputmode="decimal">
             <label for="lowestPostopWeight">Lowest Postop Weight (lbs) - optional:</label>
-            <input type="number" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" step="0.1" required inputmode="numeric">
+            <input type="number" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" step="0.1" inputmode="decimal">
             <button type="button" id="postopButton" onclick="calculatePostop()">Calculate Postop</button>
         </form>
         <div class="result" id="postopResult"></div>
-        <button class="copy-button" onclick="copyToClipboard('postopResult')">Copy Results</button>        
-		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+        <button class="copy-button" onclick="copyToClipboard('postopResult')">Copy Results</button>
+		<button class="reset-button" onclick="resetCalculator('postopForm', 'postopResult')">Start Over</button>
 
     </div>
 	    <div id="resources" class="container">
         <h1>SURGERY RESOURCES</h1>
 		    <br>
-  		<b><p style="text-align: center">Criteria for treatment with / without weight-related comorbiditity </p></b>
+  		<b><p style="text-align: center">Criteria for treatment with / without weight-related comorbidity </p></b>
 		    
 			<br>
 		<em>	Medication: DM2, or BMI <span>&#8805;</span> 27 / 30
@@ -267,33 +268,33 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
 		 	<br>	
 		<b>Sleeve:</b>  
 		    <br>
-		    <img src="Sleeve2.png" alt="Sleeve" 
+		    <img loading="lazy" src="Sleeve2.png" alt="Sleeve">
 		    <br><br>
 		<b>Bypass:</b>  
 		    <br>
-		    <img src="RYGB2.png" alt="Bypass">
+		    <img loading="lazy" src="RYGB2.png" alt="Bypass">
 			    <br><br>
 		 <b>Animations:</b>  
 		    <br>
-		    <img src="sleevegif1.gif" alt="Sleeve" 		    	    
+		    <img loading="lazy" src="sleevegif1.gif" alt="Sleeve animation">
 			    <br>
-		    <img src="bypassgif1.gif" alt="Bypass" 
+		    <img loading="lazy" src="bypassgif1.gif" alt="Bypass animation">
 		    <br><br>
 		<b>SADI-S:</b>  
 		    <br>
-		    <img src="SADI-S.jpeg" alt="SADI-S">
+		    <img loading="lazy" src="SADI-S.jpeg" alt="SADI-S">
 		    <br><br>
 		<b>BPD-DS:</b>  
 		    <br>
-		    <img src="BPD-DS.png" alt="BPD-DS">
+		    <img loading="lazy" src="BPD-DS.png" alt="BPD-DS">
 		    <br><br>
 		<b>Band:</b>  
 		    <br>
-		    <img src="Band.png" alt="Band">
+		    <img loading="lazy" src="Band.png" alt="Band">
 		    <br><br>
 		<b>OABG / "mini gastric bypass":</b>  
 		    <br>
-		    <img src="OABG.png" alt="OABG">
+		    <img loading="lazy" src="OABG.png" alt="OABG">
 		    <br><br>
 		    <hr>
 			<b>
@@ -301,17 +302,17 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
 		 	<br>	
 		<b>Sleeve:</b>  
 			<br><br>
-<iframe style="width: 100%; aspect-ratio: 16 / 9" title="Sleeve" src="https://www.youtube.com/embed/dv-iTdWgNcI?&theme=dark&autohide=2&rel=0&mute=1" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+<iframe loading="lazy" style="width: 100%; aspect-ratio: 16 / 9" title="Sleeve" src="https://www.youtube.com/embed/dv-iTdWgNcI?&theme=dark&autohide=2&rel=0&mute=1" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
 			<br><br><br>
 		<b>Bypass:</b>  
 			<br><br>
-<iframe style="width: 100%; aspect-ratio: 16 / 9" title="Bypass" src="https://www.youtube.com/embed/WscSZJu9htY?&theme=dark&autohide=2&rel=0&mute=1" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+<iframe loading="lazy" style="width: 100%; aspect-ratio: 16 / 9" title="Bypass" src="https://www.youtube.com/embed/WscSZJu9htY?&theme=dark&autohide=2&rel=0&mute=1" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
 			<br><br><br>
 		    <hr>
 		    <br>
 		<b>Contact card for MGH Patients:</b>  
 		    <br>
-		    <img src="help.jpg" alt="Help Card">
+		    <img loading="lazy" src="help.jpg" alt="Help Card">
 		    <br><br>
 	    <br>
 		    <hr>
@@ -320,28 +321,28 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
 			<br><br><br>
 	Hiatal hernia:  
 		    <br>
-		    <img src="hh2.jpg" alt="Hiatal Hernia">
+		    <img loading="lazy" src="hh2.jpg" alt="Hiatal Hernia">
 		    <br><br>
 	Fundoplication:  
 		    <br>
-		    <img src="nissen1.jpg" alt="Retrorectus">
+		    <img loading="lazy" src="nissen1.jpg" alt="Fundoplication">
 		    <br><br>
 	Retrorectus hernia repair:  
 		    <br>
-		    <img src="retrorectus1.jpg" alt="Retrorectus">
+		    <img loading="lazy" src="retrorectus1.jpg" alt="Retrorectus">
 		    <br><br>
 	Retrorectus hernia repair:  
 		    <br>
-		    <img src="rr3.jpg" alt="Retrorectus 2">
+		    <img loading="lazy" src="rr3.jpg" alt="Retrorectus 2">
 		    <br><br>
 	Mesh positions / layers:
 		    <br>
-		    <img src="retrorectus3.png" alt="Layers">
+		    <img loading="lazy" src="retrorectus3.png" alt="Layers">
 		    <br><br>
-<iframe style="width: 100%; aspect-ratio: 16 / 9" title="Retrorectus" src="https://www.youtube.com/embed/uWPqpiw30NM?&theme=dark&autohide=2&rel=0&mute=1&t=27s" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+<iframe loading="lazy" style="width: 100%; aspect-ratio: 16 / 9" title="Retrorectus" src="https://www.youtube.com/embed/uWPqpiw30NM?&theme=dark&autohide=2&rel=0&mute=1&t=27s" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
 			<br><br><br> 
 
-		<button class="reset-button" onclick="window.location.href=window.location.href">Start Over</button>
+		<button class="reset-button" onclick="window.scrollTo(0, 0)">Back to Top</button>
 
     </div>
 
@@ -378,10 +379,7 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
             const feet = parseFloat(document.getElementById('feet').value);
             const inches = parseFloat(document.getElementById('inches').value);
 
-            if (isNaN(weight) || isNaN(feet) || isNaN(inches)) {
-                alert('Please enter valid numbers for all fields.');
-                return;
-            }
+            if (!inputsAreValid([weight], feet, inches)) return;
 
             // Convert height to inches and then to meters
             const totalHeightInInches = (feet * 12) + inches;
@@ -434,7 +432,7 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = `--------------------------------
 <br>
-<font size="24"><b>${bmi.toFixed(1)}</font></b><br>
+<span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
                 Calculated on ${formattedDate1}: <br>
 			<br>
 			Current BMI is <b>${bmi.toFixed(1)}</b><br>
@@ -455,10 +453,7 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
             const feetp = parseFloat(document.getElementById('feetp').value);
             const inchesp = parseFloat(document.getElementById('inchesp').value);
 
-            if (isNaN(weightp) || isNaN(feetp) || isNaN(inchesp)) {
-                alert('Please enter valid numbers for all fields.');
-                return;
-            }
+            if (!inputsAreValid([weightp], feetp, inchesp)) return;
 
             // Convert height to inches and then to meters
             const totalHeightInInchesp = (feetp * 12) + inchesp;
@@ -510,7 +505,7 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
 				const preopResultDiv = document.getElementById('preopResult');
             preopResultDiv.innerHTML = `--------------------------------
 <br>
-<font size="24"><b>${bmip.toFixed(1)}</font></b><br>
+<span style="font-size: 48px"><b>${bmip.toFixed(1)}</b></span><br>
                 Calculated on ${formattedDate2}: <br>
 			<br>
 				Current BMI is <b>${bmip.toFixed(1)}</b><br>
@@ -537,10 +532,11 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
             const feet = parseFloat(document.getElementById('postopFeet').value);
             const inches = parseFloat(document.getElementById('postopInches').value);
 
-            if (isNaN(preopWeight) || isNaN(currentWeight) || isNaN(feet) || isNaN(inches)) {
-                alert('Please enter valid numbers for all fields.');
-                return;
-            }
+            if (!inputsAreValid([currentWeight, preopWeight], feet, inches)) return;
+
+            // Nadir weight is optional; only check it if one was entered
+            const hasNadir = !isNaN(lowestPostopWeight);
+            if (hasNadir && !inputsAreValid([lowestPostopWeight], feet, inches)) return;
 
             // Convert height to inches and then to meters
             const totalHeightInInches = (feet * 12) + inches;
@@ -581,7 +577,7 @@ button:hover, .calculateBMI, .calculatePreop, .CalculatePostop :hover {
             postopResultDiv.innerHTML = `
 --------------------------------
 <br>
-<font size="24"><b>${currentbmi.toFixed(1)}</font></b><br>
+<span style="font-size: 48px"><b>${currentbmi.toFixed(1)}</b></span><br>
 Calculated on ${formattedDate3}: <br>
 				<br>
     				Current BMI is <b>${currentbmi.toFixed(1)} </b><br>
@@ -591,14 +587,14 @@ Calculated on ${formattedDate3}: <br>
 				<br>				
 				Preop BMI was ${preopbmi.toFixed(1)} <br>
     				Preop weight was ${preopWeight.toFixed(0)} lbs<br>
-    				Preop EWB was ${preopEbwt.toFixed(0)} lbs<br>
+    				Preop EBW was ${preopEbwt.toFixed(0)} lbs<br>
 
-				<br>
-				Nadir weight (if specified) was ${lowestPostopWeight.toFixed(0)} lbs<br>
-				Max weight loss (if specified) was ${maxWeightLoss.toFixed(0)} lbs<br>				
+				${hasNadir ? `<br>
+				Nadir weight was ${lowestPostopWeight.toFixed(0)} lbs<br>
+				Max weight loss was ${maxWeightLoss.toFixed(0)} lbs<br>` : ''}
 				<br>
                 Current %TBWL is ${percentTotalBodyWeightLoss.toFixed(0)}%<br>
-				Current %EBWL is ${percentExcessBodyWeightLoss.toFixed(0)}%<br>
+				Current %EBWL is ${preopEbwt > 0 ? percentExcessBodyWeightLoss.toFixed(0) + '%' : 'n/a (preop BMI was not above 25)'}<br>
 --------------------------------<br><br><br>
 				<br>
 
@@ -609,19 +605,64 @@ Calculated on ${formattedDate3}: <br>
 			
         }
 
+        // Checks weights (lbs) and height (ft + in) are in a plausible adult range
+        function inputsAreValid(weights, feet, inches) {
+            if (weights.some(isNaN) || isNaN(feet) || isNaN(inches)) {
+                alert('Please enter valid numbers for all fields.');
+                return false;
+            }
+            if (weights.some(w => w < 50 || w > 1000)) {
+                alert('Please check the weight: it should be between 50 and 1000 lbs.');
+                return false;
+            }
+            const totalHeightInInches = (feet * 12) + inches;
+            if (feet < 0 || inches < 0 || totalHeightInInches < 36 || totalHeightInInches > 96) {
+                alert('Please check the height: it should be between 3 ft and 8 ft.');
+                return false;
+            }
+            return true;
+        }
+
+        // Clears one calculator without leaving its tab
+        function resetCalculator(formId, resultId) {
+            document.getElementById(formId).reset();
+            document.getElementById(resultId).innerHTML = '';
+            window.scrollTo(0, 0);
+        }
+
         function copyToClipboard(resultId) {
             const resultDiv = document.getElementById(resultId);
-            if (resultDiv) {
-                const textToCopy = resultDiv.innerText || resultDiv.textContent;
-                navigator.clipboard.writeText(textToCopy)
-                    .then(() => {
-                        alert('Results copied to clipboard!');
-                    })
-                    .catch(err => {
-                        console.error('Failed to copy: ', err);
-                    });
+            const textToCopy = resultDiv ? (resultDiv.innerText || resultDiv.textContent).trim() : '';
+            if (!textToCopy) {
+                alert('Nothing to copy yet. Calculate first.');
+                return;
             }
-			
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => alert('Results copied to clipboard!'))
+                    .catch(() => fallbackCopy(textToCopy));
+            } else {
+                fallbackCopy(textToCopy);
+            }
+        }
+
+        // Older browsers and some in-app browsers block navigator.clipboard
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.setAttribute('readonly', '');
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            let copied = false;
+            try {
+                copied = document.execCommand('copy');
+            } catch (err) {
+                copied = false;
+            }
+            document.body.removeChild(textArea);
+            alert(copied ? 'Results copied to clipboard!' : 'Copy failed. Please select the results and copy them manually.');
         }
 
         // Show the default calculator
