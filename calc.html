@@ -661,6 +661,22 @@ img {
             }).join('')).join('<br>');
         }
 
+        // Short 1-year summary from the same %TWL table, e.g.
+        //   SLEEVE:  WL 70lb, Weight 210lb
+        //   Weight loss IQR: Sleeve (56-84lb), Bypass (73-101lb)
+        function oneYearSummary(weight) {
+            const oneYear = EXPECTED_TWL.map(({ procedure, rows }) => ({ procedure, row: rows.find(row => row.label === '1 year') }));
+            const lines = oneYear.map(({ procedure, row }) =>
+                `<b>${procedure}:&nbsp; WL ${lbsAt(weight, row.median)}lb, Weight ${(weight - weight * row.median / 100).toFixed(0)}lb</b><br>`).join('');
+            const iqrs = oneYear.map(({ procedure, row }) =>
+                `${procedure.charAt(0) + procedure.slice(1).toLowerCase()} (${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])}lb)`).join(', ');
+            return `<br>
+                Estimated (median) at 1yr w/o meds:<br>
+                ${lines}
+                <br>
+                Weight loss IQR: ${iqrs}<br>`;
+        }
+
         function calculatePreop() {
             const weight = readNumber('weightp');
             const feet = readNumber('feetp');
@@ -671,18 +687,15 @@ img {
             const bmi = bmiFor(weight, heightM);
             const ebw = weight - weightForBmi(25, heightM);
 
-            // Expected excess weight loss: sleeve 55%, bypass 72%
-            const ewlSleeve = ebw * 0.55;
-            const ewlBypass = ebw * 0.72;
-
             document.getElementById('preopResult').innerHTML =
                 resultHeader(bmi, weight, feet, inches) + `
                 <br>
                 ${targetWeights(heightM, true)}
                 <br>
                 Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
-                ${ebw > 0 ? `Sleeve (55%): Est WL ${ewlSleeve.toFixed(0)} lbs, goal ${(weight - ewlSleeve).toFixed(0)} lbs<br>
-                Bypass (72%): Est WL ${ewlBypass.toFixed(0)} lbs, goal ${(weight - ewlBypass).toFixed(0)} lbs<br>` : `Sleeve / Bypass estimates: n/a (BMI 25 or below)<br>`}
+                ${oneYearSummary(weight)}
+                <br>
+                ----------<br>
                 <br>
                 ${expectedOutcomes(weight)}` + resultFooter();
         }
