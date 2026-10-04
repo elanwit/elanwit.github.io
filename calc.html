@@ -651,8 +651,9 @@ img {
                 ` + EXPECTED_TWL.map(({ procedure, rows }) => `After ${procedure}:<br>` + rows.map(row => {
                 const median = `about ${lbsAt(weight, row.median)}lb`;
                 const expectedWeight = (weight - weight * row.median / 100).toFixed(0);
+                const expected = `about ${expectedWeight}lb`;
                 const shownMedian = (row.bold ? `<b>${median}</b>` : median) +
-                    `, for an expected weight of about ${expectedWeight}lb`;
+                    `, for an expected weight of ${row.bold ? `<b>${expected}</b>` : expected}`;
                 const text = row.iqr
                     ? `most patients have lost about ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} pounds, with the average (median) being ${shownMedian}`
                     : `the average (median) patient has lost ${shownMedian}`;
