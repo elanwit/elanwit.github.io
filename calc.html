@@ -645,7 +645,9 @@ img {
 
         // e.g. "* At 1 year: most patients have lost about 70-98 pounds, with the average (median) being about 84lb."
         function expectedOutcomes(weight) {
-            return EXPECTED_TWL.map(({ procedure, rows }) => `After ${procedure}:<br>` + rows.map(row => {
+            return `Based on current weight, prior to GLP-1's<br>
+                <br>
+                ` + EXPECTED_TWL.map(({ procedure, rows }) => `After ${procedure}:<br>` + rows.map(row => {
                 const median = `about ${lbsAt(weight, row.median)}lb`;
                 const shownMedian = row.bold ? `<b>${median}</b>` : median;
                 const text = row.iqr
