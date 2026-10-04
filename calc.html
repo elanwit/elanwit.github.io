@@ -359,9 +359,9 @@ img {
 		    <br>
 		    <img loading="lazy" src="Band.png" alt="Band">
 		    <br><br>
-		<b>OABG / "mini gastric bypass":</b>  
+		<b>OAGB (one-anastomosis gastric bypass) / "mini gastric bypass":</b>  
 		    <br>
-		    <img loading="lazy" src="OABG.png" alt="OABG">
+		    <img loading="lazy" src="OABG.png" alt="OAGB">
 		    <br><br>
 		    <hr>
 			<b>
@@ -557,25 +557,55 @@ img {
             return `${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}/${d.getFullYear()}`;
         }
 
+        // WHO BMI classes, using the BMI as displayed (1 decimal) so 29.96 -> "30.0 (Class I obesity)"
+        function bmiClass(bmi) {
+            const shown = Math.round(bmi * 10) / 10;
+            if (shown < 18.5) return 'Underweight';
+            if (shown < 25) return 'Normal weight';
+            if (shown < 30) return 'Overweight';
+            if (shown < 35) return 'Class I obesity';
+            if (shown < 40) return 'Class II obesity';
+            return 'Class III obesity';
+        }
+
+        function bmiWithClass(bmi) {
+            return `${bmi.toFixed(1)} (${bmiClass(bmi)})`;
+        }
+
+        function kg(weightLbs) {
+            return (weightLbs / LBS_PER_KG).toFixed(1) + ' kg';
+        }
+
+        function cm(feet, inches) {
+            return (((feet * 12) + inches) * 2.54).toFixed(1) + ' cm';
+        }
+
+        // Excess body weight is only meaningful above a BMI of 25
+        function ebwText(ebw) {
+            return ebw > 0 ? `${ebw.toFixed(0)} lbs` : 'none (BMI 25 or below)';
+        }
+
         // Shared top of every result: big BMI, date, and current BMI/weight/height
         function resultHeader(bmi, weight, feet, inches) {
             return `${DIVIDER}<br>
                 <span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
                 Calculated on ${todayString()}: <br>
                 <br>
-                Current BMI is <b>${bmi.toFixed(1)}</b><br>
-                Current weight is ${formatNumber(weight)} lbs<br>
-                Current height is ${feet}' ${formatNumber(inches, 2)}"<br>`;
+                Current BMI is <b>${bmi.toFixed(1)}</b> (${bmiClass(bmi)})<br>
+                Current weight is ${formatNumber(weight)} lbs (${kg(weight)})<br>
+                Current height is ${feet}' ${formatNumber(inches, 2)}" (${cm(feet, inches)})<br>`;
         }
 
         function resultFooter() {
             return `${DIVIDER}<br><br><br>`;
         }
 
-        function targetWeights(heightM) {
+        function targetWeights(heightM, includeBmi40 = false) {
             return `Weight for BMI of 25 is ${weightForBmi(25, heightM).toFixed(0)} lbs<br>
                 Weight for BMI of 30 is ${weightForBmi(30, heightM).toFixed(0)} lbs<br>
-                Weight for BMI of 35 is ${weightForBmi(35, heightM).toFixed(0)} lbs<br>`;
+                Weight for BMI of 35 is ${weightForBmi(35, heightM).toFixed(0)} lbs<br>` +
+                (includeBmi40 ? `
+                Weight for BMI of 40 is ${weightForBmi(40, heightM).toFixed(0)} lbs<br>` : '');
         }
 
         function calculateBMI() {
@@ -592,7 +622,7 @@ img {
             document.getElementById('result').innerHTML =
                 resultHeader(bmi, weight, feet, inches) + `
                 <br>
-                Excess Body Weight (EBW) is ${ebw.toFixed(0)} lbs<br>
+                Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
                 ${targetWeights(heightM)}` + resultFooter();
         }
 
@@ -613,12 +643,18 @@ img {
             document.getElementById('preopResult').innerHTML =
                 resultHeader(bmi, weight, feet, inches) + `
                 <br>
-                ${targetWeights(heightM)}
+                ${targetWeights(heightM, true)}
                 <br>
-                Excess Body Weight (EBW) is ${ebw.toFixed(0)} lbs<br>
-                Sleeve (55%): Est WL ${ewlSleeve.toFixed(0)} lbs, goal ${(weight - ewlSleeve).toFixed(0)} lbs<br>
-                Bypass (72%): Est WL ${ewlBypass.toFixed(0)} lbs, goal ${(weight - ewlBypass).toFixed(0)} lbs<br>
+                Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
+                ${ebw > 0 ? `Sleeve (55%): Est WL ${ewlSleeve.toFixed(0)} lbs, goal ${(weight - ewlSleeve).toFixed(0)} lbs<br>
+                Bypass (72%): Est WL ${ewlBypass.toFixed(0)} lbs, goal ${(weight - ewlBypass).toFixed(0)} lbs<br>` : `Sleeve / Bypass estimates: n/a (BMI 25 or below)<br>`}
                 <br>` + resultFooter();
+        }
+
+        // Change between the BMIs as displayed, e.g. "-9.7 (45.2 to 35.5)"
+        function bmiChange(fromBmi, toBmi) {
+            const change = Math.round(toBmi * 10) / 10 - Math.round(fromBmi * 10) / 10;
+            return `${change > 0 ? '+' : ''}${change.toFixed(1)} (${fromBmi.toFixed(1)} to ${toBmi.toFixed(1)})`;
         }
 
         // Weight regained since nadir, as a percentage of the maximum weight lost
@@ -655,9 +691,10 @@ img {
                 resultHeader(currentBmi, currentWeight, feet, inches) + `
                 Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lbs<br>
                 <br>
-                Preop BMI was ${preopBmi.toFixed(1)} <br>
-                Preop weight was ${formatNumber(preopWeight)} lbs<br>
-                Preop EBW was ${preopEbw.toFixed(0)} lbs<br>
+                Preop BMI was ${bmiWithClass(preopBmi)}<br>
+                BMI change is ${bmiChange(preopBmi, currentBmi)}<br>
+                Preop weight was ${formatNumber(preopWeight)} lbs (${kg(preopWeight)})<br>
+                Preop EBW was ${ebwText(preopEbw)}<br>
                 ${hasNadir ? `<br>
                 Nadir weight was ${formatNumber(nadirWeight)} lbs<br>
                 Max weight loss was ${formatNumber(maxWeightLoss)} lbs<br>
