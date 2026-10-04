@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elan Witkowski</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap">
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
     <!-- Header -->
@@ -31,7 +35,7 @@
         <div class="container">
             <h2>Welcome</h2>
 		<p>For more information about me and my work, please use the links at the top of this page.</p>
-<!--            <p>If you are interested in a surgical consulation, please contact my office directly. <br>This website is not meant to provide any clinical information.</p>
+<!--            <p>If you are interested in a surgical consultation, please contact my office directly. <br>This website is not meant to provide any clinical information.</p>
 			<a href="https://www.massgeneral.org/doctors/19924/elan-witkowski" class="cta-button">SURGICAL PRACTICE</a><br><br><br>
             <p>Use these tools to calculate BMIs quickly and easily.</p>
             <a href="calc.html" class="cta-button">GO TO CALCULATORS</a><br><br><br>	
@@ -46,17 +50,14 @@
     <section class="content">
         <div class="container">
 		
-		<p>If you are interested in a surgical consulation, please contact my office directly. <br>
+		<p>If you are interested in a surgical consultation, please contact my office directly. <br>
+		For consulting and other professional inquiries, please use the contact page.<br>
 		This website is not meant to provide any clinical information.<br><br></p><br><p>
 		<a href="contact.html" class="cta-button">CONTACT ME</a><br>
 		</p>
 			<br>		
 		<p>Use these tools to calculate BMIs quickly and easily.<br><br></p><br><p>
 		<a href="calc.html" class="cta-button">GO TO CALCULATORS</a><br>
-		</p>
-			<br>	
-		<p>Consulting and professional contact.<br><br></p><br><p>
-		<a href="contact.html" class="cta-button">CONTACT ME</a><br>
 		</p>
 			<br>
 
@@ -66,7 +67,7 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2024 Elan Witkowski. All rights reserved.</p>
+            <p>&copy; <span id="year">2026</span> Elan Witkowski. All rights reserved.</p>
             <div class="footer">
                 <a href="contact.html">Contact</a>
 				   <!-- unused 
@@ -76,5 +77,6 @@
             </div>
         </div>
     </footer>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
