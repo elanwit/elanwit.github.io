@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact- Elan Witkowski</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap">
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
     <!-- Header -->
@@ -19,7 +23,7 @@
 			<li><a href="https://connects.catalyst.harvard.edu/Profiles/profile/59691977">Research</a></li>
 			<li><a href="https://www.ncbi.nlm.nih.gov/myncbi/elan.witkowski.1/bibliography/public/">Bibliography</a></li>
 			<li><a href="https://www.linkedin.com/in/elan-witkowski-a686666b">LinkedIn</a></li>
-			<li><a href="calc.html">Tools / Calculators</a></li>
+			<li><a href="calc.html">Tools & Calculators</a></li>
 			<li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
@@ -31,7 +35,7 @@
         <div class="container">
             <h2>Contact</h2>
             <p>Clinical practice</p>
-			<a href="https://https://www.massgeneral.org/doctors/19924/elan-witkowski" class="cta-button">SURGICAL PRACTICE</a><br><br><br>	
+			<a href="https://www.massgeneral.org/doctors/19924/elan-witkowski" class="cta-button">SURGICAL PRACTICE</a><br><br><br>	
 			<p>Consulting and professional contact.</p>
             <a href="contact.html" class="cta-button">CONTACT ME</a><br><br><br>			
 
@@ -47,11 +51,11 @@
 				To schedule a consultation, please contact my office directly. </b><br>
 			<br>
 			Hernia surgery / abdominal wall reconstruction: <br>
-			Phone: +1(617)643-8606<br><br>
+			Phone: <a href="tel:+1-617-643-8606">+1(617)643-8606</a><br><br>
 			Foregut surgery (GERD, heartburn, hiatal hernia, swallowing problems):<br>
-			Phone: +1(617)643-8606<br><br>
+			Phone: <a href="tel:+1-617-643-8606">+1(617)643-8606</a><br><br>
 			Bariatric and metabolic / weight loss surgery:<br>
-			Phone: +1(617)726-4402<br><br><p>
+			Phone: <a href="tel:+1-617-726-4402">+1(617)726-4402</a><br><br><p>
 			<a href="https://www.massgeneral.org/doctors/19924/elan-witkowski" target="_blank" class="cta-button">Clinical Practice</a>
 			</p><br>
 			
@@ -71,7 +75,7 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2024 Elan Witkowski. All rights reserved.</p>
+            <p>&copy; <span id="year">2026</span> Elan Witkowski. All rights reserved.</p>
             <div class="footer">
                 <a href="contact.html">Contact</a>
 				   <!-- unused 
@@ -81,5 +85,6 @@
             </div>
         </div>
     </footer>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
