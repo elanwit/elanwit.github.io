@@ -257,7 +257,7 @@ img {
             <label for="weight">Weight (lbs):</label>
             <input type="text" id="weight" required placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="feet">Height:</label>
-            <input type="text" id="feet" required placeholder="Feet" inputmode="numeric" pattern="[0-9]" maxlength="1" data-format="feet" autocomplete="off">
+            <input type="text" id="feet" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
             <input type="text" id="inches" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
             <button type="button" id="simpleButton" onclick="calculateBMI()">Calculate BMI</button>
         </form>
@@ -272,7 +272,7 @@ img {
             <label for="weightp">Weight (lbs):</label>
             <input type="text" id="weightp" required placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="feetp">Height:</label>
-            <input type="text" id="feetp" required placeholder="Feet" inputmode="numeric" pattern="[0-9]" maxlength="1" data-format="feet" autocomplete="off">
+            <input type="text" id="feetp" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
             <input type="text" id="inchesp" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
             <button type="button" id="preopButton" onclick="calculatePreop()">Calculate Preop</button>
         </form>
@@ -287,7 +287,7 @@ img {
             <label for="currentWeight">Current Weight (lbs):</label>
             <input type="text" id="currentWeight" required placeholder="Pounds - Current" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="postopFeet">Height:</label>
-            <input type="text" id="postopFeet" required placeholder="Feet" inputmode="numeric" pattern="[0-9]" maxlength="1" data-format="feet" autocomplete="off">
+            <input type="text" id="postopFeet" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
             <input type="text" id="postopInches" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
 	    <label for="preopWeight">Preop Weight (lbs):</label>
             <input type="text" id="preopWeight" required placeholder="Pounds - Preop" inputmode="decimal" data-format="decimal" autocomplete="off">
@@ -445,8 +445,53 @@ img {
             if (value !== input.value) input.value = value;
         }
 
+        // Auto-advance: Weight jumps to the next box after 3 digits (or after its
+        // decimal digit); feet jumps after 1 digit. Typing "." right after a weight jump
+        // goes back to the weight box so decimals still work.
+        function nextInput(input) {
+            const inputs = [...input.form.querySelectorAll('input')];
+            return inputs[inputs.indexOf(input) + 1] || null;
+        }
+
+        function previousInput(input) {
+            const inputs = [...input.form.querySelectorAll('input')];
+            return inputs[inputs.indexOf(input) - 1] || null;
+        }
+
+        function jumpTo(input) {
+            if (!input) return;
+            input.focus();
+            input.select();
+        }
+
+        function isWeight(input) {
+            return input.dataset.format === 'decimal' && !input.dataset.decimals;
+        }
+
         document.querySelectorAll('input[data-format]').forEach(input => {
-            input.addEventListener('input', () => limitInput(input));
+            input.addEventListener('input', event => {
+                const typed = event.inputType && event.inputType.startsWith('insert');
+                const previous = previousInput(input);
+
+                // "." in the feet box right after a weight jump: send it back to the weight
+                if (typed && input.dataset.format === 'feet' && input.value.includes('.') &&
+                    previous && isWeight(previous) && /^\d+$/.test(previous.value)) {
+                    input.value = input.value.replace(/\./g, '');
+                    previous.value += '.';
+                    previous.focus();
+                    previous.setSelectionRange(previous.value.length, previous.value.length);
+                    return;
+                }
+
+                limitInput(input);
+                if (!typed || input.selectionStart !== input.value.length) return;
+
+                if (isWeight(input) && (/^\d{3}$/.test(input.value) || /^\d+\.\d$/.test(input.value))) {
+                    jumpTo(nextInput(input));
+                } else if (input.dataset.format === 'feet' && /^\d$/.test(input.value)) {
+                    jumpTo(nextInput(input));
+                }
+            });
         });
 
         function showCalculator(calculatorId) {
