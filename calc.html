@@ -667,7 +667,7 @@ img {
         function oneYearSummary(weight) {
             const oneYear = EXPECTED_TWL.map(({ procedure, rows }) => ({ procedure, row: rows.find(row => row.label === '1 year') }));
             const lines = oneYear.map(({ procedure, row }) =>
-                `${procedure}:&nbsp; WL ${lbsAt(weight, row.median)}lb, Weight ${(weight - weight * row.median / 100).toFixed(0)}lb<br>`).join('');
+                `<b>${procedure}:&nbsp; WL ${lbsAt(weight, row.median)}lb, Weight ${(weight - weight * row.median / 100).toFixed(0)}lb</b><br>`).join('');
             const iqrs = oneYear.map(({ procedure, row }) =>
                 `${procedure.charAt(0) + procedure.slice(1).toLowerCase()} (${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])}lb)`).join(', ');
             return `<br>
@@ -694,6 +694,8 @@ img {
                 <br>
                 Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
                 ${oneYearSummary(weight)}
+                <br>
+                ----------<br>
                 <br>
                 ${expectedOutcomes(weight)}` + resultFooter();
         }
