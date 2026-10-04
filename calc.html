@@ -643,12 +643,15 @@ img {
             return (weight * percent / 100).toFixed(0);
         }
 
-        // e.g. "* At 1 year: a typical patient has lost about 84 lb (IQR 70-98 lb)."
+        // e.g. "* At 1 year: most patients have lost about 70-98 pounds, with the average (median) being about 84lb."
         function expectedOutcomes(weight) {
             return EXPECTED_TWL.map(({ procedure, rows }) => `After ${procedure}:<br>` + rows.map(row => {
-                const typical = `about ${lbsAt(weight, row.median)} lb`;
-                const iqr = row.iqr ? ` (IQR ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb)` : '';
-                return `* At ${row.label}: a typical patient has lost ${row.bold ? `<b>${typical}</b>` : typical}${iqr}.<br>`;
+                const median = `about ${lbsAt(weight, row.median)}lb`;
+                const shownMedian = row.bold ? `<b>${median}</b>` : median;
+                const text = row.iqr
+                    ? `most patients have lost about ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} pounds, with the average (median) being ${shownMedian}`
+                    : `the average (median) patient has lost ${shownMedian}`;
+                return `* At ${row.label}: ${text}.<br>`;
             }).join('')).join('<br>');
         }
 
