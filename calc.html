@@ -663,18 +663,19 @@ img {
 
         // Short 1-year summary from the same %TWL table, e.g.
         //   SLEEVE:  WL 70lb, Weight 210lb
-        //   Weight loss IQR: Sleeve (56-84lb), Bypass (73-101lb)
+        //   WL IQR: Sleeve (56-84lb), Bypass (73-101lb)
         function oneYearSummary(weight) {
             const oneYear = EXPECTED_TWL.map(({ procedure, rows }) => ({ procedure, row: rows.find(row => row.label === '1 year') }));
             const lines = oneYear.map(({ procedure, row }) =>
                 `<b>${procedure}:&nbsp; WL ${lbsAt(weight, row.median)}lb, Weight ${(weight - weight * row.median / 100).toFixed(0)}lb</b><br>`).join('');
             const iqrs = oneYear.map(({ procedure, row }) =>
-                `${procedure.charAt(0) + procedure.slice(1).toLowerCase()} (${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])}lb)`).join(', ');
+                // nowrap keeps "Bypass (73-101lb)" together on a phone instead of breaking at the "-"
+                `<span style="white-space: nowrap">${procedure.charAt(0) + procedure.slice(1).toLowerCase()} (${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])}lb)</span>`).join(', ');
             return `<br>
                 Estimated (median) at 1yr w/o meds:<br>
                 ${lines}
                 <br>
-                Weight loss IQR: ${iqrs}<br>`;
+                WL IQR: ${iqrs}<br>`;
         }
 
         function calculatePreop() {
