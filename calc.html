@@ -629,11 +629,11 @@ img {
         // Expected %TWL after surgery: PCORnet medians with SOPHIA IQRs, as [low, high] %TWL.
         // An iqr of null leaves the "(IQR ...)" out.
         const EXPECTED_TWL = [
-            { procedure: 'SLEEVE', rows: [
+            { procedure: 'SLEEVE', abbreviation: 'LSG', rows: [
                 { label: '1 year', median: 25, iqr: [20, 30], bold: true },
                 { label: '5 years', median: 19, iqr: [11, 27] },
             ] },
-            { procedure: 'BYPASS', rows: [
+            { procedure: 'BYPASS', abbreviation: 'RYGB', rows: [
                 { label: '1 year', median: 31, iqr: [26, 36], bold: true },
                 { label: '5 years', median: 26, iqr: [19, 32] },
             ] },
@@ -663,18 +663,19 @@ img {
 
         // Short 1-year summary from the same %TWL table, e.g.
         //   SLEEVE:  WL 70lb, Weight 210lb
-        //   Weight loss IQR: Sleeve (56-84lb), Bypass (73-101lb)
+        //   IQR: LSG 56-84lb, RYGB 73-101lb
         function oneYearSummary(weight) {
-            const oneYear = EXPECTED_TWL.map(({ procedure, rows }) => ({ procedure, row: rows.find(row => row.label === '1 year') }));
+            const oneYear = EXPECTED_TWL.map(({ procedure, abbreviation, rows }) => ({ procedure, abbreviation, row: rows.find(row => row.label === '1 year') }));
             const lines = oneYear.map(({ procedure, row }) =>
                 `<b>${procedure}:&nbsp; WL ${lbsAt(weight, row.median)}lb, Weight ${(weight - weight * row.median / 100).toFixed(0)}lb</b><br>`).join('');
-            const iqrs = oneYear.map(({ procedure, row }) =>
-                `${procedure.charAt(0) + procedure.slice(1).toLowerCase()} (${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])}lb)`).join(', ');
+            const iqrs = oneYear.map(({ abbreviation, row }) =>
+                // nowrap keeps "RYGB 73-101lb" together if the line ever wraps, instead of breaking at the "-"
+                `<span style="white-space: nowrap">${abbreviation} ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])}lb</span>`).join(', ');
             return `<br>
                 Estimated (median) at 1yr w/o meds:<br>
                 ${lines}
                 <br>
-                Weight loss IQR: ${iqrs}<br>`;
+                IQR: ${iqrs}<br>`;
         }
 
         function calculatePreop() {
