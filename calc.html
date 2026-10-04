@@ -662,7 +662,7 @@ img {
                 Nadir weight was ${formatNumber(nadirWeight)} lbs<br>
                 Max weight loss was ${formatNumber(maxWeightLoss)} lbs<br>
                 Max weight loss at nadir (%TWL) was ${maxWeightLoss > 0 ? (maxWeightLoss / preopWeight * 100).toFixed(0) + '%' : 'n/a (nadir is not below preop weight)'}<br>
-                Percent regain from nadir is ${percentRegain(currentWeight, nadirWeight, maxWeightLoss)}<br>` : ''}
+                Current regain from nadir is ${percentRegain(currentWeight, nadirWeight, maxWeightLoss)}<br>` : ''}
                 <br>
                 Current %TWL is ${percentTotalBodyWeightLoss.toFixed(0)}%<br>
                 Current %EWL is ${preopEbw > 0 ? percentExcessBodyWeightLoss.toFixed(0) + '%' : 'n/a (preop BMI was not above 25)'}<br>` + resultFooter();
