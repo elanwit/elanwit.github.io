@@ -626,6 +626,32 @@ img {
                 ${targetWeights(heightM)}` + resultFooter();
         }
 
+        // Expected %TWL after surgery (SOPHIA): median, and IQR as [low, high] %TWL.
+        // Leave iqr as null until the values are filled in; the "(IQR ...)" is then left out.
+        const EXPECTED_TWL = [
+            { procedure: 'SLEEVE', rows: [
+                { label: '1 year', median: 30, iqr: null, bold: true },
+                { label: '5 years', median: 23.6, iqr: null },
+            ] },
+            { procedure: 'BYPASS', rows: [
+                { label: '1 year', median: 33, iqr: null, bold: true },
+                { label: '5 years', median: 28.2, iqr: null },
+            ] },
+        ];
+
+        function lbsAt(weight, percent) {
+            return (weight * percent / 100).toFixed(0);
+        }
+
+        // e.g. "* At 1 year: a typical patient has lost about 84 lb (IQR 70-98 lb)."
+        function expectedOutcomes(weight) {
+            return EXPECTED_TWL.map(({ procedure, rows }) => `After ${procedure}:<br>` + rows.map(row => {
+                const typical = `about ${lbsAt(weight, row.median)} lb`;
+                const iqr = row.iqr ? ` (IQR ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb)` : '';
+                return `* At ${row.label}: a typical patient has lost ${row.bold ? `<b>${typical}</b>` : typical}${iqr}.<br>`;
+            }).join('')).join('<br>');
+        }
+
         function calculatePreop() {
             const weight = readNumber('weightp');
             const feet = readNumber('feetp');
@@ -648,7 +674,8 @@ img {
                 Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
                 ${ebw > 0 ? `Sleeve (55%): Est WL ${ewlSleeve.toFixed(0)} lbs, goal ${(weight - ewlSleeve).toFixed(0)} lbs<br>
                 Bypass (72%): Est WL ${ewlBypass.toFixed(0)} lbs, goal ${(weight - ewlBypass).toFixed(0)} lbs<br>` : `Sleeve / Bypass estimates: n/a (BMI 25 or below)<br>`}
-                <br>` + resultFooter();
+                <br>
+                ${expectedOutcomes(weight)}` + resultFooter();
         }
 
         // Change between the BMIs as displayed, e.g. "-9.7 (45.2 to 35.5)"
