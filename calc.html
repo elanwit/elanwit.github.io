@@ -255,10 +255,10 @@ img {
         <h1>BMI - SIMPLE</h1>
         <form id="bmiForm">
             <label for="weight">Weight (lbs):</label>
-            <input type="text" id="weight" required placeholder="Pounds" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="weight" required placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="feet">Height:</label>
-            <input type="text" id="feet" required placeholder="Feet" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-            <input type="text" id="inches" required placeholder="Inches" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="feet" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
+            <input type="text" id="inches" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
             <button type="button" id="simpleButton" onclick="calculateBMI()">Calculate BMI</button>
         </form>
         <div class="result" id="result"></div>
@@ -270,10 +270,10 @@ img {
         <h1>BMI - PREOP</h1>
         <form id="preopForm">
             <label for="weightp">Weight (lbs):</label>
-            <input type="text" id="weightp" required placeholder="Pounds" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="weightp" required placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="feetp">Height:</label>
-            <input type="text" id="feetp" required placeholder="Feet" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-            <input type="text" id="inchesp" required placeholder="Inches" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="feetp" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
+            <input type="text" id="inchesp" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
             <button type="button" id="preopButton" onclick="calculatePreop()">Calculate Preop</button>
         </form>
         <div class="result" id="preopResult"></div>
@@ -285,14 +285,14 @@ img {
         <h1>BMI - POSTOP</h1>
         <form id="postopForm">
             <label for="currentWeight">Current Weight (lbs):</label>
-            <input type="text" id="currentWeight" required placeholder="Pounds - Current" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="currentWeight" required placeholder="Pounds - Current" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="postopFeet">Height:</label>
-            <input type="text" id="postopFeet" required placeholder="Feet" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-            <input type="text" id="postopInches" required placeholder="Inches" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="postopFeet" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
+            <input type="text" id="postopInches" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
 	    <label for="preopWeight">Preop Weight (lbs):</label>
-            <input type="text" id="preopWeight" required placeholder="Pounds - Preop" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="preopWeight" required placeholder="Pounds - Preop" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="lowestPostopWeight">Lowest Postop Weight (lbs) - optional:</label>
-            <input type="text" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" inputmode="decimal" data-format="decimal" autocomplete="off">
             <button type="button" id="postopButton" onclick="calculatePostop()">Calculate Postop</button>
         </form>
         <div class="result" id="postopResult"></div>
@@ -429,11 +429,68 @@ img {
             });
         });
 
-        // Block signs and exponents. Decimal points are not blocked here because dropping
-        // the "." would silently turn 99.5 into 995; inputsAreValid rejects them instead.
-        document.querySelectorAll('input[type="text"]').forEach(input => {
-            input.addEventListener('keydown', function(event) {
-                if (['e', 'E', '+', '-'].includes(event.key)) event.preventDefault();
+        // Limit what can be typed or pasted: feet is a single digit; weights allow one
+        // decimal place (215.5) and inches two (6.25), set by data-decimals
+        function limitInput(input) {
+            let value = input.value;
+            if (input.dataset.format === 'feet') {
+                value = value.replace(/[^0-9]/g, '').slice(0, 1);
+            } else {
+                value = value.replace(/[^0-9.]/g, '');
+                const dot = value.indexOf('.');
+                if (dot !== -1) {
+                    value = value.slice(0, dot + 1) + value.slice(dot + 1).replace(/\./g, '').slice(0, Number(input.dataset.decimals || 1));
+                }
+            }
+            if (value !== input.value) input.value = value;
+        }
+
+        // Auto-advance: Weight jumps to the next box after 3 digits (or after its
+        // decimal digit); feet jumps after 1 digit. Typing "." right after a weight jump
+        // goes back to the weight box so decimals still work.
+        function nextInput(input) {
+            const inputs = [...input.form.querySelectorAll('input')];
+            return inputs[inputs.indexOf(input) + 1] || null;
+        }
+
+        function previousInput(input) {
+            const inputs = [...input.form.querySelectorAll('input')];
+            return inputs[inputs.indexOf(input) - 1] || null;
+        }
+
+        function jumpTo(input) {
+            if (!input) return;
+            input.focus();
+            input.select();
+        }
+
+        function isWeight(input) {
+            return input.dataset.format === 'decimal' && !input.dataset.decimals;
+        }
+
+        document.querySelectorAll('input[data-format]').forEach(input => {
+            input.addEventListener('input', event => {
+                const typed = event.inputType && event.inputType.startsWith('insert');
+                const previous = previousInput(input);
+
+                // "." in the feet box right after a weight jump: send it back to the weight
+                if (typed && input.dataset.format === 'feet' && input.value.includes('.') &&
+                    previous && isWeight(previous) && /^\d+$/.test(previous.value)) {
+                    input.value = input.value.replace(/\./g, '');
+                    previous.value += '.';
+                    previous.focus();
+                    previous.setSelectionRange(previous.value.length, previous.value.length);
+                    return;
+                }
+
+                limitInput(input);
+                if (!typed || input.selectionStart !== input.value.length) return;
+
+                if (isWeight(input) && (/^\d{3}$/.test(input.value) || /^\d+\.\d$/.test(input.value))) {
+                    jumpTo(nextInput(input));
+                } else if (input.dataset.format === 'feet' && /^\d$/.test(input.value)) {
+                    jumpTo(nextInput(input));
+                }
             });
         });
 
@@ -458,15 +515,11 @@ img {
             return value === '' ? NaN : Number(value);
         }
 
-        // Checks weights (lbs) and height (ft + in) are whole numbers in a plausible adult range
+        // Checks weights (lbs) and height (ft + in) are in a plausible adult range
         function inputsAreValid(weights, feet, inches) {
             const all = [...weights, feet, inches];
             if (all.some(isNaN)) {
                 alert('Please enter numbers for all fields.');
-                return false;
-            }
-            if (!all.every(Number.isInteger)) {
-                alert('Please enter whole numbers only.');
                 return false;
             }
             if (weights.some(w => w < 50 || w > 1000)) {
@@ -493,6 +546,12 @@ img {
             return bmi * (heightM * heightM) * LBS_PER_KG;
         }
 
+        // 200 -> "200", 200.5 -> "200.5"; places sets the maximum decimals shown
+        function formatNumber(n, places = 1) {
+            const factor = 10 ** places;
+            return String(Math.round(n * factor) / factor);
+        }
+
         function todayString() {
             const d = new Date();
             return `${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}/${d.getFullYear()}`;
@@ -505,8 +564,8 @@ img {
                 Calculated on ${todayString()}: <br>
                 <br>
                 Current BMI is <b>${bmi.toFixed(1)}</b><br>
-                Current weight is ${weight} lbs<br>
-                Current height is ${feet}' ${inches}"<br>`;
+                Current weight is ${formatNumber(weight)} lbs<br>
+                Current height is ${feet}' ${formatNumber(inches, 2)}"<br>`;
         }
 
         function resultFooter() {
@@ -562,6 +621,14 @@ img {
                 <br>` + resultFooter();
         }
 
+        // Weight regained since nadir, as a percentage of the maximum weight lost
+        // e.g. preop 300, nadir 200, current 230 -> 30 of 100 lbs regained -> 30%
+        function percentRegain(currentWeight, nadirWeight, maxWeightLoss) {
+            if (maxWeightLoss <= 0) return 'n/a (nadir is not below preop weight)';
+            if (currentWeight < nadirWeight) return 'n/a (current weight is below nadir)';
+            return ((currentWeight - nadirWeight) / maxWeightLoss * 100).toFixed(0) + '%';
+        }
+
         function calculatePostop() {
             const currentWeight = readNumber('currentWeight');
             const preopWeight = readNumber('preopWeight');
@@ -580,22 +647,25 @@ img {
             const preopEbw = preopWeight - weightForBmi(25, heightM);
 
             const currentWeightLoss = preopWeight - currentWeight;
+            const maxWeightLoss = hasNadir ? preopWeight - nadirWeight : NaN;
             const percentTotalBodyWeightLoss = (currentWeightLoss / preopWeight) * 100;
             const percentExcessBodyWeightLoss = (currentWeightLoss / preopEbw) * 100;
 
             document.getElementById('postopResult').innerHTML =
                 resultHeader(currentBmi, currentWeight, feet, inches) + `
-                Current weight loss is ${currentWeightLoss} lbs<br>
+                Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lbs<br>
                 <br>
                 Preop BMI was ${preopBmi.toFixed(1)} <br>
-                Preop weight was ${preopWeight} lbs<br>
+                Preop weight was ${formatNumber(preopWeight)} lbs<br>
                 Preop EBW was ${preopEbw.toFixed(0)} lbs<br>
                 ${hasNadir ? `<br>
-                Nadir weight was ${nadirWeight} lbs<br>
-                Max weight loss was ${preopWeight - nadirWeight} lbs<br>` : ''}
+                Nadir weight was ${formatNumber(nadirWeight)} lbs<br>
+                Max weight loss was ${formatNumber(maxWeightLoss)} lbs<br>
+                Max weight loss at nadir (%TWL) was ${maxWeightLoss > 0 ? (maxWeightLoss / preopWeight * 100).toFixed(0) + '%' : 'n/a (nadir is not below preop weight)'}<br>
+                Current regain from nadir is ${percentRegain(currentWeight, nadirWeight, maxWeightLoss)}<br>` : ''}
                 <br>
-                Current %TBWL is ${percentTotalBodyWeightLoss.toFixed(0)}%<br>
-                Current %EBWL is ${preopEbw > 0 ? percentExcessBodyWeightLoss.toFixed(0) + '%' : 'n/a (preop BMI was not above 25)'}<br>` + resultFooter();
+                Current %TWL is ${percentTotalBodyWeightLoss.toFixed(0)}%<br>
+                Current %EWL is ${preopEbw > 0 ? percentExcessBodyWeightLoss.toFixed(0) + '%' : 'n/a (preop BMI was not above 25)'}<br>` + resultFooter();
         }
 
         function copyToClipboard(resultId) {
