@@ -621,6 +621,14 @@ img {
                 <br>` + resultFooter();
         }
 
+        // Weight regained since nadir, as a percentage of the maximum weight lost
+        // e.g. preop 300, nadir 200, current 230 -> 30 of 100 lbs regained -> 30%
+        function percentRegain(currentWeight, nadirWeight, maxWeightLoss) {
+            if (maxWeightLoss <= 0) return 'n/a (nadir is not below preop weight)';
+            if (currentWeight < nadirWeight) return 'n/a (current weight is below nadir)';
+            return ((currentWeight - nadirWeight) / maxWeightLoss * 100).toFixed(0) + '%';
+        }
+
         function calculatePostop() {
             const currentWeight = readNumber('currentWeight');
             const preopWeight = readNumber('preopWeight');
@@ -639,22 +647,25 @@ img {
             const preopEbw = preopWeight - weightForBmi(25, heightM);
 
             const currentWeightLoss = preopWeight - currentWeight;
+            const maxWeightLoss = hasNadir ? preopWeight - nadirWeight : NaN;
             const percentTotalBodyWeightLoss = (currentWeightLoss / preopWeight) * 100;
             const percentExcessBodyWeightLoss = (currentWeightLoss / preopEbw) * 100;
 
             document.getElementById('postopResult').innerHTML =
                 resultHeader(currentBmi, currentWeight, feet, inches) + `
-                Current weight loss is ${formatNumber(currentWeightLoss)} lbs<br>
+                Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lbs<br>
                 <br>
                 Preop BMI was ${preopBmi.toFixed(1)} <br>
                 Preop weight was ${formatNumber(preopWeight)} lbs<br>
                 Preop EBW was ${preopEbw.toFixed(0)} lbs<br>
                 ${hasNadir ? `<br>
                 Nadir weight was ${formatNumber(nadirWeight)} lbs<br>
-                Max weight loss was ${formatNumber(preopWeight - nadirWeight)} lbs<br>` : ''}
+                Max weight loss was ${formatNumber(maxWeightLoss)} lbs<br>
+                Max weight loss at nadir (%TWL) was ${maxWeightLoss > 0 ? (maxWeightLoss / preopWeight * 100).toFixed(0) + '%' : 'n/a (nadir is not below preop weight)'}<br>
+                Percent regain from nadir is ${percentRegain(currentWeight, nadirWeight, maxWeightLoss)}<br>` : ''}
                 <br>
-                Current %TBWL is ${percentTotalBodyWeightLoss.toFixed(0)}%<br>
-                Current %EBWL is ${preopEbw > 0 ? percentExcessBodyWeightLoss.toFixed(0) + '%' : 'n/a (preop BMI was not above 25)'}<br>` + resultFooter();
+                Current %TWL is ${percentTotalBodyWeightLoss.toFixed(0)}%<br>
+                Current %EWL is ${preopEbw > 0 ? percentExcessBodyWeightLoss.toFixed(0) + '%' : 'n/a (preop BMI was not above 25)'}<br>` + resultFooter();
         }
 
         function copyToClipboard(resultId) {
