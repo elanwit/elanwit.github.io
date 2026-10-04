@@ -16,10 +16,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 30px;
-	padding-bottom: 60px;
+    padding: 30px 16px 60px;
     box-sizing: border-box;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
 }
 
@@ -27,6 +26,7 @@
     background: #0056b3;
     color: #fff;
     width: 100%;
+    box-sizing: border-box;
     text-align: center;
     padding: 20px;
     font-size: 24px;
@@ -40,16 +40,13 @@
     margin-top: 30px;
     display: flex;
     flex-direction: column;
-    width: 60%;
+    width: 100%;
+    max-width: 500px;
 }
 
 .nav-buttons button {
     font-size: 20px;
     background-color: #2A3235;
-}
-
-.nav-buttons button:hover {
-    background-color: #000000;
 }
 
 .container {
@@ -60,6 +57,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 500px;
+    box-sizing: border-box;
     margin-top: 20px;
     display: none;
 }
@@ -74,7 +72,7 @@ h1 {
     margin-bottom: 20px;
 }
 
-input[type="number"] {
+input[type="text"] {
     width: 88%;
     padding: 20px;
     font-size: 18px;
@@ -82,13 +80,6 @@ input[type="number"] {
     border: 1px solid #ddd;
     border-radius: 4px;
     -webkit-appearance: none;
-    -moz-appearance: textfield;
-}
-
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
 }
 
 label {
@@ -109,24 +100,21 @@ button {
     width: 100%;
 }
 
-button:hover {
-    background-color: #218838;
-}
-
 .copy-button {
     background-color: #007BFF;
-}
-
-.copy-button:hover {
-    background-color: #0056b3;
 }
 
 .reset-button {
     background-color: #2A3235;
 }
 
-.reset-button:hover {
-    background-color: #000000;
+.home-button {
+    width: auto;
+    font-size: 14px;
+    padding: 8px 16px;
+    margin-top: 40px;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
 .result {
@@ -140,6 +128,29 @@ img {
     height: auto;
     display: block;
     margin: 10px auto;
+}
+
+/* Hover colors only for mouse users; on phones a tapped button would stay highlighted */
+@media (hover: hover) {
+    .nav-buttons button:hover {
+        background-color: #000000;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+
+    .copy-button:hover {
+        background-color: #0056b3;
+    }
+
+    .reset-button:hover {
+        background-color: #000000;
+    }
+
+    .home-button:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
 }
 
     </style>
@@ -160,10 +171,10 @@ img {
         <h1>BMI - SIMPLE</h1>
         <form id="bmiForm">
             <label for="weight">Weight (lbs):</label>
-            <input type="number" id="weight" required placeholder="Pounds" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
+            <input type="text" id="weight" required placeholder="Pounds" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
             <label for="feet">Height:</label>
-            <input type="number" id="feet" required placeholder="Feet" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
-            <input type="number" id="inches" required placeholder="Inches" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
+            <input type="text" id="feet" required placeholder="Feet" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="inches" required placeholder="Inches" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
             <button type="button" id="simpleButton" onclick="calculateBMI()">Calculate BMI</button>
         </form>
         <div class="result" id="result"></div>
@@ -175,10 +186,10 @@ img {
         <h1>BMI - PREOP</h1>
         <form id="preopForm">
             <label for="weightp">Weight (lbs):</label>
-            <input type="number" id="weightp" required placeholder="Pounds" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
+            <input type="text" id="weightp" required placeholder="Pounds" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
             <label for="feetp">Height:</label>
-            <input type="number" id="feetp" required placeholder="Feet" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
-            <input type="number" id="inchesp" required placeholder="Inches" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
+            <input type="text" id="feetp" required placeholder="Feet" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="inchesp" required placeholder="Inches" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
             <button type="button" id="preopButton" onclick="calculatePreop()">Calculate Preop</button>
         </form>
         <div class="result" id="preopResult"></div>
@@ -190,14 +201,14 @@ img {
         <h1>BMI - POSTOP</h1>
         <form id="postopForm">
             <label for="currentWeight">Current Weight (lbs):</label>
-            <input type="number" id="currentWeight" required placeholder="Pounds - Current" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
+            <input type="text" id="currentWeight" required placeholder="Pounds - Current" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
             <label for="postopFeet">Height:</label>
-            <input type="number" id="postopFeet" required placeholder="Feet" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
-            <input type="number" id="postopInches" required placeholder="Inches" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
+            <input type="text" id="postopFeet" required placeholder="Feet" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="text" id="postopInches" required placeholder="Inches" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
 	    <label for="preopWeight">Preop Weight (lbs):</label>
-            <input type="number" id="preopWeight" required placeholder="Pounds - Preop" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
+            <input type="text" id="preopWeight" required placeholder="Pounds - Preop" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
             <label for="lowestPostopWeight">Lowest Postop Weight (lbs) - optional:</label>
-            <input type="number" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" step="1" min="0" inputmode="numeric" pattern="[0-9]*">
+            <input type="text" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
             <button type="button" id="postopButton" onclick="calculatePostop()">Calculate Postop</button>
         </form>
         <div class="result" id="postopResult"></div>
@@ -318,6 +329,7 @@ img {
 
     </div>
 
+    <button id="homeScreenButton" class="home-button" onclick="addToHomeScreen()">Add to Home Screen</button>
 
     <script>
         const LBS_PER_KG = 1 / 0.453592;
@@ -335,7 +347,7 @@ img {
 
         // Block signs and exponents. Decimal points are not blocked here because dropping
         // the "." would silently turn 99.5 into 995; inputsAreValid rejects them instead.
-        document.querySelectorAll('input[type="number"]').forEach(input => {
+        document.querySelectorAll('input[type="text"]').forEach(input => {
             input.addEventListener('keydown', function(event) {
                 if (['e', 'E', '+', '-'].includes(event.key)) event.preventDefault();
             });
@@ -535,6 +547,34 @@ img {
             }
             document.body.removeChild(textArea);
             alert(copied ? 'Results copied to clipboard!' : 'Copy failed. Please select the results and copy them manually.');
+        }
+
+        // Add to Home Screen: Android/desktop Chrome and Edge offer an install prompt we can trigger;
+        // iPhone Safari has no such prompt, so explain the Share-menu steps instead
+        let installPrompt = null;
+        window.addEventListener('beforeinstallprompt', event => {
+            event.preventDefault();
+            installPrompt = event;
+        });
+
+        function addToHomeScreen() {
+            if (installPrompt) {
+                installPrompt.prompt();
+                installPrompt = null;
+                return;
+            }
+            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            if (isIOS) {
+                alert('To add this to your Home Screen:\n\n1. Tap the Share button (square with an arrow)\n2. Tap "Add to Home Screen"\n3. Tap "Add"');
+            } else {
+                alert('To install this calculator, open your browser menu and choose "Install app" or "Add to Home Screen".');
+            }
+        }
+
+        // Hide the button when already opened from the Home Screen
+        if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+            document.getElementById('homeScreenButton').style.display = 'none';
         }
 
         // Show the default calculator
