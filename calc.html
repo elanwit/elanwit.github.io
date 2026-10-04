@@ -258,7 +258,7 @@ img {
             <input type="text" id="weight" required placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="feet">Height:</label>
             <input type="text" id="feet" required placeholder="Feet" inputmode="numeric" pattern="[0-9]" maxlength="1" data-format="feet" autocomplete="off">
-            <input type="text" id="inches" required placeholder="Inches" inputmode="decimal" data-format="decimal" autocomplete="off">
+            <input type="text" id="inches" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
             <button type="button" id="simpleButton" onclick="calculateBMI()">Calculate BMI</button>
         </form>
         <div class="result" id="result"></div>
@@ -273,7 +273,7 @@ img {
             <input type="text" id="weightp" required placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="feetp">Height:</label>
             <input type="text" id="feetp" required placeholder="Feet" inputmode="numeric" pattern="[0-9]" maxlength="1" data-format="feet" autocomplete="off">
-            <input type="text" id="inchesp" required placeholder="Inches" inputmode="decimal" data-format="decimal" autocomplete="off">
+            <input type="text" id="inchesp" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
             <button type="button" id="preopButton" onclick="calculatePreop()">Calculate Preop</button>
         </form>
         <div class="result" id="preopResult"></div>
@@ -288,7 +288,7 @@ img {
             <input type="text" id="currentWeight" required placeholder="Pounds - Current" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="postopFeet">Height:</label>
             <input type="text" id="postopFeet" required placeholder="Feet" inputmode="numeric" pattern="[0-9]" maxlength="1" data-format="feet" autocomplete="off">
-            <input type="text" id="postopInches" required placeholder="Inches" inputmode="decimal" data-format="decimal" autocomplete="off">
+            <input type="text" id="postopInches" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
 	    <label for="preopWeight">Preop Weight (lbs):</label>
             <input type="text" id="preopWeight" required placeholder="Pounds - Preop" inputmode="decimal" data-format="decimal" autocomplete="off">
             <label for="lowestPostopWeight">Lowest Postop Weight (lbs) - optional:</label>
@@ -429,8 +429,8 @@ img {
             });
         });
 
-        // Limit what can be typed or pasted: feet is a single digit; weights and inches
-        // allow one decimal point with at most one digit after it (e.g. 215.5, 6.5)
+        // Limit what can be typed or pasted: feet is a single digit; weights allow one
+        // decimal place (215.5) and inches two (6.25), set by data-decimals
         function limitInput(input) {
             let value = input.value;
             if (input.dataset.format === 'feet') {
@@ -439,7 +439,7 @@ img {
                 value = value.replace(/[^0-9.]/g, '');
                 const dot = value.indexOf('.');
                 if (dot !== -1) {
-                    value = value.slice(0, dot + 1) + value.slice(dot + 1).replace(/\./g, '').slice(0, 1);
+                    value = value.slice(0, dot + 1) + value.slice(dot + 1).replace(/\./g, '').slice(0, Number(input.dataset.decimals || 1));
                 }
             }
             if (value !== input.value) input.value = value;
@@ -501,9 +501,10 @@ img {
             return bmi * (heightM * heightM) * LBS_PER_KG;
         }
 
-        // 200 -> "200", 200.5 -> "200.5"
-        function formatNumber(n) {
-            return String(Math.round(n * 10) / 10);
+        // 200 -> "200", 200.5 -> "200.5"; places sets the maximum decimals shown
+        function formatNumber(n, places = 1) {
+            const factor = 10 ** places;
+            return String(Math.round(n * factor) / factor);
         }
 
         function todayString() {
@@ -519,7 +520,7 @@ img {
                 <br>
                 Current BMI is <b>${bmi.toFixed(1)}</b><br>
                 Current weight is ${formatNumber(weight)} lbs<br>
-                Current height is ${feet}' ${formatNumber(inches)}"<br>`;
+                Current height is ${feet}' ${formatNumber(inches, 2)}"<br>`;
         }
 
         function resultFooter() {
