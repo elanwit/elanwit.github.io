@@ -626,16 +626,16 @@ img {
                 ${targetWeights(heightM)}` + resultFooter();
         }
 
-        // Expected %TWL after surgery (SOPHIA): median, and IQR as [low, high] %TWL.
+        // Expected %TWL after surgery: PCORnet medians with SOPHIA IQRs, as [low, high] %TWL.
         // An iqr of null leaves the "(IQR ...)" out.
         const EXPECTED_TWL = [
             { procedure: 'SLEEVE', rows: [
-                { label: '1 year', median: 30, iqr: [25, 35], bold: true },
-                { label: '5 years', median: 23.6, iqr: [15.2, 31.6] },
+                { label: '1 year', median: 25, iqr: [20, 30], bold: true },
+                { label: '5 years', median: 19, iqr: [11, 27] },
             ] },
             { procedure: 'BYPASS', rows: [
-                { label: '1 year', median: 33, iqr: [28, 38], bold: true },
-                { label: '5 years', median: 28.2, iqr: [21.7, 35.1] },
+                { label: '1 year', median: 31, iqr: [26, 36], bold: true },
+                { label: '5 years', median: 26, iqr: [19, 32] },
             ] },
         ];
 
@@ -643,13 +643,17 @@ img {
             return (weight * percent / 100).toFixed(0);
         }
 
-        // e.g. "* At 1 year: most patients have lost about 70-98 pounds, with the average (median) being about 84lb."
+        // e.g. "* At 1 year: most patients have lost about 56-84 pounds, with the average (median) being about 70lb,
+        //       for an expected weight of about 210lb."
         function expectedOutcomes(weight) {
             return `Based on current weight, prior to GLP-1's<br>
                 <br>
                 ` + EXPECTED_TWL.map(({ procedure, rows }) => `After ${procedure}:<br>` + rows.map(row => {
                 const median = `about ${lbsAt(weight, row.median)}lb`;
-                const shownMedian = row.bold ? `<b>${median}</b>` : median;
+                const expectedWeight = (weight - weight * row.median / 100).toFixed(0);
+                const expected = `about ${expectedWeight}lb`;
+                const shownMedian = (row.bold ? `<b>${median}</b>` : median) +
+                    `, for an expected weight of ${row.bold ? `<b>${expected}</b>` : expected}`;
                 const text = row.iqr
                     ? `most patients have lost about ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} pounds, with the average (median) being ${shownMedian}`
                     : `the average (median) patient has lost ${shownMedian}`;
