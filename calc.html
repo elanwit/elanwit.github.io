@@ -98,8 +98,8 @@ button, input { font: inherit; color: inherit; }
     max-width: 1180px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr auto auto;
-    grid-template-areas: "title tabs clear";
+    grid-template-columns: 1fr auto auto auto;
+    grid-template-areas: "title tabs res clear";
     align-items: center;
     gap: 10px 12px;
 }
@@ -122,6 +122,8 @@ button, input { font: inherit; color: inherit; }
     cursor: pointer;
 }
 .clear-btn svg { width: 18px; height: 18px; }
+.res-btn { grid-area: res; }
+.res-btn[aria-pressed="true"] { background: var(--tab-active); color: var(--tab-active-ink); border-color: var(--tab-active); }
 .appbar h1 {
     margin: 0;
     font-size: 20px;
@@ -130,7 +132,7 @@ button, input { font: inherit; color: inherit; }
 }
 .tabs {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 2px;
     padding: 3px;
     border-radius: 11px;
@@ -297,6 +299,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .form-actions .btn { flex: 1; }
 @media (hover: hover) {
     .clear-btn:hover { background: var(--tab-track); }
+    .res-btn[aria-pressed="true"]:hover { background: var(--tab-active); }
     .btn-primary:hover { background: var(--brand-strong); }
     .btn-quiet:hover { border-color: var(--muted); }
     .tabs button:not([aria-selected="true"]):hover { background: rgba(255, 255, 255, 0.10); }
@@ -542,6 +545,13 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .resources details[open] summary::after { content: "\2212"; }
 .res-body { padding: 0 20px 20px; display: grid; gap: 12px; }
 .res-body p { margin: 0; }
+.source-table-wrap { overflow-x: auto; }
+.source-table { border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 300px; }
+.source-table th, .source-table td { padding: 8px 18px 8px 0; text-align: left; border-bottom: 1px solid var(--line); }
+.source-table thead th { font-size: 13px; color: var(--muted); font-weight: 600; }
+.source-table tbody th { color: var(--proc); font-weight: 800; }
+.source-table td b { font-size: 17px; }
+.source-table td small { display: block; color: var(--muted); font-size: 13px; white-space: nowrap; }
 .criteria { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
 .criteria div { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; }
 .criteria span { display: block; font-size: 13px; color: var(--muted); }
@@ -597,7 +607,12 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
     .workspace { grid-template-columns: minmax(0, 1fr); }
     .form-card { position: static; }
     .form-actions { display: none; }
-    .appbar-inner { grid-template-columns: 1fr auto; grid-template-areas: "title clear" "tabs tabs"; }
+    .appbar-inner { grid-template-columns: 1fr auto; grid-template-areas: "title clear" "tabs tabs" "res res"; }
+    .appbar .res-btn { width: 100%; height: 42px; padding: 0 12px; justify-content: center; font-size: 16px; }
+    /* Phones: larger title and tab labels */
+    .appbar h1 { font-size: 23px; gap: 9px; }
+    .logo-mark { width: 34px; height: 34px; }
+    .tabs button { font-size: 17px; padding: 9px 6px; }
     .tabs { width: 100%; }
     .page { padding-block: 16px 110px; }
     .mobile-bar {
@@ -622,7 +637,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 @media (max-width: 420px) {
     .clear-label { display: none; }
     .clear-btn { width: 38px; padding: 0; justify-content: center; }
-    .tabs button { padding: 8px 4px; font-size: 14px; }
+    .tabs button { padding: 9px 2px; }
     .bmi-number { font-size: 48px; }
     .lane, .axis-wrap { grid-template-columns: 58px minmax(0, 1fr); gap: 8px; }
     .stats { grid-template-columns: 1fr 1fr; }
@@ -641,8 +656,11 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
             <button type="button" role="tab" id="tab-simple" data-tab="simple" aria-selected="true">Simple</button>
             <button type="button" role="tab" id="tab-preop" data-tab="preop" aria-selected="false">Preop</button>
             <button type="button" role="tab" id="tab-postop" data-tab="postop" aria-selected="false">Postop</button>
-            <button type="button" role="tab" id="tab-resources" data-tab="resources" aria-selected="false">Resources</button>
         </nav>
+        <button type="button" class="clear-btn res-btn" id="tab-resources" data-tab="resources" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>
+            <span>Resources</span>
+        </button>
         <button type="button" class="clear-btn" id="clearAll" title="Start over: clear all calculators" aria-label="Start over: clear all calculators">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
             <span class="clear-label">Clear</span>
@@ -734,6 +752,15 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
                     <div><span>Medication</span><strong>DM2, or BMI &#8805; 27 / 30</strong></div>
                     <div><span>Surgery</span><strong>BMI &#8805; 30 / 35</strong></div>
                 </div>
+            </div>
+        </details>
+
+        <details class="panel">
+            <summary>About the weight-loss estimates</summary>
+            <div class="res-body">
+                <p>The expected weight loss after sleeve (LSG) and bypass (RYGB) uses median % total weight loss (%TWL) from the <b>PCORnet</b> bariatric study, with interquartile ranges (IQR, the middle half of patients) from <b>SOPHIA</b>.</p>
+                <div class="source-table-wrap"><table class="source-table" id="sourceTable"></table></div>
+                <p class="form-hint">Between 1 and 5 years the calculator estimates in a straight line between these values. They reflect outcomes before GLP-1 medications were widely used, and individual results vary.</p>
             </div>
         </details>
 
@@ -1342,6 +1369,7 @@ function markStale(tab) {
 function showTab(tab) {
     activeTab = tab;
     document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
+    document.getElementById('tab-resources').setAttribute('aria-pressed', String(tab === 'resources'));
     const isResources = tab === 'resources';
     document.getElementById('workspace').hidden = isResources;
     document.getElementById('resources').hidden = !isResources;
@@ -1416,9 +1444,16 @@ if (window.matchMedia('(display-mode: standalone)').matches || navigator.standal
     document.getElementById('homeScreenButton').hidden = true;
 }
 
+// Resources: sources table, built from the numbers the calculator uses
+document.getElementById('sourceTable').innerHTML =
+    '<thead><tr><th>Operation</th><th>1 year</th><th>5 years</th></tr></thead><tbody>' +
+    EXPECTED_TWL.map(({ abbreviation, rows }) => `<tr class="${abbreviation.toLowerCase()}"><th scope="row">${abbreviation}</th>` +
+        rows.map(row => `<td><b>${row.median}%</b><small>IQR ${row.iqr[0]}-${row.iqr[1]}%</small></td>`).join('') + '</tr>').join('') +
+    '</tbody>';
+
 // ---------- Wire up ----------
 document.getElementById('homeScreenButton').addEventListener('click', addToHomeScreen);
-document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+document.querySelectorAll('.tabs button, #tab-resources').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
 document.getElementById('clearAll').addEventListener('click', startOver);
 document.getElementById('clearBottom').addEventListener('click', startOver);
 document.getElementById('copyMobile').addEventListener('click', copyNote);
