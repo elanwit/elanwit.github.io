@@ -598,6 +598,10 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
     .form-card { position: static; }
     .form-actions { display: none; }
     .appbar-inner { grid-template-columns: 1fr auto; grid-template-areas: "title clear" "tabs tabs"; }
+    /* Phones: larger title and tab labels */
+    .appbar h1 { font-size: 23px; gap: 9px; }
+    .logo-mark { width: 34px; height: 34px; }
+    .tabs button { font-size: 17px; padding: 9px 6px; }
     .tabs { width: 100%; }
     .page { padding-block: 16px 110px; }
     .mobile-bar {
@@ -622,7 +626,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 @media (max-width: 420px) {
     .clear-label { display: none; }
     .clear-btn { width: 38px; padding: 0; justify-content: center; }
-    .tabs button { padding: 8px 4px; font-size: 14px; }
+    .tabs button { padding: 9px 2px; }
     .bmi-number { font-size: 48px; }
     .lane, .axis-wrap { grid-template-columns: 58px minmax(0, 1fr); gap: 8px; }
     .stats { grid-template-columns: 1fr 1fr; }
