@@ -698,6 +698,14 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
     .lanes-wrap { --label-col: 66px; }
     .stats { grid-template-columns: 1fr 1fr; }
 }
+/* Desktop: header buttons grow with the window, up to a sensible size */
+@media (min-width: 861px) {
+    .appbar h1 { font-size: clamp(20px, 0.4vw + 15px, 24px); }
+    .logo-mark { width: clamp(32px, 0.5vw + 26px, 38px); height: clamp(32px, 0.5vw + 26px, 38px); }
+    .tabs { width: clamp(330px, 22vw + 120px, 560px); }
+    .tabs button { font-size: clamp(15px, 0.35vw + 10.5px, 18px); padding-block: clamp(8px, 0.3vw + 4px, 10px); }
+    .clear-btn { height: clamp(38px, 0.6vw + 30px, 44px); font-size: clamp(14px, 0.25vw + 11px, 16px); padding-inline: clamp(10px, 0.6vw + 4px, 16px); }
+}
 @media (prefers-reduced-motion: no-preference) {
     .scale-marker, .track .dot, .track .band { transition: left 0.25s ease, width 0.25s ease; }
 }
