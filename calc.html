@@ -1208,15 +1208,28 @@ function setOperation(op) {
     document.querySelectorAll('.op-toggle button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.op === op)));
 }
 
-// "Surgery: LSG in Apr 2025", using only the parts that are filled in; '' if none
+// "Surgery: LSG in Apr 2025 (1 yr 6 mo ago)", using only the parts that are filled in; '' if none.
+// The "ago" part needs both the year and month.
 function surgeryNoteText() {
     const pressed = document.querySelector('.op-toggle button[aria-pressed="true"]');
     const op = pressed ? pressed.dataset.op : '';
     const year = document.getElementById('surgeryYear').value.trim();
     const month = Number(document.getElementById('surgeryMonth').value);
-    const when = [month ? MONTH_NAMES[month - 1] : '', year].filter(Boolean).join(' ');
+    let when = [month ? MONTH_NAMES[month - 1] : '', year].filter(Boolean).join(' ');
+    if (month && year) {
+        const now = new Date();
+        const months = (now.getFullYear() - Number(year)) * 12 + (now.getMonth() + 1 - month);
+        if (Number(year) >= 1990 && months >= 0) when += ` (${monthsAgo(months)})`;
+    }
     if (!op && !when) return '';
     return op && when ? `${op} in ${when}` : (op || when);
+}
+
+// 18 -> "1 yr 6 mo ago", 7 -> "7 mo ago", 24 -> "2 yr ago", 0 -> "this month"
+function monthsAgo(months) {
+    if (months === 0) return 'this month';
+    const y = Math.floor(months / 12), m = months % 12;
+    return [y ? `${y} yr` : '', m ? `${m} mo` : ''].filter(Boolean).join(' ') + ' ago';
 }
 
 function readSurgery() {
