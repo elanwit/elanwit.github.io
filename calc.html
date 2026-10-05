@@ -698,6 +698,16 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
     .lanes-wrap { --label-col: 66px; }
     .stats { grid-template-columns: 1fr 1fr; }
 }
+/* Desktop: header buttons grow with the window, up to a sensible size */
+@media (min-width: 861px) {
+    .appbar h1 { font-size: clamp(20px, 0.4vw + 15px, 24px); }
+    .logo-mark { width: clamp(32px, 0.5vw + 26px, 38px); height: clamp(32px, 0.5vw + 26px, 38px); }
+    /* tabs sit centered in the space between the title and Resources */
+    .appbar-inner { grid-template-columns: auto minmax(0, 1fr) auto auto; }
+    .tabs { width: min(100%, clamp(330px, 22vw + 120px, 560px)); min-width: 0; justify-self: center; }
+    .tabs button { font-size: clamp(15px, 0.35vw + 10.5px, 18px); padding-block: clamp(8px, 0.3vw + 4px, 10px); }
+    .clear-btn { height: clamp(38px, 0.6vw + 30px, 44px); font-size: clamp(14px, 0.25vw + 11px, 16px); padding-inline: clamp(10px, 0.6vw + 4px, 16px); }
+}
 @media (prefers-reduced-motion: no-preference) {
     .scale-marker, .track .dot, .track .band { transition: left 0.25s ease, width 0.25s ease; }
 }
@@ -975,13 +985,14 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
         }
 
         // Shared top of every result: big BMI, date, and current BMI/weight/height
-        function resultHeader(bmi, weight, feet, inches, { topLine = '', bmiLabel = '' } = {}) {
+        function resultHeader(bmi, weight, feet, inches, { topLine = '', bigBmi = true, bmiClassText = true } = {}) {
             return `${DIVIDER}<br>
                 ${topLine ? `${esc(topLine)}<br>
-                ` : ''}${bmiLabel ? `<span style="font-size: 24px">${esc(bmiLabel)} </span>` : ''}<span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
+                ` : ''}${bigBmi ? `<span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
+                ` : ''}
                 Calculated on ${todayString()}: <br>
                 <br>
-                Current BMI is <b>${bmi.toFixed(1)}</b> (${bmiClass(bmi)})<br>
+                Current BMI is <b>${bmi.toFixed(1)}</b>${bmiClassText ? ` (${bmiClass(bmi)})` : ''}<br>
                 Current weight is ${formatNumber(weight)} lb (${kg(weight)})<br>
                 Current height is ${feet}' ${formatNumber(inches, 2)}" (${cm(feet, inches)})<br>`;
         }
@@ -1207,15 +1218,28 @@ function setOperation(op) {
     document.querySelectorAll('.op-toggle button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.op === op)));
 }
 
-// "Surgery: LSG in Apr 2025", using only the parts that are filled in; '' if none
+// "Surgery: LSG in Apr 2025 (1 yr 6 mo ago)", using only the parts that are filled in; '' if none.
+// The "ago" part needs both the year and month.
 function surgeryNoteText() {
     const pressed = document.querySelector('.op-toggle button[aria-pressed="true"]');
     const op = pressed ? pressed.dataset.op : '';
     const year = document.getElementById('surgeryYear').value.trim();
     const month = Number(document.getElementById('surgeryMonth').value);
-    const when = [month ? MONTH_NAMES[month - 1] : '', year].filter(Boolean).join(' ');
+    let when = [month ? MONTH_NAMES[month - 1] : '', year].filter(Boolean).join(' ');
+    if (month && year) {
+        const now = new Date();
+        const months = (now.getFullYear() - Number(year)) * 12 + (now.getMonth() + 1 - month);
+        if (Number(year) >= 1990 && months >= 0) when += ` (${monthsAgo(months)})`;
+    }
     if (!op && !when) return '';
     return op && when ? `${op} in ${when}` : (op || when);
+}
+
+// 18 -> "1 yr 6 mo ago", 7 -> "7 mo ago", 24 -> "2 yr ago", 0 -> "this month"
+function monthsAgo(months) {
+    if (months === 0) return 'this month';
+    const y = Math.floor(months / 12), m = months % 12;
+    return [y ? `${y} yr` : '', m ? `${m} mo` : ''].filter(Boolean).join(' ') + ' ago';
 }
 
 function readSurgery() {
@@ -1390,7 +1414,7 @@ function renderPostop() {
     const percentExcessBodyWeightLoss = (currentWeightLoss / preopEbw) * 100;
 
     const note = resultHeader(currentBmi, currentWeight, feet, inches, {
-        topLine: surgeryNoteText() ? `Surgery: ${surgeryNoteText()}` : '', bmiLabel: 'Current BMI' }) + `
+        topLine: surgeryNoteText() ? `Surgery: ${surgeryNoteText()}` : '', bigBmi: false, bmiClassText: false }) + `
         Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lb<br>
         <br>
         Preop BMI was ${bmiWithClass(preopBmi)}<br>
