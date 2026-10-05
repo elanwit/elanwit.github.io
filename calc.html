@@ -990,16 +990,19 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
         // Short 1-year summary from the same %TWL table, e.g.
         //   SLEEVE:  WL 70 lb, Weight 210 lb
         //   WL IQR: LSG 56-84 lb, RYGB 73-101 lb
-        function oneYearSummary(weight) {
+        function oneYearSummary(weight, heightM) {
             const oneYear = EXPECTED_TWL.map(({ procedure, abbreviation, rows }) => ({ procedure, abbreviation, row: rows.find(row => row.label === '1 year') }));
             const lines = oneYear.map(({ procedure, row }) =>
                 `<b>${procedure}:&nbsp; WL ${lbsAt(weight, row.median)} lb, Weight ${(weight - weight * row.median / 100).toFixed(0)} lb</b><br>`).join('');
             const iqrs = oneYear.map(({ abbreviation, row }) =>
                 // nowrap keeps "RYGB 73-101 lb" together if the line ever wraps, instead of breaking at the "-"
                 `<span style="white-space: nowrap">${abbreviation} ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb</span>`).join(', ');
+            const bmis = oneYear.map(({ abbreviation, row }) =>
+                `${abbreviation} ${bmiFor(weight - weight * row.median / 100, heightM).toFixed(1)}`).join(', ');
             return `<br>
                 Estimated (median) at 1yr w/o meds:<br>
                 ${lines}
+                <b>BMI at 1yr: ${bmis}</b><br>
                 <br>
                 WL IQR: ${iqrs}<br>`;
         }
@@ -1291,21 +1294,29 @@ function renderPreop() {
         ${targetWeights(heightM, true)}
         <br>
         Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
-        ${oneYearSummary(weight)}
+        ${oneYearSummary(weight, heightM)}
         <br>
         ----------<br>
         <br>
         ${expectedOutcomes(weight)}` + resultFooter();
     const oneYear = EXPECTED_TWL.map(({ abbreviation, rows }) => ({ abbreviation, row: rows[0] }));
+    // weight after losing a given %TWL; a larger loss gives the lower weight, so IQR ends swap
+    const weightAfter = pct => weight - weight * pct / 100;
     return heroHTML(bmi, `${formatNumber(weight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `${kg(weight)} · ${cm(feet, inches)}`, `Excess body weight <b>${ebw > 0 ? ebw.toFixed(0) + ' lb' : 'none'}</b> (above BMI 25)`) +
         statsHTML([
             ...oneYear.map(({ abbreviation, row }) => ({
-                proc: abbreviation, label: 'Expected weight loss at 1 yr',
+                proc: abbreviation, label: 'Average weight loss at 1\u00a0yr',
                 value: `${lbsAt(weight, row.median)} lb`, sub: `IQR ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb`,
             })),
             ...oneYear.map(({ abbreviation, row }) => ({
-                proc: abbreviation, label: 'Expected weight at 1 yr',
-                value: `${(weight - weight * row.median / 100).toFixed(0)} lb`,
+                proc: abbreviation, label: 'Average weight at 1\u00a0yr',
+                value: `${weightAfter(row.median).toFixed(0)} lb`,
+                sub: `IQR ${weightAfter(row.iqr[1]).toFixed(0)}-${weightAfter(row.iqr[0]).toFixed(0)} lb`,
+            })),
+            ...oneYear.map(({ abbreviation, row }) => ({
+                proc: abbreviation, label: 'Average BMI at 1\u00a0yr',
+                value: bmiFor(weightAfter(row.median), heightM).toFixed(1),
+                sub: `IQR ${bmiFor(weightAfter(row.iqr[1]), heightM).toFixed(1)}-${bmiFor(weightAfter(row.iqr[0]), heightM).toFixed(1)}`,
             })),
         ], 'two-col') + preopChartHTML(weight, heightM) + noteHTML(note);
 }
