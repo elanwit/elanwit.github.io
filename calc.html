@@ -429,6 +429,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .cmp > div { padding: 14px 18px; border-top: 1px solid var(--line); }
 .cmp-corner, .cmp-head { border-top: 0 !important; padding-block: 12px !important; }
 .cmp-head { border-bottom: 3px solid var(--proc); }
+.cmp-corner { display: flex; align-items: flex-end; font-size: 13px; color: var(--muted); }
 .cmp-head .proc-name { font-size: 15px; }
 .cmp-label { display: flex; align-items: center; font-size: 17px; font-weight: 600; color: var(--ink); background: var(--surface-2); }
 .cmp-cell { display: grid; gap: 2px; align-content: center; }
@@ -438,9 +439,10 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .cmp-proc { display: none !important; }
 @media (max-width: 600px) {
     .cmp { grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
-    .cmp-corner, .cmp-head { display: none; }
+    .cmp-head { display: none; }
+    .cmp-corner { grid-column: 1 / -1; justify-content: center; padding-block: 8px !important; }
+    .cmp > .cmp-corner + .cmp-head + .cmp-head + .cmp-label { border-top: 1px solid var(--line); }
     .cmp-label { grid-column: 1 / -1; padding-block: 10px !important; font-size: 16px; justify-content: center; }
-    .cmp > .cmp-label:first-of-type { border-top: 0; }
     .cmp-cell { border-top: 3px solid var(--proc) !important; }
     .cmp-proc { display: flex !important; margin-bottom: 2px; }
 }
@@ -751,7 +753,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
                     <span class="unit-box"><input type="text" id="lowestPostopWeight" placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off"><b>lb</b></span>
                 </label>
                 <fieldset class="field surgery" id="surgery">
-                    <legend>Surgery <span class="optional">(optional, to compare with expected)</span></legend>
+                    <legend>Surgery <span class="optional">(optional, to compare with typical results)</span></legend>
                     <div class="op-toggle" role="group" aria-label="Operation">
                         <button type="button" class="lsg" data-op="LSG" aria-pressed="false">LSG<small>sleeve</small></button>
                         <button type="button" class="rygb" data-op="RYGB" aria-pressed="false">RYGB<small>bypass</small></button>
@@ -791,7 +793,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
         <details class="panel">
             <summary>About the weight-loss estimates</summary>
             <div class="res-body">
-                <p>The expected weight loss after sleeve (LSG) and bypass (RYGB) uses median % total weight loss (%TWL) from the <b>PCORnet</b> bariatric study, with interquartile ranges (IQR, the middle half of patients) from <b>SOPHIA</b>.</p>
+                <p>The typical weight loss after sleeve (LSG) and bypass (RYGB) uses median % total weight loss (%TWL) from the <b>PCORnet</b> bariatric study, with interquartile ranges (IQR, the middle half of patients) from <b>SOPHIA</b>.</p>
                 <div class="source-table-wrap"><table class="source-table" id="sourceTable"></table></div>
                 <p class="form-hint">Between 1 and 5 years the calculator estimates in a straight line between these values. They reflect outcomes before GLP-1 medications were widely used, and individual results vary.</p>
             </div>
@@ -1002,10 +1004,10 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
                 const expectedWeight = (weight - weight * row.median / 100).toFixed(0);
                 const expected = `about ${expectedWeight} lb`;
                 const shownMedian = (row.bold ? `<b>${median}</b>` : median) +
-                    `, for an expected weight of ${row.bold ? `<b>${expected}</b>` : expected}`;
+                    `, for a typical weight of ${row.bold ? `<b>${expected}</b>` : expected}`;
                 const text = row.iqr
-                    ? `most patients have lost about ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} pounds, with the average (median) being ${shownMedian}`
-                    : `the average (median) patient has lost ${shownMedian}`;
+                    ? `most patients have lost about ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} pounds, with the typical (median) being ${shownMedian}`
+                    : `the typical (median) patient has lost ${shownMedian}`;
                 return `<div class="note-bullet">* At ${row.label}: ${text}.</div>`;
             }).join('')).join('<br>');
         }
@@ -1116,7 +1118,7 @@ function statsHTML(items, layout = '') {
 // LSG / RYGB comparison. Desktop: label column on the left, one column per operation.
 // Phone: each label becomes a full-width header bar above its pair of tiles.
 function compareHTML(procs, rows) {
-    const head = `<div class="cmp-corner"></div>` + procs.map(p => `<div class="cmp-head ${p.toLowerCase()}"><span class="proc-name">${esc(p)}</span></div>`).join('');
+    const head = `<div class="cmp-corner">Median and IQR</div>` + procs.map(p => `<div class="cmp-head ${p.toLowerCase()}"><span class="proc-name">${esc(p)}</span></div>`).join('');
     const body = rows.map(row => `<div class="cmp-label">${esc(row.label)}</div>` + row.cells.map((cell, i) =>
         `<div class="cmp-cell ${procs[i].toLowerCase()}"><span class="proc-name cmp-proc">${esc(procs[i])}</span><strong>${esc(cell.value)}</strong>${cell.sub ? `<small>${esc(cell.sub)}</small>` : ''}</div>`).join('')).join('');
     return `<div class="panel cmp" style="--cols: ${procs.length}">${head}${body}</div>`;
@@ -1162,7 +1164,7 @@ function preopChartHTML(weight, heightM) {
         </div>`;
     }).join('');
     return `<div class="panel chart">
-        <h3>Expected weight after surgery, without GLP-1s</h3>
+        <h3>Typical weight after surgery, without GLP-1s</h3>
         <p class="caption">From today's ${formatNumber(weight)} lb.</p>
         <div class="lanes-wrap">
             ${bmi30 > lo && bmi30 < hi ? `<div class="refline" style="--x: ${x(bmi30)}" aria-hidden="true"></div>` : ''}
@@ -1226,10 +1228,10 @@ function timeSince(months) {
 function progressHTML(current, preop, nadir) {
     const s = readSurgery();
     if (s.state === 'none') {
-        return `<div class="panel prompt"><strong>Compare with expected weight loss:</strong> add the operation and the year and month of surgery.</div>`;
+        return `<div class="panel prompt"><strong>Compare with typical weight loss:</strong> add the operation and the year and month of surgery.</div>`;
     }
     if (s.state === 'partial') {
-        return `<div class="panel prompt"><strong>Almost there:</strong> pick LSG, RYGB or Other and enter both the year and month to compare with expected weight loss.</div>`;
+        return `<div class="panel prompt"><strong>Almost there:</strong> pick LSG, RYGB or Other and enter both the year and month to compare with typical weight loss.</div>`;
     }
     if (s.state === 'invalid') {
         return `<div class="panel prompt"><strong>Check the surgery date:</strong> it can't be in the future.</div>`;
@@ -1239,7 +1241,7 @@ function progressHTML(current, preop, nadir) {
         return `<div class="panel chart other">
             <div class="progress-head"><h3>Other operation · ${timeSince(s.months)} after surgery <small style="color: var(--muted); font-weight: 400">(${MONTH_NAMES[s.month - 1]} ${s.year})</small></h3></div>
             <p class="expect-line">Now <b style="color: var(--ink)">${twl.toFixed(0)}% TWL</b>.</p>
-            <p class="caption">Expected ranges are only available for LSG and RYGB.</p>
+            <p class="caption">Typical ranges are only available for LSG and RYGB.</p>
         </div>`;
     }
     const nadirTwl = isNaN(nadir) ? NaN : (preop - nadir) / preop * 100;
@@ -1247,9 +1249,9 @@ function progressHTML(current, preop, nadir) {
     const e = expectedAt(s.op, Math.max(s.months, 12));
     let status, statusColor;
     if (underYear) { status = 'Under 1 year: still losing'; statusColor = 'var(--muted)'; }
-    else if (twl < e.low) { status = 'Below expected range'; statusColor = 'var(--c-over)'; }
-    else if (twl > e.high) { status = 'Above expected range'; statusColor = 'var(--c-normal)'; }
-    else { status = 'Within expected range'; statusColor = 'var(--c-normal)'; }
+    else if (twl < e.low) { status = 'Below typical range'; statusColor = 'var(--c-over)'; }
+    else if (twl > e.high) { status = 'Above typical range'; statusColor = 'var(--c-normal)'; }
+    else { status = 'Within typical range'; statusColor = 'var(--c-normal)'; }
 
     const maxPct = Math.max(50, Math.ceil((Math.max(twl, nadirTwl || 0, e.high) + 5) / 10) * 10);
     const minPct = twl < 0 ? Math.floor((twl - 5) / 10) * 10 : 0;
@@ -1265,7 +1267,7 @@ function progressHTML(current, preop, nadir) {
             <h3><span style="color: var(--proc)">${s.op}</span> · ${timeSince(s.months)} after surgery <small style="color: var(--muted); font-weight: 400">(${MONTH_NAMES[s.month - 1]} ${s.year})</small></h3>
             <span class="status-chip" style="--status: ${statusColor}">${status}</span>
         </div>
-        <p class="expect-line">Now <b style="color: var(--ink)">${twl.toFixed(0)}% TWL</b>. Expected ${when}: <b>${e.median.toFixed(0)}%</b> (IQR ${e.low.toFixed(0)}-${e.high.toFixed(0)}%), about ${expectedWeight.toFixed(0)} lb.</p>
+        <p class="expect-line">Now <b style="color: var(--ink)">${twl.toFixed(0)}% TWL</b>. Typical ${when}: <b>${e.median.toFixed(0)}%</b> (IQR ${e.low.toFixed(0)}-${e.high.toFixed(0)}%), about ${expectedWeight.toFixed(0)} lb.</p>
         <div class="pct-track" aria-hidden="true">
             <div class="rail"></div>
             <div class="band" style="left: ${x(e.low)}%; width: ${x(e.high) - x(e.low)}%"></div>
@@ -1275,8 +1277,8 @@ function progressHTML(current, preop, nadir) {
             <div class="lbl" style="left: ${x(twl)}%">Now ${twl.toFixed(0)}%</div>
         </div>
         <div class="pct-axis">${ticks.map(p => `<span style="left: ${x(p)}%">${p}%</span>`).join('')}</div>
-        <div class="legend"><span class="${s.op.toLowerCase()}"><i></i>Expected ${s.op} range (IQR), line = median</span><span>Scale: % total weight lost</span></div>
-        <p class="caption">${underYear ? 'Under 1 year, the 1-year range is shown for reference. ' : ''}Expected values from PCORnet medians and SOPHIA IQRs at 1 and 5 years${underYear || s.months >= 60 ? '' : ', estimated in a straight line between them'}. Without GLP-1s.</p>
+        <div class="legend"><span class="${s.op.toLowerCase()}"><i></i>Typical ${s.op} range (IQR), line = median</span><span>Scale: % total weight lost</span></div>
+        <p class="caption">${underYear ? 'Under 1 year, the 1-year range is shown for reference. ' : ''}Typical values from PCORnet medians and SOPHIA IQRs at 1 and 5 years${underYear || s.months >= 60 ? '' : ', estimated in a straight line between them'}. Without GLP-1s.</p>
     </div>`;
 }
 
@@ -1336,12 +1338,12 @@ function renderPreop() {
     const weightAfter = pct => weight - weight * pct / 100;
     return heroHTML(bmi, `${formatNumber(weight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `${kg(weight)} · ${cm(feet, inches)}`, `Excess body weight <b>${ebw > 0 ? ebw.toFixed(0) + ' lb' : 'none'}</b> (above BMI 25)`) +
         compareHTML(oneYear.map(({ abbreviation }) => abbreviation), [
-            { label: 'Average weight loss at 1\u00a0yr', cells: oneYear.map(({ row }) => ({
+            { label: 'Typical weight loss at 1\u00a0yr', cells: oneYear.map(({ row }) => ({
                 value: `${lbsAt(weight, row.median)} lb`, sub: `IQR ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb` })) },
-            { label: 'Average weight at 1\u00a0yr', cells: oneYear.map(({ row }) => ({
+            { label: 'Typical weight at 1\u00a0yr', cells: oneYear.map(({ row }) => ({
                 value: `${weightAfter(row.median).toFixed(0)} lb`,
                 sub: `IQR ${weightAfter(row.iqr[1]).toFixed(0)}-${weightAfter(row.iqr[0]).toFixed(0)} lb` })) },
-            { label: 'Average BMI at 1\u00a0yr', cells: oneYear.map(({ row }) => ({
+            { label: 'Typical BMI at 1\u00a0yr', cells: oneYear.map(({ row }) => ({
                 value: bmiFor(weightAfter(row.median), heightM).toFixed(1),
                 sub: `IQR ${bmiFor(weightAfter(row.iqr[1]), heightM).toFixed(1)}-${bmiFor(weightAfter(row.iqr[0]), heightM).toFixed(1)}` })) },
         ]) + preopChartHTML(weight, heightM) + noteHTML(note);
