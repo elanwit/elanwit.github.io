@@ -512,7 +512,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .track .tag.below { top: auto; bottom: -6px; }
 .track .lost { position: absolute; top: 50%; height: 4px; transform: translateY(-50%); background: var(--brand); border-radius: 2px; }
 .axis-wrap { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 10px; }
-.axis { position: relative; height: 34px; border-top: 1px solid var(--line); }
+.axis { position: relative; height: 48px; border-top: 1px solid var(--line); }
 .axis span {
     position: absolute;
     top: 4px;
@@ -1180,7 +1180,7 @@ function preopChartHTML(weight, heightM) {
         </div>
         <div class="axis-wrap"><div></div><div class="axis">
             ${refs.map(([b, w]) => `<span style="left: ${x(w)}%">BMI ${b}<br>${w.toFixed(0)}</span>`).join('')}
-            <span style="left: ${x(weight)}%"><b>Now</b><br>${formatNumber(weight)}</span>
+            <span style="left: ${x(weight)}%">BMI ${bmiFor(weight, heightM).toFixed(1)}<br>${formatNumber(weight)}<br><b>Now</b></span>
         </div></div>
         <div class="legend"><span class="lsg"><i></i>LSG (sleeve)</span><span class="rygb"><i></i>RYGB (bypass)</span><span>Dot = median, bar = middle half (IQR)</span></div>
     </div>`;
