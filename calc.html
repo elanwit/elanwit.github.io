@@ -233,13 +233,26 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
     pointer-events: none;
 }
 .optional { font-weight: 400; }
-.surgery { border-top: 1px solid var(--line) !important; margin-top: 8px !important; padding-top: 16px !important; display: grid; gap: 10px; }
+.surgery { border-top: 1px solid var(--line) !important; margin-top: 8px !important; padding-top: 22px !important; display: grid; gap: 10px; }
 /* legend as an ordinary item so the divider line runs above it, not through it */
-.surgery > legend { float: left; width: 100%; margin-bottom: 0; }
+.surgery > legend { float: left; width: 100%; margin-bottom: -3px; }
+.glp-row { display: grid; gap: 6px; }
+.yn-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.yn-toggle button {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: var(--surface-2);
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.yn-toggle button[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; }
 /* room for "(optional)" in the year and month boxes */
 .surgery .pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
 #surgeryYear, #surgeryMonth { height: 48px; padding-block: 0; }
-#surgeryYear { padding-inline: 11px; font-size: 16px; }
+#surgeryYear { padding-inline: 11px; font-size: 16px; font-family: var(--font); }
 /* grey like a placeholder until a month is picked */
 #surgeryMonth:has(option[value=""]:checked) { color: var(--muted); }
 #surgeryMonth {
@@ -817,6 +830,13 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
                         </select></span>
                     </div>
                 </fieldset>
+                <div class="field glp-row">
+                    <span id="glpLabel">Currently taking a GLP-1 <span class="optional">(optional)</span></span>
+                    <div class="yn-toggle" role="group" aria-labelledby="glpLabel">
+                        <button type="button" data-glp="Yes" aria-pressed="false">Yes</button>
+                        <button type="button" data-glp="No" aria-pressed="false">No</button>
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-primary calc-btn">Calculate</button>
             </form>
 
@@ -1004,8 +1024,8 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
         // Shared top of every result: big BMI, date, and current BMI/weight/height
         function resultHeader(bmi, weight, feet, inches, { topLine = '', bigBmi = true, bmiClassText = true } = {}) {
             return `${DIVIDER}<br>
-                ${topLine ? `${esc(topLine)}<br>
-                ` : ''}${bigBmi ? `<span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
+                ${[].concat(topLine).filter(Boolean).map(line => `${esc(line)}<br>
+                `).join('')}${bigBmi ? `<span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
                 ` : ''}
                 Calculated on ${todayString()}: <br>
                 <br>
@@ -1231,6 +1251,14 @@ function preopChartHTML(weight, heightM) {
 // ---------- Postop: progress against expected for the operation and time since surgery ----------
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+function setGlp(value) {
+    document.querySelectorAll('.yn-toggle button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.glp === value)));
+}
+function readGlp() {
+    const pressed = document.querySelector('.yn-toggle button[aria-pressed="true"]');
+    return pressed ? pressed.dataset.glp : '';
+}
+
 function setOperation(op) {
     document.querySelectorAll('.op-toggle button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.op === op)));
 }
@@ -1431,7 +1459,7 @@ function renderPostop() {
     const percentExcessBodyWeightLoss = (currentWeightLoss / preopEbw) * 100;
 
     const note = resultHeader(currentBmi, currentWeight, feet, inches, {
-        topLine: surgeryNoteText() ? `Surgery: ${surgeryNoteText()}` : '', bigBmi: false, bmiClassText: false }) + `
+        topLine: [surgeryNoteText() ? `Surgery: ${surgeryNoteText()}` : '', readGlp() ? `Currently taking GLP-1: ${readGlp()}` : ''], bigBmi: false, bmiClassText: false }) + `
         Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lb<br>
         <br>
         Preop BMI was ${bmiWithClass(preopBmi)}<br>
@@ -1457,6 +1485,7 @@ function renderPostop() {
         stats.push(['Max %TWL at nadir', maxWeightLoss > 0 ? `${(maxWeightLoss / preopWeight * 100).toFixed(0)}%` : 'n/a', `Nadir ${formatNumber(nadirWeight)} lb`]);
         stats.push(['Regain from nadir', percentRegain(currentWeight, nadirWeight, maxWeightLoss).split(' (')[0], 'Of max weight lost']);
     }
+    if (readGlp()) stats.push(['Currently taking GLP-1', readGlp()]);
     return heroHTML(currentBmi, `${formatNumber(currentWeight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `Preop BMI ${preopBmi.toFixed(1)}`) +
         statsHTML(stats, 'postop-stats') + progressHTML(currentWeight, preopWeight, nadirWeight) + noteHTML(note);
 }
@@ -1502,6 +1531,7 @@ function showTab(tab) {
 function startOver() {
     FIELDS.forEach(id => { document.getElementById(id).value = ''; });
     setOperation('');
+    setGlp('');
     document.getElementById('surgeryMonth').value = '';
     calculated = {};
     showTab('simple');
@@ -1656,6 +1686,10 @@ document.getElementById('surgeryYear').addEventListener('input', e => {
     markStale('postop');
 });
 document.getElementById('surgeryMonth').addEventListener('change', () => markStale('postop'));
+document.querySelectorAll('.yn-toggle button').forEach(b => b.addEventListener('click', () => {
+    setGlp(b.getAttribute('aria-pressed') === 'true' ? '' : b.dataset.glp);
+    markStale('postop');
+}));
 
 document.querySelectorAll('input[data-format]').forEach(input => {
     input.addEventListener('input', () => {
