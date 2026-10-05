@@ -1120,7 +1120,7 @@ function statsHTML(items, layout = '') {
 // LSG / RYGB comparison. Desktop: label column on the left, one column per operation.
 // Phone: each label becomes a full-width header bar above its pair of tiles.
 function compareHTML(procs, rows) {
-    const head = `<div class="cmp-corner"><strong>1 Year Outcomes</strong><span>(Median and IQR)</span></div>` + procs.map(p => `<div class="cmp-head ${p.toLowerCase()}"><span class="proc-name">${esc(p)}</span></div>`).join('');
+    const head = `<div class="cmp-corner"><strong>1 Year Outcomes</strong></div>` + procs.map(p => `<div class="cmp-head ${p.toLowerCase()}"><span class="proc-name">${esc(p)}</span></div>`).join('');
     const body = rows.map(row => `<div class="cmp-label">${esc(row.label)}</div>` + row.cells.map((cell, i) =>
         `<div class="cmp-cell ${procs[i].toLowerCase()}"><span class="proc-name cmp-proc">${esc(procs[i])}</span><strong>${esc(cell.value)}</strong>${cell.sub ? `<small>${esc(cell.sub)}</small>` : ''}</div>`).join('')).join('');
     return `<div class="panel cmp" style="--cols: ${procs.length}">${head}${body}</div>`;
