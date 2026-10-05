@@ -975,13 +975,14 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
         }
 
         // Shared top of every result: big BMI, date, and current BMI/weight/height
-        function resultHeader(bmi, weight, feet, inches, { topLine = '', bmiLabel = '' } = {}) {
+        function resultHeader(bmi, weight, feet, inches, { topLine = '', bigBmi = true, bmiClassText = true } = {}) {
             return `${DIVIDER}<br>
                 ${topLine ? `${esc(topLine)}<br>
-                ` : ''}${bmiLabel ? `<span style="font-size: 24px">${esc(bmiLabel)} </span>` : ''}<span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
+                ` : ''}${bigBmi ? `<span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
+                ` : ''}
                 Calculated on ${todayString()}: <br>
                 <br>
-                Current BMI is <b>${bmi.toFixed(1)}</b> (${bmiClass(bmi)})<br>
+                Current BMI is <b>${bmi.toFixed(1)}</b>${bmiClassText ? ` (${bmiClass(bmi)})` : ''}<br>
                 Current weight is ${formatNumber(weight)} lb (${kg(weight)})<br>
                 Current height is ${feet}' ${formatNumber(inches, 2)}" (${cm(feet, inches)})<br>`;
         }
@@ -1390,7 +1391,7 @@ function renderPostop() {
     const percentExcessBodyWeightLoss = (currentWeightLoss / preopEbw) * 100;
 
     const note = resultHeader(currentBmi, currentWeight, feet, inches, {
-        topLine: surgeryNoteText() ? `Surgery: ${surgeryNoteText()}` : '', bmiLabel: 'Current BMI' }) + `
+        topLine: surgeryNoteText() ? `Surgery: ${surgeryNoteText()}` : '', bigBmi: false, bmiClassText: false }) + `
         Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lb<br>
         <br>
         Preop BMI was ${bmiWithClass(preopBmi)}<br>
