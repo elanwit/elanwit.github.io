@@ -323,6 +323,10 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 
 /* ---------- Results ---------- */
 .results { display: grid; gap: 16px; min-width: 0; }
+@media (min-width: 861px) {
+    .results { gap: 24px; }
+    .cmp > .cmp-label, .cmp > .cmp-cell { padding-block: 20px; }
+}
 .empty {
     padding: 40px 24px;
     text-align: center;
@@ -429,7 +433,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .cmp > div { padding: 14px 18px; border-top: 1px solid var(--line); }
 .cmp-corner, .cmp-head { border-top: 0 !important; padding-block: 12px !important; }
 .cmp-head { border-bottom: 3px solid var(--proc); display: flex; align-items: flex-end; }
-.cmp-corner { display: flex; flex-direction: column; justify-content: flex-end; gap: 1px; }
+.cmp-corner { display: flex; flex-wrap: wrap; align-items: baseline; align-content: flex-end; gap: 2px 6px; }
 .cmp-corner strong { font-size: 17px; font-weight: 700; color: var(--ink); }
 .cmp-corner span { font-size: 13px; color: var(--muted); }
 .cmp-head .proc-name { font-size: 15px; }
@@ -442,7 +446,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 @media (max-width: 600px) {
     .cmp { grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
     .cmp-head { display: none; }
-    .cmp-corner { grid-column: 1 / -1; align-items: center; padding-block: 10px !important; }
+    .cmp-corner { grid-column: 1 / -1; flex-direction: column; flex-wrap: nowrap; align-items: center; align-content: center; padding-block: 10px !important; }
     .cmp > .cmp-corner + .cmp-head + .cmp-head + .cmp-label { border-top: 1px solid var(--line); }
     .cmp-label { grid-column: 1 / -1; padding-block: 10px !important; font-size: 16px; justify-content: center; }
     .cmp-cell { border-top: 3px solid var(--proc) !important; }
@@ -1120,7 +1124,7 @@ function statsHTML(items, layout = '') {
 // LSG / RYGB comparison. Desktop: label column on the left, one column per operation.
 // Phone: each label becomes a full-width header bar above its pair of tiles.
 function compareHTML(procs, rows) {
-    const head = `<div class="cmp-corner"><strong>1 Year Outcomes</strong></div>` + procs.map(p => `<div class="cmp-head ${p.toLowerCase()}"><span class="proc-name">${esc(p)}</span></div>`).join('');
+    const head = `<div class="cmp-corner"><strong>1 Year Outcomes</strong><span>(Median)</span></div>` + procs.map(p => `<div class="cmp-head ${p.toLowerCase()}"><span class="proc-name">${esc(p)}</span></div>`).join('');
     const body = rows.map(row => `<div class="cmp-label">${esc(row.label)}</div>` + row.cells.map((cell, i) =>
         `<div class="cmp-cell ${procs[i].toLowerCase()}"><span class="proc-name cmp-proc">${esc(procs[i])}</span><strong>${esc(cell.value)}</strong>${cell.sub ? `<small>${esc(cell.sub)}</small>` : ''}</div>`).join('')).join('');
     return `<div class="panel cmp" style="--cols: ${procs.length}">${head}${body}</div>`;
@@ -1340,12 +1344,12 @@ function renderPreop() {
     const weightAfter = pct => weight - weight * pct / 100;
     return heroHTML(bmi, `${formatNumber(weight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `${kg(weight)} · ${cm(feet, inches)}`, `Excess body weight <b>${ebw > 0 ? ebw.toFixed(0) + ' lb' : 'none'}</b> (above BMI 25)`) +
         compareHTML(oneYear.map(({ abbreviation }) => abbreviation), [
-            { label: 'Typical weight loss', cells: oneYear.map(({ row }) => ({
+            { label: 'Weight loss', cells: oneYear.map(({ row }) => ({
                 value: `${lbsAt(weight, row.median)} lb`, sub: `IQR ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb` })) },
-            { label: 'Typical weight', cells: oneYear.map(({ row }) => ({
+            { label: 'Weight', cells: oneYear.map(({ row }) => ({
                 value: `${weightAfter(row.median).toFixed(0)} lb`,
                 sub: `IQR ${weightAfter(row.iqr[1]).toFixed(0)}-${weightAfter(row.iqr[0]).toFixed(0)} lb` })) },
-            { label: 'Typical BMI', cells: oneYear.map(({ row }) => ({
+            { label: 'BMI', cells: oneYear.map(({ row }) => ({
                 value: bmiFor(weightAfter(row.median), heightM).toFixed(1),
                 sub: `IQR ${bmiFor(weightAfter(row.iqr[1]), heightM).toFixed(1)}-${bmiFor(weightAfter(row.iqr[0]), heightM).toFixed(1)}` })) },
         ]) + preopChartHTML(weight, heightM) + noteHTML(note);
