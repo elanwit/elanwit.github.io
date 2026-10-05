@@ -536,10 +536,12 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
     position: absolute;
     top: -4px;
     bottom: -4px;
-    width: 0;
+    width: 2px;
+    margin-left: -1px;
     left: calc(var(--label-col) + (100% - var(--label-col)) * var(--x) / 100);
-    border-left: 1.5px dashed var(--muted);
-    opacity: 0.45;
+    background: repeating-linear-gradient(to bottom, var(--muted) 0 4px, transparent 4px 8px);
+    opacity: 0.5;
+    pointer-events: none;
 }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); }
 .legend i { display: inline-block; width: 18px; height: 10px; border-radius: 5px; background: var(--proc, var(--band)); vertical-align: -1px; margin-right: 6px; }
@@ -650,6 +652,13 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 }
 
 @media (max-width: 860px) {
+    /* postop tiles: weight lost and BMI change on top, %TWL and %EWL below */
+    .stats.postop-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .postop-stats .stat:nth-child(1) { order: 1; }
+    .postop-stats .stat:nth-child(4) { order: 2; }
+    .postop-stats .stat:nth-child(2) { order: 3; }
+    .postop-stats .stat:nth-child(3) { order: 4; }
+    .postop-stats .stat:nth-child(n+5) { order: 5; }
     .workspace { grid-template-columns: minmax(0, 1fr); }
     .form-card { position: static; }
     .form-actions { display: none; }
@@ -966,9 +975,10 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
         }
 
         // Shared top of every result: big BMI, date, and current BMI/weight/height
-        function resultHeader(bmi, weight, feet, inches) {
+        function resultHeader(bmi, weight, feet, inches, { topLine = '', bmiLabel = '' } = {}) {
             return `${DIVIDER}<br>
-                <span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
+                ${topLine ? `${esc(topLine)}<br>
+                ` : ''}${bmiLabel ? `<span style="font-size: 24px">${esc(bmiLabel)} </span>` : ''}<span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
                 Calculated on ${todayString()}: <br>
                 <br>
                 Current BMI is <b>${bmi.toFixed(1)}</b> (${bmiClass(bmi)})<br>
@@ -1379,9 +1389,9 @@ function renderPostop() {
     const percentTotalBodyWeightLoss = (currentWeightLoss / preopWeight) * 100;
     const percentExcessBodyWeightLoss = (currentWeightLoss / preopEbw) * 100;
 
-    const note = resultHeader(currentBmi, currentWeight, feet, inches) + `
-        ${surgeryNoteText() ? `Surgery: ${esc(surgeryNoteText())}<br>
-        ` : ''}Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lb<br>
+    const note = resultHeader(currentBmi, currentWeight, feet, inches, {
+        topLine: surgeryNoteText() ? `Surgery: ${surgeryNoteText()}` : '', bmiLabel: 'Current BMI' }) + `
+        Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lb<br>
         <br>
         Preop BMI was ${bmiWithClass(preopBmi)}<br>
         BMI change is ${bmiChange(preopBmi, currentBmi)}<br>
@@ -1407,7 +1417,7 @@ function renderPostop() {
         stats.push(['Regain from nadir', percentRegain(currentWeight, nadirWeight, maxWeightLoss).split(' (')[0], 'Of max weight lost']);
     }
     return heroHTML(currentBmi, `${formatNumber(currentWeight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `Preop BMI ${preopBmi.toFixed(1)}`) +
-        statsHTML(stats) + progressHTML(currentWeight, preopWeight, nadirWeight) + noteHTML(note);
+        statsHTML(stats, 'postop-stats') + progressHTML(currentWeight, preopWeight, nadirWeight) + noteHTML(note);
 }
 
 // Calculated results per tab; they only change when Calculate is pressed
