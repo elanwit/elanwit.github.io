@@ -1258,10 +1258,10 @@ function renderSimple() {
     const note = resultHeader(bmi, weight, feet, inches) + `
         <br>
         Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
-        ${targetWeights(heightM)}` + resultFooter();
+        ${targetWeights(heightM, true)}` + resultFooter();
     return heroHTML(bmi, `${formatNumber(weight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `${kg(weight)} · ${cm(feet, inches)}`, `Excess body weight <b>${ebw > 0 ? ebw.toFixed(0) + ' lb' : 'none'}</b> (above BMI 25)`) +
         statsHTML([
-            bmiWeightsTile(heightM, [25, 30, 35]),
+            bmiWeightsTile(heightM, [25, 30, 35, 40]),
         ], 'single') + noteHTML(note);
 }
 
