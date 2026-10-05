@@ -445,6 +445,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .cmp-cell strong { font-family: var(--font-num); font-size: 26px; line-height: 1.2; font-weight: 700; font-variant-numeric: tabular-nums; }
 .cmp-cell small { font-size: 14px; color: var(--muted); }
 .cmp-proc { display: none !important; }
+.cmp-suffix { display: none; }
 @media (max-width: 600px) {
     .cmp { grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
     .cmp-head { display: none; }
@@ -453,6 +454,9 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
     .cmp-label { grid-column: 1 / -1; padding-block: 10px !important; font-size: 16px; line-height: 1.45; justify-content: center; }
     .cmp-cell { border-top: 3px solid var(--proc) !important; }
     .cmp-proc { display: flex !important; margin-bottom: 2px; }
+    .cmp-suffix { display: inline; font-size: 0.62em; font-weight: 600; }
+    /* breathing room between one row of tiles and the next section's title */
+    .cmp > .cmp-cell + .cmp-label { margin-top: 14px; }
 }
 .proc-tile { border-top: 3px solid var(--proc); }
 .proc-tile .proc-name { margin-bottom: 2px; }
@@ -1128,7 +1132,7 @@ function statsHTML(items, layout = '') {
 function compareHTML(procs, rows) {
     const head = `<div class="cmp-corner"><strong>1 Year Outcomes</strong><span>(Median)</span></div>` + procs.map(p => `<div class="cmp-head ${p.toLowerCase()}"><span class="proc-name">${esc(p)}</span></div>`).join('');
     const body = rows.map(row => `<div class="cmp-label">${esc(row.label)}</div>` + row.cells.map((cell, i) =>
-        `<div class="cmp-cell ${procs[i].toLowerCase()}"><span class="proc-name cmp-proc">${esc(procs[i])}</span><strong>${esc(cell.value)}</strong>${cell.sub ? `<small>${esc(cell.sub)}</small>` : ''}</div>`).join('')).join('');
+        `<div class="cmp-cell ${procs[i].toLowerCase()}"><span class="proc-name cmp-proc">${esc(procs[i])}</span><strong>${esc(cell.value)}${cell.phoneSuffix ? `<span class="cmp-suffix"> ${esc(cell.phoneSuffix)}</span>` : ''}</strong>${cell.sub ? `<small>${esc(cell.sub)}</small>` : ''}</div>`).join('')).join('');
     return `<div class="panel cmp" style="--cols: ${procs.length}">${head}${body}</div>`;
 }
 
@@ -1347,7 +1351,7 @@ function renderPreop() {
     return heroHTML(bmi, `${formatNumber(weight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `${kg(weight)} · ${cm(feet, inches)}`, `Excess body weight <b>${ebw > 0 ? ebw.toFixed(0) + ' lb' : 'none'}</b> (above BMI 25)`) +
         compareHTML(oneYear.map(({ abbreviation }) => abbreviation), [
             { label: 'Weight loss', cells: oneYear.map(({ row }) => ({
-                value: `${lbsAt(weight, row.median)} lb`, sub: `IQR ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb` })) },
+                value: `${lbsAt(weight, row.median)} lb`, phoneSuffix: 'lost', sub: `IQR ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb` })) },
             { label: 'Weight', cells: oneYear.map(({ row }) => ({
                 value: `${weightAfter(row.median).toFixed(0)} lb`,
                 sub: `IQR ${weightAfter(row.iqr[1]).toFixed(0)}-${weightAfter(row.iqr[0]).toFixed(0)} lb` })) },
