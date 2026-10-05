@@ -336,6 +336,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 }
 .form-hint { margin: 0; font-size: 14px; color: var(--muted); }
 .calc-btn { width: 100%; margin-top: 4px; padding: 14px; font-size: 17px; }
+.form-clear { width: 100%; justify-content: center; padding: 11px; font-size: 16px; }
 /* results that no longer match the inputs */
 .stale-banner {
     display: flex;
@@ -682,6 +683,8 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 }
 
 @media (max-width: 860px) {
+    /* phones already have Clear in the bottom bar */
+    .form-clear { display: none; }
     /* postop tiles: weight lost and BMI change on top, %TWL and %EWL below */
     .stats.postop-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .postop-stats .stat:nth-child(1) { order: 1; }
@@ -782,6 +785,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
                     </div>
                 </fieldset>
                 <button type="submit" class="btn btn-primary calc-btn">Calculate</button>
+                <button type="button" class="btn btn-quiet icon-btn form-clear" data-form-clear title="Start over: clear all calculators"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span>Clear</span></button>
             </form>
 
             <form id="preopForm" data-tab="preop" autocomplete="off" hidden>
@@ -795,6 +799,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
                     </div>
                 </fieldset>
                 <button type="submit" class="btn btn-primary calc-btn">Calculate</button>
+                <button type="button" class="btn btn-quiet icon-btn form-clear" data-form-clear title="Start over: clear all calculators"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span>Clear</span></button>
             </form>
 
             <form id="postopForm" data-tab="postop" autocomplete="off" hidden>
@@ -838,6 +843,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary calc-btn">Calculate</button>
+                <button type="button" class="btn btn-quiet icon-btn form-clear" data-form-clear title="Start over: clear all calculators"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span>Clear</span></button>
             </form>
 
             <p class="form-hint">Press Calculate or Enter to see results. Clear starts a new patient.</p>
@@ -1604,6 +1610,7 @@ document.getElementById('homeScreenButton').addEventListener('click', addToHomeS
 document.querySelectorAll('.tabs button, #tab-resources').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
 document.getElementById('clearAll').addEventListener('click', startOver);
 document.getElementById('clearBottom').addEventListener('click', startOver);
+document.querySelectorAll('[data-form-clear]').forEach(b => b.addEventListener('click', startOver));
 document.getElementById('copyMobile').addEventListener('click', copyNote);
 document.getElementById('results').addEventListener('click', e => {
     if (e.target.closest('[data-copy]')) copyNote();
