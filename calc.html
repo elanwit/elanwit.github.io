@@ -1224,7 +1224,9 @@ function preopChartHTML(weight, heightM) {
     const lo = Math.floor((lowest - 8) / 10) * 10;
     const hi = Math.ceil((weight + 8) / 10) * 10;
     const x = weightScale(lo, hi);
-    const refs = refLines(x, heightM, lo, hi);
+    // skip a regular BMI label within 5 BMI points of today's, so it can't overlap the "Now" label
+    const nowBmi = bmiFor(weight, heightM);
+    const refs = refLines(x, heightM, lo, hi).filter(([b]) => Math.abs(b - nowBmi) >= 5);
     const bmi30 = weightForBmi(30, heightM);
     const lanes = rows.map(row => {
         const a = weight - weight * row.iqr[1] / 100;
