@@ -1351,7 +1351,7 @@ function renderPreop() {
     return heroHTML(bmi, `${formatNumber(weight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `${kg(weight)} · ${cm(feet, inches)}`, `Excess body weight <b>${ebw > 0 ? ebw.toFixed(0) + ' lb' : 'none'}</b> (above BMI 25)`) +
         compareHTML(oneYear.map(({ abbreviation }) => abbreviation), [
             { label: 'Weight loss', cells: oneYear.map(({ row }) => ({
-                value: `${lbsAt(weight, row.median)} lb`, phoneSuffix: 'lost', sub: `IQR ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb` })) },
+                value: `${lbsAt(weight, row.median)} lb`, phoneSuffix: 'loss', sub: `IQR ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb` })) },
             { label: 'Weight', cells: oneYear.map(({ row }) => ({
                 value: `${weightAfter(row.median).toFixed(0)} lb`,
                 sub: `IQR ${weightAfter(row.iqr[1]).toFixed(0)}-${weightAfter(row.iqr[0]).toFixed(0)} lb` })) },
