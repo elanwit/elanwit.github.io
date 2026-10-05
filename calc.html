@@ -1,433 +1,827 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BMI calculators by Elan Witkowski</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="manifest" href="site.webmanifest">
-    <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#007BFF">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
-    <style>
-		body {
-    font-family: Arial, sans-serif;
-    background-color: #007BFF;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 30px 16px 60px;
-    box-sizing: border-box;
-    min-height: 100vh;
-    margin: 0;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BMI calculators by Elan Witkowski</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#0756b5">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a2540">
+<style>
+/* Layout: app bar with segmented tabs; desktop = form column (sticky) beside live results; phone = stacked with a pinned Copy / Start over bar */
+:root {
+    --bg: #eef2f8;
+    --surface: #ffffff;
+    --surface-2: #f4f7fb;
+    --ink: #0f1b2d;
+    --muted: #5a6a80;
+    --line: #d8e0eb;
+    --brand: #0a66d8;
+    --brand-strong: #0753b2;
+    --brand-ink: #ffffff;
+    --bar: #0756b5;
+    --bar-ink: #ffffff;
+    --tab-track: rgba(255, 255, 255, 0.16);
+    --tab-ink: #e6efff;
+    --tab-active: #ffffff;
+    --tab-active-ink: #0753b2;
+    --band: rgba(10, 102, 216, 0.22);
+    --lsg: #0b8579;
+    --lsg-band: rgba(11, 133, 121, 0.22);
+    --rygb: #7048c8;
+    --rygb-band: rgba(112, 72, 200, 0.20);
+    --on-proc: #ffffff;
+    --danger: #b3261e;
+    --focus: #f0a400;
+    --shadow: 0 1px 2px rgba(15, 27, 45, 0.06), 0 4px 16px rgba(15, 27, 45, 0.06);
+    --c-under: #5b8def;
+    --c-normal: #2e9d5b;
+    --c-over: #c99700;
+    --c-c1: #e2780f;
+    --c-c2: #d4502a;
+    --c-c3: #b3261e;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-num: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-note: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
-
-.header {
-    background: #0056b3;
-    color: #fff;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-    padding: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    position:relative; 
-    top: 0;
-    left: 0;
-}
-
-.nav-buttons {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 500px;
-}
-
-.nav-buttons button {
-    font-size: 20px;
-    background-color: #2A3235;
-}
-
-.container {
-    background: #fff;
-    color: #000;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 500px;
-    box-sizing: border-box;
-    margin-top: 20px;
-    display: none;
-}
-
-.container.active {
-    display: block;
-}
-
-h1 {
-    font-size: 24px;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-input[type="text"] {
-    width: 88%;
-    padding: 20px;
-    font-size: 18px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    -webkit-appearance: none;
-}
-
-label {
-    font-size: 18px;
-    margin-bottom: 5px;
-    display: block;
-}
-
-button {
-    padding: 15px;
-    font-size: 18px;
-    background-color: #28a745;
-    border: none;
-    color: white;
-    border-radius: 12px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    width: 100%;
-}
-
-.copy-button {
-    background-color: #007BFF;
-}
-
-.reset-button {
-    background-color: #2A3235;
-}
-
-.home-button {
-    width: auto;
-    font-size: 14px;
-    padding: 8px 16px;
-    margin-top: 40px;
-    background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.7);
-}
-
-.result {
-    font-size: 16px;
-    margin-top: 20px;
-    text-align: left;
-}
-/* Ensure images don't overflow */
-img {
-    max-width: 95%;
-    height: auto;
-    display: block;
-    margin: 10px auto;
-}
-
-/* Hover colors only for mouse users; on phones a tapped button would stay highlighted */
-@media (hover: hover) {
-    .nav-buttons button:hover {
-        background-color: #000000;
-    }
-
-    button:hover {
-        background-color: #218838;
-    }
-
-    .copy-button:hover {
-        background-color: #0056b3;
-    }
-
-    .reset-button:hover {
-        background-color: #000000;
-    }
-
-    .home-button:hover {
-        background-color: rgba(255, 255, 255, 0.15);
-    }
-}
-
-/* Dark mode: follows the phone/computer setting. True black with blue-tinted title and tabs */
 @media (prefers-color-scheme: dark) {
-    body {
-        background-color: #000000;
-    }
-
-    .header {
-        background: #0a2540;
-        color: #64b5ff;
-    }
-
-    .nav-buttons button {
-        background-color: #0b2a4a;
-        color: #64b5ff;
-    }
-
-    .container {
-        background: #1c1c1e;
-        color: #ffffff;
-        box-shadow: none;
-    }
-
-    input[type="text"] {
-        background-color: #2c2c2e;
-        color: #ffffff;
-        border-color: #3a3a3c;
-    }
-
-    input[type="text"]::placeholder {
-        color: #8e8e93;
-    }
-
-    button {
-        background-color: #248a3d;
-    }
-
-    .copy-button {
-        background-color: #0a84ff;
-    }
-
-    .reset-button {
-        background-color: #3a3a3c;
-    }
-
-    .home-button {
-        background-color: transparent;
-        border-color: #8e8e93;
-    }
-
-    a,
-    a:visited {
-        color: #64b5ff;
-    }
-
-    hr {
-        border-color: #3a3a3c;
+    :root:not([data-theme="light"]) {
+        --bg: #000000; --surface: #1c1c1e; --surface-2: #26262a; --ink: #f2f4f7; --muted: #9aa3ae; --line: #343438;
+        --brand: #0a84ff; --brand-strong: #3d9bff; --brand-ink: #ffffff; --bar: #0a2540; --bar-ink: #64b5ff;
+        --tab-track: #0b2a4a; --tab-ink: #8cc4ff; --tab-active: #12385f; --tab-active-ink: #ffffff;
+        --band: rgba(10, 132, 255, 0.30); --danger: #ff6b61; --focus: #ffbf47;
+        --lsg: #3dcab9; --lsg-band: rgba(61, 202, 185, 0.28); --rygb: #ad8dff; --rygb-band: rgba(173, 141, 255, 0.28); --on-proc: #0b0b0d;
+        --shadow: none;
+        --c-under: #7aa7ff; --c-normal: #3fbf73; --c-over: #f0c43a; --c-c1: #f59a3c; --c-c2: #f06b45; --c-c3: #ff5a4f;
+        color-scheme: dark;
     }
 }
-
-@media (prefers-color-scheme: dark) and (hover: hover) {
-    .nav-buttons button:hover {
-        background-color: #12385f;
-    }
-
-    button:hover {
-        background-color: #1e7434;
-    }
-
-    .copy-button:hover {
-        background-color: #0070e0;
-    }
-
-    .reset-button:hover {
-        background-color: #48484a;
-    }
-
-    .home-button:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
+:root[data-theme="dark"] {
+    --bg: #000000; --surface: #1c1c1e; --surface-2: #26262a; --ink: #f2f4f7; --muted: #9aa3ae; --line: #343438;
+    --brand: #0a84ff; --brand-strong: #3d9bff; --brand-ink: #ffffff; --bar: #0a2540; --bar-ink: #64b5ff;
+    --tab-track: #0b2a4a; --tab-ink: #8cc4ff; --tab-active: #12385f; --tab-active-ink: #ffffff;
+    --band: rgba(10, 132, 255, 0.30); --danger: #ff6b61; --focus: #ffbf47;
+        --lsg: #3dcab9; --lsg-band: rgba(61, 202, 185, 0.28); --rygb: #ad8dff; --rygb-band: rgba(173, 141, 255, 0.28); --on-proc: #0b0b0d;
+    --shadow: none;
+    --c-under: #7aa7ff; --c-normal: #3fbf73; --c-over: #f0c43a; --c-c1: #f59a3c; --c-c2: #f06b45; --c-c3: #ff5a4f;
+    color-scheme: dark;
 }
 
-    </style>
+* { box-sizing: border-box; }
+html { padding-top: env(safe-area-inset-top, 0px); }
+[hidden] { display: none !important; }
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.45;
+    -webkit-text-size-adjust: 100%;
+}
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* ---------- App bar ---------- */
+.appbar {
+    background: var(--bar);
+    color: var(--bar-ink);
+    padding-inline: 16px;
+    padding-block: 12px;
+}
+.appbar-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: "title tabs clear";
+    align-items: center;
+    gap: 10px 12px;
+}
+.appbar h1 { grid-area: title; display: flex; align-items: center; gap: 10px; }
+.logo-mark { width: 32px; height: 32px; flex: none; border-radius: 8px; }
+.tabs { grid-area: tabs; }
+.clear-btn {
+    grid-area: clear;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 12px 0 10px;
+    border-radius: 10px;
+    border: 1px solid var(--tab-track);
+    background: transparent;
+    color: var(--bar-ink);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.clear-btn svg { width: 18px; height: 18px; }
+.appbar h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+.tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    padding: 3px;
+    border-radius: 11px;
+    background: var(--tab-track);
+    min-width: min(100%, 460px);
+}
+.tabs button {
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--tab-ink);
+    padding: 8px 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.tabs button[aria-selected="true"] {
+    background: var(--tab-active);
+    color: var(--tab-active-ink);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+/* ---------- Page layout ---------- */
+.page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-inline: 16px;
+    padding-block: 20px 40px;
+}
+.workspace {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+}
+
+/* ---------- Form ---------- */
+.form-card {
+    position: sticky;
+    top: calc(16px + env(safe-area-inset-top, 0px));
+    padding: 20px;
+    display: grid;
+    gap: 16px;
+}
+.form-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+.form-head h2 {
+    margin: 0;
+    font-size: 18px;
+}
+form { display: grid; gap: 14px; margin: 0; }
+.field { display: grid; gap: 6px; }
+.field > span, .field legend {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+}
+fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
+fieldset.field legend { padding: 0; margin-bottom: 6px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.unit-box {
+    position: relative;
+    display: block;
+}
+.unit-box input {
+    width: 100%;
+    padding: 12px 44px 12px 14px;
+    font-size: 20px;
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.unit-box input:focus { border-color: var(--brand); outline: none; box-shadow: 0 0 0 3px var(--band); }
+.unit-box input::placeholder { color: var(--muted); opacity: 0.7; }
+.unit-box b {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    pointer-events: none;
+}
+.optional { font-weight: 400; }
+.surgery { border-top: 1px solid var(--line) !important; padding-top: 14px !important; display: grid; gap: 10px; }
+.op-toggle { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.other { --proc: var(--muted); --proc-band: var(--band); }
+.op-toggle button {
+    display: grid;
+    justify-items: center;
+    gap: 0;
+    padding: 9px 10px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: var(--surface-2);
+    color: var(--proc);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+}
+.op-toggle button small { font-size: 12px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+.op-toggle button[aria-pressed="true"] { background: var(--proc); border-color: var(--proc); color: var(--on-proc); }
+.op-toggle button[aria-pressed="true"] small { color: var(--on-proc); opacity: 0.85; }
+.select-box select {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 18px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--ink);
+}
+.select-box select:focus { border-color: var(--brand); outline: none; box-shadow: 0 0 0 3px var(--band); }
+/* Postop progress against expected */
+.progress-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.status-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 12px 4px 10px; border-radius: 999px;
+    border: 1.5px solid var(--status); font-size: 14px; font-weight: 700;
+}
+.status-chip::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--status); }
+.expect-line { margin: 0; font-size: 15px; }
+.expect-line b { color: var(--proc); }
+.pct-track { position: relative; height: 54px; margin-top: 6px; }
+.pct-track .rail { position: absolute; left: 0; right: 0; top: 30px; height: 2px; background: var(--line); }
+.pct-track .band { position: absolute; top: 23px; height: 16px; border-radius: 8px; background: var(--proc-band); }
+.pct-track .median { position: absolute; top: 19px; width: 3px; height: 24px; margin-left: -1.5px; border-radius: 2px; background: var(--proc); }
+.pct-track .pt { position: absolute; top: 31px; width: 16px; height: 16px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--ink); border: 2px solid var(--surface); }
+.pct-track .pt.nadir { background: var(--surface); border: 3px solid var(--ink); width: 14px; height: 14px; }
+.pct-track .lbl { position: absolute; top: 0; transform: translateX(-50%); font-size: 12px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pct-track .lbl.low { top: auto; bottom: -4px; }
+.pct-axis { position: relative; height: 18px; border-top: 1px solid var(--line); margin-top: 8px; }
+.pct-axis span { position: absolute; top: 3px; transform: translateX(-50%); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.prompt { padding: 16px 20px; color: var(--muted); font-size: 14px; }
+.prompt strong { color: var(--ink); }
+.form-actions { display: flex; gap: 10px; }
+.btn {
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn-primary { background: var(--brand); color: var(--brand-ink); }
+.btn-quiet { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+.form-actions .btn { flex: 1; }
+@media (hover: hover) {
+    .clear-btn:hover { background: var(--tab-track); }
+    .btn-primary:hover { background: var(--brand-strong); }
+    .btn-quiet:hover { border-color: var(--muted); }
+    .tabs button:not([aria-selected="true"]):hover { background: rgba(255, 255, 255, 0.10); }
+}
+.form-hint { margin: 0; font-size: 14px; color: var(--muted); }
+.calc-btn { width: 100%; margin-top: 4px; padding: 14px; font-size: 17px; }
+/* results that no longer match the inputs */
+.stale-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--c-over);
+    background: var(--surface);
+    font-weight: 600;
+}
+.stale-banner .btn { padding: 8px 14px; font-size: 15px; }
+.results.stale > .panel { opacity: 0.4; filter: grayscale(0.6); }
+
+/* ---------- Results ---------- */
+.results { display: grid; gap: 16px; min-width: 0; }
+.empty {
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--muted);
+}
+.empty strong { display: block; color: var(--ink); font-size: 18px; margin-bottom: 4px; }
+.empty.error strong { color: var(--danger); }
+
+.hero { padding: 20px 20px 18px; display: grid; gap: 16px; }
+.hero-top { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 6px 16px; }
+.bmi-number {
+    font-family: var(--font-num);
+    font-size: 56px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+}
+.bmi-word {
+    font-family: var(--font);
+    font-size: 0.45em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+}
+.bmi-meta { display: grid; gap: 6px; padding-bottom: 4px; }
+.bmi-meta small { color: var(--muted); font-size: 14px; }
+.bmi-meta .hero-extra { color: var(--ink); font-size: 15px; }
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: max-content;
+    padding: 4px 12px 4px 10px;
+    border-radius: 999px;
+    border: 1.5px solid var(--cls);
+    font-size: 15px;
+    font-weight: 700;
+}
+.chip::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--cls);
+}
+
+/* BMI scale */
+.scale { position: relative; padding-top: 30px; }
+.scale-track {
+    display: flex;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.scale-track span { height: 100%; }
+.scale-marker {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    display: grid;
+    justify-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+.scale-marker::after {
+    content: "";
+    width: 3px;
+    height: 24px;
+    margin-top: 2px;
+    border-radius: 2px;
+    background: var(--ink);
+    box-shadow: 0 0 0 2px var(--surface);
+}
+.scale-ticks { position: relative; height: 18px; margin-top: 4px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.scale-ticks span { position: absolute; transform: translateX(-50%); }
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    background: var(--surface);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+}
+/* hairlines between tiles without filling empty grid cells */
+.stat { padding: 14px 16px; display: grid; gap: 2px; align-content: start; box-shadow: 1px 0 0 var(--line), 0 1px 0 var(--line); }
+.stat span { font-size: 13px; color: var(--muted); }
+.stat strong {
+    font-family: var(--font-num);
+    font-size: 22px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+.stat small { font-size: 13px; color: var(--muted); }
+.stats.two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.stats.single { grid-template-columns: minmax(0, 1fr); max-width: 380px; }
+.stat-group .proc { display: grid; gap: 1px; padding: 6px 0; }
+.stat-group .proc + .proc { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 4px; }
+.lsg { --proc: var(--lsg); --proc-band: var(--lsg-band); }
+.rygb { --proc: var(--rygb); --proc-band: var(--rygb-band); }
+.proc-name { display: flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 800; color: var(--proc, var(--muted)); letter-spacing: 0.04em; }
+.proc-name::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--proc, var(--muted)); }
+.stat-group .proc { border-left: 3px solid var(--proc, transparent); padding-left: 12px; margin-left: -2px; }
+.stat-table table { width: 100%; border-collapse: collapse; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.stat-table th { text-align: left; font-weight: 500; color: var(--muted); font-size: 14px; padding: 5px 0; }
+.stat-table td { text-align: right; font-family: var(--font-num); font-weight: 700; font-size: 17px; padding: 5px 0; }
+.stat-table tr + tr th, .stat-table tr + tr td { border-top: 1px solid var(--line); }
+
+/* Weight chart */
+.chart { padding: 18px 20px 14px; display: grid; gap: 12px; }
+.chart h3, .note-head h3 { margin: 0; font-size: 16px; }
+.chart p.caption { margin: 0; font-size: 13px; color: var(--muted); }
+.lanes { display: grid; gap: 10px; }
+.lane { display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; gap: 10px; }
+.lane-label { font-size: 13px; font-weight: 800; line-height: 1.2; color: var(--proc, var(--ink)); }
+.lane-label small { display: block; font-weight: 400; color: var(--muted); }
+.track { position: relative; height: 34px; }
+.track .rail { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: var(--line); }
+.track .band {
+    position: absolute;
+    top: 50%;
+    height: 14px;
+    transform: translateY(-50%);
+    border-radius: 7px;
+    background: var(--proc-band, var(--band));
+}
+.track .dot {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--proc, var(--brand));
+    border: 2px solid var(--surface);
+}
+.track .dot.hollow { background: var(--surface); border: 3px solid var(--brand); }
+.track .dot.ink { background: var(--ink); }
+.track .tag {
+    position: absolute;
+    top: -4px;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+.track .tag.below { top: auto; bottom: -6px; }
+.track .lost { position: absolute; top: 50%; height: 4px; transform: translateY(-50%); background: var(--brand); border-radius: 2px; }
+.axis-wrap { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 10px; }
+.axis { position: relative; height: 34px; border-top: 1px solid var(--line); }
+.axis span {
+    position: absolute;
+    top: 4px;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.2;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+.lanes-wrap { position: relative; }
+.refline {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-left: 1px dashed var(--line);
+}
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); }
+.legend i { display: inline-block; width: 18px; height: 10px; border-radius: 5px; background: var(--proc, var(--band)); vertical-align: -1px; margin-right: 6px; }
+.legend .lsg, .legend .rygb { color: var(--proc); font-weight: 700; }
+.legend i.dot { width: 10px; background: var(--brand); }
+
+/* Chart note */
+.note-card { overflow: hidden; }
+.note-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 12px 12px 20px;
+    border-bottom: 1px solid var(--line);
+}
+.note-head h3 small { font-weight: 400; color: var(--muted); font-size: 13px; }
+.note-head .btn { padding: 8px 14px; font-size: 15px; }
+.note-actions { display: flex; gap: 8px; }
+.icon-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.icon-btn svg { width: 18px; height: 18px; }
+.note-body {
+    padding: 16px 20px 6px;
+    font-family: var(--font-note);
+    font-size: 13.5px;
+    line-height: 1.55;
+    background: var(--surface-2);
+    overflow-wrap: anywhere;
+}
+.note-body span { font-size: inherit !important; }
+
+/* ---------- Resources ---------- */
+.resources { display: grid; gap: 12px; max-width: 860px; }
+.resources details { padding: 0; }
+.resources summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 16px 20px;
+    font-size: 17px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+.resources summary::-webkit-details-marker { display: none; }
+.resources summary::after { content: "+"; font-size: 22px; font-weight: 400; color: var(--muted); }
+.resources details[open] summary::after { content: "\2212"; }
+.res-body { padding: 0 20px 20px; display: grid; gap: 12px; }
+.res-body p { margin: 0; }
+.criteria { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.criteria div { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; }
+.criteria span { display: block; font-size: 13px; color: var(--muted); }
+.criteria strong { font-size: 18px; }
+.links { display: grid; gap: 8px; }
+.links a {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+}
+.links a::after { content: "\2197"; color: var(--brand); }
+.links a small { display: block; font-weight: 400; color: var(--muted); }
+.group-label { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.gallery figure { margin: 0; background: var(--surface-2); border-radius: 10px; padding: 10px; display: grid; gap: 8px; align-content: start; }
+.gallery img { width: 100%; height: auto; border-radius: 6px; background: #ffffff; }
+.gallery figcaption, .videos figcaption { font-size: 14px; font-weight: 600; }
+.videos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.videos figure { margin: 0; display: grid; gap: 8px; }
+.videos iframe { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 10px; background: var(--surface-2); }
+
+.page-foot { margin-top: 28px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; font-size: 14px; }
+.link-btn { border: 0; background: none; padding: 0; cursor: pointer; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; font-size: 14px; }
+@media (hover: hover) { .link-btn:hover { color: var(--brand); } }
+.page-foot a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+@media (hover: hover) { .page-foot a:hover { color: var(--brand); } }
+
+/* ---------- Phone ---------- */
+.mobile-bar { display: none; }
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    max-width: calc(100% - 32px);
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: var(--ink);
+    color: var(--surface);
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+    z-index: 20;
+}
+
+@media (max-width: 860px) {
+    .workspace { grid-template-columns: minmax(0, 1fr); }
+    .form-card { position: static; }
+    .form-actions { display: none; }
+    .appbar-inner { grid-template-columns: 1fr auto; grid-template-areas: "title clear" "tabs tabs"; }
+    .tabs { width: 100%; }
+    .page { padding-block: 16px 110px; }
+    .mobile-bar {
+        display: flex;
+        gap: 10px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+        padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+        background: var(--surface);
+        border-top: 1px solid var(--line);
+    }
+    .mobile-bar .btn { flex: 1; padding: 14px; }
+    .mobile-bar .icon-btn { flex: 0 0 auto; padding: 14px 18px; }
+    .toast { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
+    .note-actions { display: none; }
+    .stale-banner .btn { display: none; }
+    .mobile-bar.stale .btn-primary { opacity: 0.45; }
+}
+@media (max-width: 420px) {
+    .clear-label { display: none; }
+    .clear-btn { width: 38px; padding: 0; justify-content: center; }
+    .tabs button { padding: 8px 4px; font-size: 14px; }
+    .bmi-number { font-size: 48px; }
+    .lane, .axis-wrap { grid-template-columns: 58px minmax(0, 1fr); gap: 8px; }
+    .stats { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: no-preference) {
+    .scale-marker, .track .dot, .track .band { transition: left 0.25s ease, width 0.25s ease; }
+}
+</style>
 </head>
 <body>
-    <div class="header">
-        Elan's BMI Calculators
-    </div>
-    
-    <div class="nav-buttons">
-        <button onclick="showCalculator('bmiCalculator')">SIMPLE</button>
-	<button onclick="showCalculator('preopCalculator')">PREOP</button>
-        <button onclick="showCalculator('postopCalculator')">POSTOP</button>
-	<button onclick="showCalculator('resources')">RESOURCES</button>
-    </div>
-    
-    <div id="bmiCalculator" class="container">
-        <h1>BMI - SIMPLE</h1>
-        <form id="bmiForm">
-            <label for="weight">Weight (lbs):</label>
-            <input type="text" id="weight" required placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off">
-            <label for="feet">Height:</label>
-            <input type="text" id="feet" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
-            <input type="text" id="inches" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
-            <button type="button" id="simpleButton" onclick="calculateBMI()">Calculate BMI</button>
-        </form>
-        <div class="result" id="result"></div>
-        <button class="copy-button" onclick="copyToClipboard('result')">Copy Results</button>
-		<button class="reset-button" onclick="startOver()">Start Over</button>
-    </div>
-	
-	    <div id="preopCalculator" class="container">
-        <h1>BMI - PREOP</h1>
-        <form id="preopForm">
-            <label for="weightp">Weight (lbs):</label>
-            <input type="text" id="weightp" required placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off">
-            <label for="feetp">Height:</label>
-            <input type="text" id="feetp" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
-            <input type="text" id="inchesp" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
-            <button type="button" id="preopButton" onclick="calculatePreop()">Calculate Preop</button>
-        </form>
-        <div class="result" id="preopResult"></div>
-        <button class="copy-button" onclick="copyToClipboard('preopResult')">Copy Results</button>
-		<button class="reset-button" onclick="startOver()">Start Over</button>
-    </div>
 
-    <div id="postopCalculator" class="container">
-        <h1>BMI - POSTOP</h1>
-        <form id="postopForm">
-            <label for="currentWeight">Current Weight (lbs):</label>
-            <input type="text" id="currentWeight" required placeholder="Pounds - Current" inputmode="decimal" data-format="decimal" autocomplete="off">
-            <label for="postopFeet">Height:</label>
-            <input type="text" id="postopFeet" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
-            <input type="text" id="postopInches" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
-	    <label for="preopWeight">Preop Weight (lbs):</label>
-            <input type="text" id="preopWeight" required placeholder="Pounds - Preop" inputmode="decimal" data-format="decimal" autocomplete="off">
-            <label for="lowestPostopWeight">Lowest Postop Weight (lbs) - optional:</label>
-            <input type="text" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" inputmode="decimal" data-format="decimal" autocomplete="off">
-            <button type="button" id="postopButton" onclick="calculatePostop()">Calculate Postop</button>
-        </form>
-        <div class="result" id="postopResult"></div>
-        <button class="copy-button" onclick="copyToClipboard('postopResult')">Copy Results</button>
-		<button class="reset-button" onclick="startOver()">Start Over</button>
-
+<header class="appbar">
+    <div class="appbar-inner">
+        <h1><svg class="logo-mark" aria-hidden="true" focusable="false" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#0756b5"/><path d="M10.0 52.0 A40 40 0 0 1 20.27 25.23" fill="none" stroke="#3ccf7c" stroke-width="8"/><path d="M23.23 22.27 A40 40 0 0 1 47.91 12.05" fill="none" stroke="#f5cd4b" stroke-width="8"/><path d="M52.09 12.05 A40 40 0 0 1 76.77 22.27" fill="none" stroke="#f59a3c" stroke-width="8"/><path d="M79.73 25.23 A40 40 0 0 1 90.0 52.0" fill="none" stroke="#ff6058" stroke-width="8"/><circle cx="71.2" cy="18.08" r="6.5" fill="#ffffff" stroke="#0756b5" stroke-width="2.5"/><text x="50" y="90" font-family="Helvetica, Arial, sans-serif" font-weight="800" fill="#ffffff" text-anchor="middle" font-size="42" letter-spacing="-1">BMI</text></svg><span>Elan's BMI Calculators</span></h1>
+        <nav class="tabs" role="tablist" aria-label="Calculator">
+            <button type="button" role="tab" id="tab-simple" data-tab="simple" aria-selected="true">Simple</button>
+            <button type="button" role="tab" id="tab-preop" data-tab="preop" aria-selected="false">Preop</button>
+            <button type="button" role="tab" id="tab-postop" data-tab="postop" aria-selected="false">Postop</button>
+            <button type="button" role="tab" id="tab-resources" data-tab="resources" aria-selected="false">Resources</button>
+        </nav>
+        <button type="button" class="clear-btn" id="clearAll" title="Start over: clear all calculators" aria-label="Start over: clear all calculators">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+            <span class="clear-label">Clear</span>
+        </button>
     </div>
-	    <div id="resources" class="container">
-        <h1>SURGERY RESOURCES</h1>
-		    <br>
-  		<b><p style="text-align: center">Criteria for treatment with / without weight-related comorbidity </p></b>
-		    
-			<br>
-		<em>	Medication: DM2, or BMI <span>&#8805;</span> 27 / 30
-			<br> 
-			Surgery: BMI <span>&#8805;</span> 30 / 35 </em>
-		    	<br><br>
-		    	<hr>
-			<b>
-		    <p style="text-align: center">Links </p></b>
-		    <br>
-		    <em><b><a href="MGH-res-edu-2024.pdf" target="_blank">Resources for MGH Residents (slides)</a></b></em>
-		    <br><br>
-		    <a href="https://achqc.org/uploads/general_images/ACHQC_Abdominal_Core_Surgery_Rehabilitation_Protocol_Patient_Guide_06.17.21.pdf" target="_blank">LINK to ACHQC Patient PT</a>
-		    <br><br>
-		    <a href="https://achqc.org/uploads/general_images/ACHQC_Abdominal_Core_Surgery_Rehabilitation_Protocol_Physical_Therapist_Guide_06.17.21.pdf" target="_blank">LINK to ACHQC Provider PT</a>
-		    <br><br>
-		    <a href="https://asmbs.org/cp_type/procedure/" target="_blank">LINK to ASMBS Procedure Info</a>
-		    <br><br>
-		    <a href="https://www.massgeneral.org/digestive/weight-center/surgical-treatments" target="_blank">LINK to MGH Weight Center Surgery</a>
-			<br>
-		    <a href="https://www.massgeneral.org/digestive/weight-center/appointments-and-referrals" target="_blank">LINK to MGH Weight Center</a>
-		    <br>
-			MGH WC Surgical Coordinator Phone: <br>
-		    -- <a href="tel:+1-617-726-4402">1(617)726-4402</a>  
-			<br><br>  
-		    	<hr>
-			<b>
-		    	<p style="text-align: center"> Surgical Diagrams </p></b>
-		 	<br>	
-		<b>Sleeve:</b>  
-		    <br>
-		    <img loading="lazy" src="Sleeve2.png" alt="Sleeve">
-		    <br><br>
-		<b>Bypass:</b>  
-		    <br>
-		    <img loading="lazy" src="RYGB2.png" alt="Bypass">
-			    <br><br>
-		 <b>Animations:</b>  
-		    <br>
-		    <img loading="lazy" src="sleevegif1.gif" alt="Sleeve animation">
-			    <br>
-		    <img loading="lazy" src="bypassgif1.gif" alt="Bypass animation">
-		    <br><br>
-		<b>SADI-S:</b>  
-		    <br>
-		    <img loading="lazy" src="SADI-S.jpeg" alt="SADI-S">
-		    <br><br>
-		<b>BPD-DS:</b>  
-		    <br>
-		    <img loading="lazy" src="BPD-DS.png" alt="BPD-DS">
-		    <br><br>
-		<b>Band:</b>  
-		    <br>
-		    <img loading="lazy" src="Band.png" alt="Band">
-		    <br><br>
-		<b>OAGB (one-anastomosis gastric bypass) / "mini gastric bypass":</b>  
-		    <br>
-		    <img loading="lazy" src="OABG.png" alt="OAGB">
-		    <br><br>
-		    <hr>
-			<b>
-		    	<p style="text-align: center"> Videos </p></b>
-		 	<br>	
-		<b>Sleeve:</b>  
-			<br><br>
-<iframe loading="lazy" style="width: 100%; aspect-ratio: 16 / 9" title="Sleeve" src="https://www.youtube.com/embed/dv-iTdWgNcI?&theme=dark&autohide=2&rel=0&mute=1" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
-			<br><br><br>
-		<b>Bypass:</b>  
-			<br><br>
-<iframe loading="lazy" style="width: 100%; aspect-ratio: 16 / 9" title="Bypass" src="https://www.youtube.com/embed/WscSZJu9htY?&theme=dark&autohide=2&rel=0&mute=1" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
-			<br><br><br>
-		    <hr>
-		    <br>
-		<b>Contact card for MGH Patients:</b>  
-		    <br>
-		    <img loading="lazy" src="help.jpg" alt="Help Card">
-		    <br><br>
-	    <br>
-		    <hr>
-		   			<br><br><br>
-		<b>Hernia resources:</b>  
-			<br><br><br>
-	Hiatal hernia:  
-		    <br>
-		    <img loading="lazy" src="hh2.jpg" alt="Hiatal Hernia">
-		    <br><br>
-	Fundoplication:  
-		    <br>
-		    <img loading="lazy" src="nissen1.jpg" alt="Fundoplication">
-		    <br><br>
-	Retrorectus hernia repair:  
-		    <br>
-		    <img loading="lazy" src="retrorectus1.jpg" alt="Retrorectus">
-		    <br><br>
-	Retrorectus hernia repair:  
-		    <br>
-		    <img loading="lazy" src="rr3.jpg" alt="Retrorectus 2">
-		    <br><br>
-	Mesh positions / layers:
-		    <br>
-		    <img loading="lazy" src="retrorectus3.png" alt="Layers">
-		    <br><br>
-<iframe loading="lazy" style="width: 100%; aspect-ratio: 16 / 9" title="Retrorectus" src="https://www.youtube.com/embed/uWPqpiw30NM?&theme=dark&autohide=2&rel=0&mute=1&t=27s" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
-			<br><br><br> 
+</header>
 
-		<button class="reset-button" onclick="startOver()">Start Over</button>
+<main class="page">
+    <div class="workspace" id="workspace">
+        <section class="panel form-card" aria-label="Patient measurements">
+            <div class="form-head">
+                <h2 id="formTitle">Simple BMI</h2>
+            </div>
 
+            <form id="simpleForm" data-tab="simple" autocomplete="off">
+                <label class="field"><span>Weight</span>
+                    <span class="unit-box"><input type="text" id="weight" placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off"><b>lb</b></span>
+                </label>
+                <fieldset class="field"><legend>Height</legend>
+                    <div class="pair">
+                        <span class="unit-box"><input type="text" id="feet" placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off" aria-label="Height, feet"><b>ft</b></span>
+                        <span class="unit-box"><input type="text" id="inches" placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off" aria-label="Height, inches"><b>in</b></span>
+                    </div>
+                </fieldset>
+                <button type="submit" class="btn btn-primary calc-btn">Calculate</button>
+            </form>
+
+            <form id="preopForm" data-tab="preop" autocomplete="off" hidden>
+                <label class="field"><span>Weight</span>
+                    <span class="unit-box"><input type="text" id="weightp" placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off"><b>lb</b></span>
+                </label>
+                <fieldset class="field"><legend>Height</legend>
+                    <div class="pair">
+                        <span class="unit-box"><input type="text" id="feetp" placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off" aria-label="Height, feet"><b>ft</b></span>
+                        <span class="unit-box"><input type="text" id="inchesp" placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off" aria-label="Height, inches"><b>in</b></span>
+                    </div>
+                </fieldset>
+                <button type="submit" class="btn btn-primary calc-btn">Calculate</button>
+            </form>
+
+            <form id="postopForm" data-tab="postop" autocomplete="off" hidden>
+                <label class="field"><span>Current weight</span>
+                    <span class="unit-box"><input type="text" id="currentWeight" placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off"><b>lb</b></span>
+                </label>
+                <fieldset class="field"><legend>Height</legend>
+                    <div class="pair">
+                        <span class="unit-box"><input type="text" id="postopFeet" placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off" aria-label="Height, feet"><b>ft</b></span>
+                        <span class="unit-box"><input type="text" id="postopInches" placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off" aria-label="Height, inches"><b>in</b></span>
+                    </div>
+                </fieldset>
+                <label class="field"><span>Preop weight</span>
+                    <span class="unit-box"><input type="text" id="preopWeight" placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off"><b>lb</b></span>
+                </label>
+                <label class="field"><span>Lowest postop weight <span class="optional">(nadir, optional)</span></span>
+                    <span class="unit-box"><input type="text" id="lowestPostopWeight" placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off"><b>lb</b></span>
+                </label>
+                <fieldset class="field surgery" id="surgery">
+                    <legend>Surgery <span class="optional">(optional, to compare with expected)</span></legend>
+                    <div class="op-toggle" role="group" aria-label="Operation">
+                        <button type="button" class="lsg" data-op="LSG" aria-pressed="false">LSG<small>sleeve</small></button>
+                        <button type="button" class="rygb" data-op="RYGB" aria-pressed="false">RYGB<small>bypass</small></button>
+                        <button type="button" class="other" data-op="Other" aria-pressed="false">Other<small>any other</small></button>
+                    </div>
+                    <div class="pair">
+                        <span class="unit-box"><input type="text" id="surgeryYear" placeholder="Year" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="Year of surgery"></span>
+                        <span class="unit-box select-box"><select id="surgeryMonth" aria-label="Month of surgery">
+                            <option value="">Month</option>
+                            <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option>
+                            <option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option>
+                            <option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+                        </select></span>
+                    </div>
+                </fieldset>
+                <button type="submit" class="btn btn-primary calc-btn">Calculate</button>
+            </form>
+
+            <p class="form-hint">Press Calculate or Enter to see results. Clear starts a new patient.</p>
+        </section>
+
+        <section class="results" id="results" aria-live="polite"></section>
     </div>
 
-    <button id="homeScreenButton" class="home-button" onclick="addToHomeScreen()">Add to Home Screen</button>
+    <section class="resources" id="resources" hidden>
+        <details class="panel" open>
+            <summary>Treatment criteria</summary>
+            <div class="res-body">
+                <p>Criteria for treatment with / without weight-related comorbidity</p>
+                <div class="criteria">
+                    <div><span>Medication</span><strong>DM2, or BMI &#8805; 27 / 30</strong></div>
+                    <div><span>Surgery</span><strong>BMI &#8805; 30 / 35</strong></div>
+                </div>
+            </div>
+        </details>
 
-    <script>
+        <details class="panel" open>
+            <summary>Links</summary>
+            <div class="res-body">
+                <div class="group-label">Bariatric</div>
+                <div class="links">
+                    <a href="https://asmbs.org/cp_type/procedure/" target="_blank" rel="noopener"><span>ASMBS procedure info</span></a>
+                    <a href="https://www.massgeneral.org/digestive/weight-center/surgical-treatments" target="_blank" rel="noopener"><span>MGH Weight Center: surgery</span></a>
+                    <a href="https://www.massgeneral.org/digestive/weight-center/appointments-and-referrals" target="_blank" rel="noopener"><span>MGH Weight Center: appointments<small>Surgical coordinator: 1 (617) 726-4402</small></span></a>
+                </div>
+                <div class="group-label">Hernia rehab (ACHQC)</div>
+                <div class="links">
+                    <a href="https://achqc.org/uploads/general_images/ACHQC_Abdominal_Core_Surgery_Rehabilitation_Protocol_Patient_Guide_06.17.21.pdf" target="_blank" rel="noopener"><span>Rehab guide for patients</span></a>
+                    <a href="https://achqc.org/uploads/general_images/ACHQC_Abdominal_Core_Surgery_Rehabilitation_Protocol_Physical_Therapist_Guide_06.17.21.pdf" target="_blank" rel="noopener"><span>Rehab guide for physical therapists</span></a>
+                </div>
+                <div class="group-label">Teaching</div>
+                <div class="links">
+                    <a href="MGH-res-edu-2024.pdf" target="_blank" rel="noopener"><span>Resources for MGH residents (slides)</span></a>
+                </div>
+            </div>
+        </details>
+
+        <details class="panel">
+            <summary>Bariatric procedure diagrams</summary>
+            <div class="res-body">
+                <div class="gallery">
+                    <figure><img loading="lazy" src="Sleeve2.png" alt="Sleeve gastrectomy diagram"><figcaption>Sleeve</figcaption></figure>
+                    <figure><img loading="lazy" src="RYGB2.png" alt="Roux-en-Y gastric bypass diagram"><figcaption>Bypass</figcaption></figure>
+                    <figure><img loading="lazy" src="sleevegif1.gif" alt="Sleeve gastrectomy animation"><figcaption>Sleeve (animation)</figcaption></figure>
+                    <figure><img loading="lazy" src="bypassgif1.gif" alt="Gastric bypass animation"><figcaption>Bypass (animation)</figcaption></figure>
+                    <figure><img loading="lazy" src="SADI-S.jpeg" alt="SADI-S diagram"><figcaption>SADI-S</figcaption></figure>
+                    <figure><img loading="lazy" src="BPD-DS.png" alt="BPD-DS diagram"><figcaption>BPD-DS</figcaption></figure>
+                    <figure><img loading="lazy" src="Band.png" alt="Gastric band diagram"><figcaption>Band</figcaption></figure>
+                    <figure><img loading="lazy" src="OABG.png" alt="OAGB diagram"><figcaption>OAGB (one-anastomosis gastric bypass) / "mini gastric bypass"</figcaption></figure>
+                </div>
+            </div>
+        </details>
+
+        <details class="panel">
+            <summary>Videos</summary>
+            <div class="res-body">
+                <div class="videos">
+                    <figure><iframe loading="lazy" title="Sleeve gastrectomy" src="https://www.youtube.com/embed/dv-iTdWgNcI?rel=0&amp;mute=1" allowfullscreen></iframe><figcaption>Sleeve gastrectomy</figcaption></figure>
+                    <figure><iframe loading="lazy" title="Gastric bypass" src="https://www.youtube.com/embed/WscSZJu9htY?rel=0&amp;mute=1" allowfullscreen></iframe><figcaption>Gastric bypass</figcaption></figure>
+                    <figure><iframe loading="lazy" title="Retrorectus hernia repair" src="https://www.youtube.com/embed/uWPqpiw30NM?rel=0&amp;mute=1&amp;start=27" allowfullscreen></iframe><figcaption>Retrorectus hernia repair</figcaption></figure>
+                </div>
+            </div>
+        </details>
+
+        <details class="panel">
+            <summary>Contact card for MGH patients</summary>
+            <div class="res-body">
+                <div class="gallery"><figure><img loading="lazy" src="help.jpg" alt="MGH patient help card"></figure></div>
+            </div>
+        </details>
+
+        <details class="panel">
+            <summary>Hernia and foregut</summary>
+            <div class="res-body">
+                <div class="gallery">
+                    <figure><img loading="lazy" src="hh2.jpg" alt="Hiatal hernia diagram"><figcaption>Hiatal hernia</figcaption></figure>
+                    <figure><img loading="lazy" src="nissen1.jpg" alt="Fundoplication diagram"><figcaption>Fundoplication</figcaption></figure>
+                    <figure><img loading="lazy" src="retrorectus1.jpg" alt="Retrorectus hernia repair diagram"><figcaption>Retrorectus hernia repair</figcaption></figure>
+                    <figure><img loading="lazy" src="rr3.jpg" alt="Retrorectus hernia repair, second view"><figcaption>Retrorectus hernia repair (2)</figcaption></figure>
+                    <figure><img loading="lazy" src="retrorectus3.png" alt="Mesh positions and layers"><figcaption>Mesh positions / layers</figcaption></figure>
+                </div>
+            </div>
+        </details>
+    </section>
+    <footer class="page-foot">
+        <a href="calc-classic.html">Prefer the original layout? Open the classic version</a>
+        <button type="button" class="link-btn" id="homeScreenButton">Add to Home Screen</button>
+    </footer>
+</main>
+
+<div class="mobile-bar" id="mobileBar">
+    <button type="button" class="btn btn-quiet icon-btn" id="clearBottom" title="Start over: clear all calculators" aria-label="Start over: clear all calculators"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span>Clear</span></button>
+    <button type="button" class="btn btn-primary" id="copyMobile">Copy note</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+// ---------- Formulas and note text: copied unchanged from the live calc.html ----------
         const LBS_PER_KG = 1 / 0.453592;
         const DIVIDER = '--------------------------------';
 
-        // Enter key calculates instead of submitting the form
-        [['bmiForm', 'simpleButton'], ['preopForm', 'preopButton'], ['postopForm', 'postopButton']].forEach(([formId, buttonId]) => {
-            document.getElementById(formId).addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    document.getElementById(buttonId).click();
-                }
-            });
-        });
 
         // Limit what can be typed or pasted: feet is a single digit; weights allow one
         // decimal place (215.5) and inches two (6.25), set by data-decimals
@@ -445,94 +839,6 @@ img {
             if (value !== input.value) input.value = value;
         }
 
-        // Auto-advance: Weight jumps to the next box after 3 digits (or after its
-        // decimal digit); feet jumps after 1 digit. Typing "." right after a weight jump
-        // goes back to the weight box so decimals still work.
-        function nextInput(input) {
-            const inputs = [...input.form.querySelectorAll('input')];
-            return inputs[inputs.indexOf(input) + 1] || null;
-        }
-
-        function previousInput(input) {
-            const inputs = [...input.form.querySelectorAll('input')];
-            return inputs[inputs.indexOf(input) - 1] || null;
-        }
-
-        function jumpTo(input) {
-            if (!input) return;
-            input.focus();
-            input.select();
-        }
-
-        function isWeight(input) {
-            return input.dataset.format === 'decimal' && !input.dataset.decimals;
-        }
-
-        document.querySelectorAll('input[data-format]').forEach(input => {
-            input.addEventListener('input', event => {
-                const typed = event.inputType && event.inputType.startsWith('insert');
-                const previous = previousInput(input);
-
-                // "." in the feet box right after a weight jump: send it back to the weight
-                if (typed && input.dataset.format === 'feet' && input.value.includes('.') &&
-                    previous && isWeight(previous) && /^\d+$/.test(previous.value)) {
-                    input.value = input.value.replace(/\./g, '');
-                    previous.value += '.';
-                    previous.focus();
-                    previous.setSelectionRange(previous.value.length, previous.value.length);
-                    return;
-                }
-
-                limitInput(input);
-                if (!typed || input.selectionStart !== input.value.length) return;
-
-                if (isWeight(input) && (/^\d{3}$/.test(input.value) || /^\d+\.\d$/.test(input.value))) {
-                    jumpTo(nextInput(input));
-                } else if (input.dataset.format === 'feet' && /^\d$/.test(input.value)) {
-                    jumpTo(nextInput(input));
-                }
-            });
-        });
-
-        function showCalculator(calculatorId) {
-            document.querySelectorAll('.container').forEach(container => {
-                container.classList.remove('active');
-            });
-            document.getElementById(calculatorId).classList.add('active');
-        }
-
-        // Clears every calculator and goes back to SIMPLE for the next patient
-        function startOver() {
-            document.querySelectorAll('form').forEach(form => form.reset());
-            document.querySelectorAll('.result').forEach(result => { result.innerHTML = ''; });
-            showCalculator('bmiCalculator');
-            window.scrollTo(0, 0);
-        }
-
-        // Reads a field as a number; empty -> NaN
-        function readNumber(id) {
-            const value = document.getElementById(id).value.trim();
-            return value === '' ? NaN : Number(value);
-        }
-
-        // Checks weights (lbs) and height (ft + in) are in a plausible adult range
-        function inputsAreValid(weights, feet, inches) {
-            const all = [...weights, feet, inches];
-            if (all.some(isNaN)) {
-                alert('Please enter numbers for all fields.');
-                return false;
-            }
-            if (weights.some(w => w < 50 || w > 1000)) {
-                alert('Please check the weight: it should be between 50 and 1000 lbs.');
-                return false;
-            }
-            const totalHeightInInches = (feet * 12) + inches;
-            if (feet < 0 || inches < 0 || totalHeightInInches < 36 || totalHeightInInches > 96) {
-                alert('Please check the height: it should be between 3 ft and 8 ft.');
-                return false;
-            }
-            return true;
-        }
 
         function heightInMeters(feet, inches) {
             return ((feet * 12) + inches) * 0.0254;
@@ -608,23 +914,6 @@ img {
                 Weight for BMI of 40 is ${weightForBmi(40, heightM).toFixed(0)} lbs<br>` : '');
         }
 
-        function calculateBMI() {
-            const weight = readNumber('weight');
-            const feet = readNumber('feet');
-            const inches = readNumber('inches');
-            if (!inputsAreValid([weight], feet, inches)) return;
-
-            const heightM = heightInMeters(feet, inches);
-            const bmi = bmiFor(weight, heightM);
-            // Excess body weight is measured against the weight for a BMI of 25
-            const ebw = weight - weightForBmi(25, heightM);
-
-            document.getElementById('result').innerHTML =
-                resultHeader(bmi, weight, feet, inches) + `
-                <br>
-                Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
-                ${targetWeights(heightM)}` + resultFooter();
-        }
 
         // Expected %TWL after surgery: PCORnet medians with SOPHIA IQRs, as [low, high] %TWL.
         // An iqr of null leaves the "(IQR ...)" out.
@@ -678,28 +967,6 @@ img {
                 IQR: ${iqrs}<br>`;
         }
 
-        function calculatePreop() {
-            const weight = readNumber('weightp');
-            const feet = readNumber('feetp');
-            const inches = readNumber('inchesp');
-            if (!inputsAreValid([weight], feet, inches)) return;
-
-            const heightM = heightInMeters(feet, inches);
-            const bmi = bmiFor(weight, heightM);
-            const ebw = weight - weightForBmi(25, heightM);
-
-            document.getElementById('preopResult').innerHTML =
-                resultHeader(bmi, weight, feet, inches) + `
-                <br>
-                ${targetWeights(heightM, true)}
-                <br>
-                Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
-                ${oneYearSummary(weight)}
-                <br>
-                ----------<br>
-                <br>
-                ${expectedOutcomes(weight)}` + resultFooter();
-        }
 
         // Change between the BMIs as displayed, e.g. "-9.7 (45.2 to 35.5)"
         function bmiChange(fromBmi, toBmi) {
@@ -715,111 +982,536 @@ img {
             return ((currentWeight - nadirWeight) / maxWeightLoss * 100).toFixed(0) + '%';
         }
 
-        function calculatePostop() {
-            const currentWeight = readNumber('currentWeight');
-            const preopWeight = readNumber('preopWeight');
-            const nadirWeight = readNumber('lowestPostopWeight');
-            const feet = readNumber('postopFeet');
-            const inches = readNumber('postopInches');
-            if (!inputsAreValid([currentWeight, preopWeight], feet, inches)) return;
 
-            // Nadir weight is optional; only check it if one was entered
-            const hasNadir = !isNaN(nadirWeight);
-            if (hasNadir && !inputsAreValid([nadirWeight], feet, inches)) return;
 
-            const heightM = heightInMeters(feet, inches);
-            const currentBmi = bmiFor(currentWeight, heightM);
-            const preopBmi = bmiFor(preopWeight, heightM);
-            const preopEbw = preopWeight - weightForBmi(25, heightM);
+// ---------- Prototype UI ----------
+const TABS = {
+    simple: { title: 'Simple BMI', form: 'simpleForm' },
+    preop: { title: 'Preop', form: 'preopForm' },
+    postop: { title: 'Postop', form: 'postopForm' },
+    resources: { title: 'Resources' },
+};
+// Every measurement and surgery box, cleared by Clear
+const FIELDS = [
+    'weight', 'feet', 'inches',
+    'weightp', 'feetp', 'inchesp',
+    'currentWeight', 'postopFeet', 'postopInches', 'preopWeight', 'lowestPostopWeight', 'surgeryYear',
+];
+let activeTab = 'simple';
 
-            const currentWeightLoss = preopWeight - currentWeight;
-            const maxWeightLoss = hasNadir ? preopWeight - nadirWeight : NaN;
-            const percentTotalBodyWeightLoss = (currentWeightLoss / preopWeight) * 100;
-            const percentExcessBodyWeightLoss = (currentWeightLoss / preopEbw) * 100;
+const CLASS_COLORS = {
+    'Underweight': 'var(--c-under)', 'Normal weight': 'var(--c-normal)', 'Overweight': 'var(--c-over)',
+    'Class I obesity': 'var(--c-c1)', 'Class II obesity': 'var(--c-c2)', 'Class III obesity': 'var(--c-c3)',
+};
 
-            document.getElementById('postopResult').innerHTML =
-                resultHeader(currentBmi, currentWeight, feet, inches) + `
-                Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lbs<br>
-                <br>
-                Preop BMI was ${bmiWithClass(preopBmi)}<br>
-                BMI change is ${bmiChange(preopBmi, currentBmi)}<br>
-                Preop weight was ${formatNumber(preopWeight)} lbs (${kg(preopWeight)})<br>
-                Preop EBW was ${ebwText(preopEbw)}<br>
-                ${hasNadir ? `<br>
-                Nadir weight was ${formatNumber(nadirWeight)} lbs<br>
-                Max weight loss was ${formatNumber(maxWeightLoss)} lbs<br>
-                Max weight loss at nadir (%TWL) was ${maxWeightLoss > 0 ? (maxWeightLoss / preopWeight * 100).toFixed(0) + '%' : 'n/a (nadir is not below preop weight)'}<br>
-                Current regain from nadir is ${percentRegain(currentWeight, nadirWeight, maxWeightLoss)}<br>` : ''}
-                <br>
-                Current %TWL is ${percentTotalBodyWeightLoss.toFixed(0)}%<br>
-                Current %EWL is ${preopEbw > 0 ? percentExcessBodyWeightLoss.toFixed(0) + '%' : 'n/a (preop BMI was not above 25)'}<br>` + resultFooter();
+function readNumber(id) {
+    const value = document.getElementById(id).value.trim();
+    return value === '' ? NaN : Number(value);
+}
+
+// Same checks as the live site, returned as a message instead of a pop-up
+function problemWith(weights, feet, inches) {
+    if ([...weights, feet, inches].some(isNaN)) return 'missing';
+    if (weights.some(w => w < 50 || w > 1000)) return 'Check the weight: it should be between 50 and 1000 lb.';
+    const total = (feet * 12) + inches;
+    if (feet < 0 || inches < 0 || total < 36 || total > 96) return 'Check the height: it should be between 3 ft and 8 ft.';
+    return '';
+}
+
+function esc(text) {
+    return String(text).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+function heroHTML(bmi, label, sub, extra) {
+    const cls = bmiClass(bmi);
+    return `<div class="panel hero">
+        <div class="hero-top">
+            <div class="bmi-number"><span class="bmi-word">BMI</span> ${bmi.toFixed(1)}</div>
+            <div class="bmi-meta">
+                <span class="chip" style="--cls: ${CLASS_COLORS[cls]}">${cls}</span>
+                <small>${esc(label)}${sub ? ' · ' + esc(sub) : ''}</small>
+                ${extra ? `<small class="hero-extra">${extra}</small>` : ''}
+            </div>
+        </div>
+    </div>`;
+}
+
+// Tiles: [label, value, sub] for a single number, { table: label, rows: [[left, right], ...] } for a two-column table,
+// or { group: label, entries: [{ name, value, lines: [...] }] } for several procedures in one tile
+function statsHTML(items, layout = '') {
+    return `<div class="stats ${layout}">${items.map(item => item.group
+        ? `<div class="stat stat-group"><span>${esc(item.group)}</span>${item.entries.map(e =>
+            `<div class="proc ${esc(e.name.toLowerCase())}"><div class="proc-name">${esc(e.name)}</div><strong>${esc(e.value)}</strong>${e.lines.map(l => `<small>${esc(l)}</small>`).join('')}</div>`).join('')}</div>`
+        : item.table
+        ? `<div class="stat stat-table"><span>${esc(item.table)}</span><table>${item.rows.map(([left, right]) =>
+            `<tr><th scope="row">${esc(left)}</th><td>${esc(right)}</td></tr>`).join('')}</table></div>`
+        : `<div class="stat"><span>${esc(item[0])}</span><strong>${esc(item[1])}</strong>${item[2] ? `<small>${esc(item[2])}</small>` : ''}</div>`).join('')}</div>`;
+}
+
+function bmiWeightsTile(heightM, bmis) {
+    return { table: 'Weight at BMI', rows: bmis.map(b => [`BMI ${b}`, `${weightForBmi(b, heightM).toFixed(0)} lb`]) };
+}
+
+// Shared horizontal weight scale for the charts
+function weightScale(lo, hi) {
+    const span = hi - lo;
+    return w => ((w - lo) / span * 100);
+}
+
+function refLines(x, heightM, lo, hi) {
+    return [25, 30, 35, 40].map(b => [b, weightForBmi(b, heightM)])
+        .filter(([, w]) => w > lo + 2 && w < hi - 2);
+}
+
+function preopChartHTML(weight, heightM) {
+    const rows = [];
+    EXPECTED_TWL.forEach(({ abbreviation, rows: r }) => r.forEach(row => rows.push({ abbreviation, ...row })));
+    const lowest = Math.min(weight * (1 - Math.max(...rows.map(r => r.iqr[1])) / 100), weightForBmi(25, heightM));
+    const lo = Math.floor((lowest - 8) / 10) * 10;
+    const hi = Math.ceil((weight + 8) / 10) * 10;
+    const x = weightScale(lo, hi);
+    const refs = refLines(x, heightM, lo, hi);
+    const lanes = rows.map(row => {
+        const a = weight - weight * row.iqr[1] / 100;
+        const b = weight - weight * row.iqr[0] / 100;
+        const m = weight - weight * row.median / 100;
+        return `<div class="lane ${row.abbreviation.toLowerCase()}">
+            <div class="lane-label">${row.abbreviation}<small>${row.label === '1 year' ? '1 yr' : '5 yr'}</small></div>
+            <div class="track">
+                <div class="rail"></div>
+                <div class="band" style="left: ${x(a)}%; width: ${x(b) - x(a)}%"></div>
+                <div class="dot" style="left: ${x(m)}%"></div>
+                <div class="tag below" style="left: ${x(m)}%">${m.toFixed(0)}</div>
+                <div class="dot ink" style="left: ${x(weight)}%"></div>
+            </div>
+        </div>`;
+    }).join('');
+    return `<div class="panel chart">
+        <h3>Expected weight after surgery, without GLP-1s</h3>
+        <p class="caption">From today's ${formatNumber(weight)} lb. PCORnet medians, SOPHIA IQRs.</p>
+        <div class="lanes-wrap">
+            <div class="lanes">${lanes}</div>
+        </div>
+        <div class="axis-wrap"><div></div><div class="axis">
+            ${refs.map(([b, w]) => `<span style="left: ${x(w)}%">BMI ${b}<br>${w.toFixed(0)}</span>`).join('')}
+            <span style="left: ${x(weight)}%"><b>Now</b><br>${formatNumber(weight)}</span>
+        </div></div>
+        <div class="legend"><span class="lsg"><i></i>LSG (sleeve)</span><span class="rygb"><i></i>RYGB (bypass)</span><span>Dot = median, bar = middle half (IQR)</span></div>
+    </div>`;
+}
+
+// ---------- Postop: progress against expected for the operation and time since surgery ----------
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function setOperation(op) {
+    document.querySelectorAll('.op-toggle button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.op === op)));
+}
+
+// "Surgery: LSG in Apr 2025", using only the parts that are filled in; '' if none
+function surgeryNoteText() {
+    const pressed = document.querySelector('.op-toggle button[aria-pressed="true"]');
+    const op = pressed ? pressed.dataset.op : '';
+    const year = document.getElementById('surgeryYear').value.trim();
+    const month = Number(document.getElementById('surgeryMonth').value);
+    const when = [month ? MONTH_NAMES[month - 1] : '', year].filter(Boolean).join(' ');
+    if (!op && !when) return '';
+    return op && when ? `${op} in ${when}` : (op || when);
+}
+
+function readSurgery() {
+    const pressed = document.querySelector('.op-toggle button[aria-pressed="true"]');
+    const op = pressed ? pressed.dataset.op : '';
+    const year = Number(document.getElementById('surgeryYear').value);
+    const month = Number(document.getElementById('surgeryMonth').value);
+    const filled = [op, document.getElementById('surgeryYear').value, month].filter(Boolean).length;
+    if (filled === 0) return { state: 'none' };
+    if (filled < 3) return { state: 'partial' };
+    const now = new Date();
+    const months = (now.getFullYear() - year) * 12 + (now.getMonth() + 1 - month);
+    if (year < 1990 || months < 0) return { state: 'invalid' };
+    return { state: 'ok', op, year, month, months };
+}
+
+// Expected %TWL at a given time: the 1-year and 5-year values, straight-line between them
+function expectedAt(op, months) {
+    const rows = EXPECTED_TWL.find(p => p.abbreviation === op).rows;
+    const y1 = rows.find(r => r.label === '1 year'), y5 = rows.find(r => r.label === '5 years');
+    const f = Math.min(Math.max((months - 12) / 48, 0), 1);
+    const mix = (a, b) => a + (b - a) * f;
+    return { median: mix(y1.median, y5.median), low: mix(y1.iqr[0], y5.iqr[0]), high: mix(y1.iqr[1], y5.iqr[1]) };
+}
+
+function timeSince(months) {
+    if (months < 24) return `${months} month${months === 1 ? '' : 's'}`;
+    const y = Math.floor(months / 12), m = months % 12;
+    return `${y} yr${m ? ` ${m} mo` : ''}`;
+}
+
+function progressHTML(current, preop, nadir) {
+    const s = readSurgery();
+    if (s.state === 'none') {
+        return `<div class="panel prompt"><strong>Compare with expected weight loss:</strong> add the operation and the year and month of surgery.</div>`;
+    }
+    if (s.state === 'partial') {
+        return `<div class="panel prompt"><strong>Almost there:</strong> pick LSG, RYGB or Other and enter both the year and month to compare with expected weight loss.</div>`;
+    }
+    if (s.state === 'invalid') {
+        return `<div class="panel prompt"><strong>Check the surgery date:</strong> it can't be in the future.</div>`;
+    }
+    const twl = (preop - current) / preop * 100;
+    if (s.op === 'Other') {
+        return `<div class="panel chart other">
+            <div class="progress-head"><h3>Other operation · ${timeSince(s.months)} after surgery <small style="color: var(--muted); font-weight: 400">(${MONTH_NAMES[s.month - 1]} ${s.year})</small></h3></div>
+            <p class="expect-line">Now <b style="color: var(--ink)">${twl.toFixed(0)}% TWL</b>.</p>
+            <p class="caption">Expected ranges are only available for LSG and RYGB.</p>
+        </div>`;
+    }
+    const nadirTwl = isNaN(nadir) ? NaN : (preop - nadir) / preop * 100;
+    const underYear = s.months < 12;
+    const e = expectedAt(s.op, Math.max(s.months, 12));
+    let status, statusColor;
+    if (underYear) { status = 'Under 1 year: still losing'; statusColor = 'var(--muted)'; }
+    else if (twl < e.low) { status = 'Below expected range'; statusColor = 'var(--c-over)'; }
+    else if (twl > e.high) { status = 'Above expected range'; statusColor = 'var(--c-normal)'; }
+    else { status = 'Within expected range'; statusColor = 'var(--c-normal)'; }
+
+    const maxPct = Math.max(50, Math.ceil((Math.max(twl, nadirTwl || 0, e.high) + 5) / 10) * 10);
+    const minPct = twl < 0 ? Math.floor((twl - 5) / 10) * 10 : 0;
+    const x = p => ((p - minPct) / (maxPct - minPct) * 100);
+    const ticks = [];
+    for (let p = minPct; p <= maxPct; p += 10) ticks.push(p);
+    const nadirClose = !isNaN(nadirTwl) && Math.abs(x(nadirTwl) - x(twl)) < 22;
+    const expectedWeight = preop * (1 - e.median / 100);
+    const when = underYear ? 'at 1 year' : `at ${timeSince(s.months)}`;
+
+    return `<div class="panel chart ${s.op.toLowerCase()}">
+        <div class="progress-head">
+            <h3><span style="color: var(--proc)">${s.op}</span> · ${timeSince(s.months)} after surgery <small style="color: var(--muted); font-weight: 400">(${MONTH_NAMES[s.month - 1]} ${s.year})</small></h3>
+            <span class="status-chip" style="--status: ${statusColor}">${status}</span>
+        </div>
+        <p class="expect-line">Now <b style="color: var(--ink)">${twl.toFixed(0)}% TWL</b>. Expected ${when}: <b>${e.median.toFixed(0)}%</b> (IQR ${e.low.toFixed(0)}-${e.high.toFixed(0)}%), about ${expectedWeight.toFixed(0)} lb.</p>
+        <div class="pct-track" aria-hidden="true">
+            <div class="rail"></div>
+            <div class="band" style="left: ${x(e.low)}%; width: ${x(e.high) - x(e.low)}%"></div>
+            <div class="median" style="left: ${x(e.median)}%"></div>
+            ${isNaN(nadirTwl) ? '' : `<div class="pt nadir" style="left: ${x(nadirTwl)}%"></div><div class="lbl ${nadirClose ? 'low' : ''}" style="left: ${x(nadirTwl)}%">Nadir ${nadirTwl.toFixed(0)}%</div>`}
+            <div class="pt" style="left: ${x(twl)}%"></div>
+            <div class="lbl" style="left: ${x(twl)}%">Now ${twl.toFixed(0)}%</div>
+        </div>
+        <div class="pct-axis">${ticks.map(p => `<span style="left: ${x(p)}%">${p}%</span>`).join('')}</div>
+        <div class="legend"><span class="${s.op.toLowerCase()}"><i></i>Expected ${s.op} range (IQR), line = median</span><span>Scale: % total weight lost</span></div>
+        <p class="caption">${underYear ? 'Under 1 year, the 1-year range is shown for reference. ' : ''}Expected values from PCORnet medians and SOPHIA IQRs at 1 and 5 years${underYear || s.months >= 60 ? '' : ', estimated in a straight line between them'}. Without GLP-1s.</p>
+    </div>`;
+}
+
+function noteHTML(html) {
+    return `<div class="panel note-card">
+        <div class="note-head">
+            <h3>Note for the chart <small>copied exactly as shown</small></h3>
+            <span class="note-actions"><button type="button" class="btn btn-quiet icon-btn" data-clear title="Start over: clear all calculators" aria-label="Start over: clear all calculators"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span>Clear</span></button><button type="button" class="btn btn-primary" data-copy>Copy note</button></span>
+        </div>
+        <div class="note-body" id="noteBody">${html}</div>
+    </div>`;
+}
+
+function emptyHTML(message) {
+    if (message === 'missing') {
+        return `<div class="panel empty"><strong>Enter weight and height</strong>Then press Calculate.</div>`;
+    }
+    return `<div class="panel empty error"><strong>${esc(message)}</strong>Fix the value and press Calculate again.</div>`;
+}
+
+function renderSimple() {
+    const weight = readNumber('weight'), feet = readNumber('feet'), inches = readNumber('inches');
+    const problem = problemWith([weight], feet, inches);
+    if (problem) return emptyHTML(problem);
+    const heightM = heightInMeters(feet, inches);
+    const bmi = bmiFor(weight, heightM);
+    const ebw = weight - weightForBmi(25, heightM);
+    const note = resultHeader(bmi, weight, feet, inches) + `
+        <br>
+        Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
+        ${targetWeights(heightM)}` + resultFooter();
+    return heroHTML(bmi, `${formatNumber(weight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `${kg(weight)} · ${cm(feet, inches)}`, `Excess body weight <b>${ebw > 0 ? ebw.toFixed(0) + ' lb' : 'none'}</b> (above BMI 25)`) +
+        statsHTML([
+            bmiWeightsTile(heightM, [25, 30, 35]),
+        ], 'single') + noteHTML(note);
+}
+
+function renderPreop() {
+    const weight = readNumber('weightp'), feet = readNumber('feetp'), inches = readNumber('inchesp');
+    const problem = problemWith([weight], feet, inches);
+    if (problem) return emptyHTML(problem);
+    const heightM = heightInMeters(feet, inches);
+    const bmi = bmiFor(weight, heightM);
+    const ebw = weight - weightForBmi(25, heightM);
+    const note = resultHeader(bmi, weight, feet, inches) + `
+        <br>
+        ${targetWeights(heightM, true)}
+        <br>
+        Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
+        ${oneYearSummary(weight)}
+        <br>
+        ----------<br>
+        <br>
+        ${expectedOutcomes(weight)}` + resultFooter();
+    const oneYear = EXPECTED_TWL.map(({ abbreviation, rows }) => ({ abbreviation, row: rows[0] }));
+    return heroHTML(bmi, `${formatNumber(weight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `${kg(weight)} · ${cm(feet, inches)}`, `Excess body weight <b>${ebw > 0 ? ebw.toFixed(0) + ' lb' : 'none'}</b> (above BMI 25)`) +
+        statsHTML([
+            bmiWeightsTile(heightM, [25, 30, 35, 40]),
+            { group: 'Expected weight at 1 yr (median)', entries: oneYear.map(({ abbreviation, row }) => ({
+                name: abbreviation,
+                value: `${(weight - weight * row.median / 100).toFixed(0)} lb`,
+                lines: [`Loses ${lbsAt(weight, row.median)} lb`, `IQR ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} lb`],
+            })) },
+        ], 'two-col') + preopChartHTML(weight, heightM) + noteHTML(note);
+}
+
+function renderPostop() {
+    const currentWeight = readNumber('currentWeight'), preopWeight = readNumber('preopWeight');
+    const nadirWeight = readNumber('lowestPostopWeight');
+    const feet = readNumber('postopFeet'), inches = readNumber('postopInches');
+    let problem = problemWith([currentWeight, preopWeight], feet, inches);
+    const hasNadir = !isNaN(nadirWeight);
+    if (!problem && hasNadir) problem = problemWith([nadirWeight], feet, inches);
+    if (problem) return emptyHTML(problem);
+
+    const heightM = heightInMeters(feet, inches);
+    const currentBmi = bmiFor(currentWeight, heightM);
+    const preopBmi = bmiFor(preopWeight, heightM);
+    const preopEbw = preopWeight - weightForBmi(25, heightM);
+    const currentWeightLoss = preopWeight - currentWeight;
+    const maxWeightLoss = hasNadir ? preopWeight - nadirWeight : NaN;
+    const percentTotalBodyWeightLoss = (currentWeightLoss / preopWeight) * 100;
+    const percentExcessBodyWeightLoss = (currentWeightLoss / preopEbw) * 100;
+
+    const note = resultHeader(currentBmi, currentWeight, feet, inches) + `
+        ${surgeryNoteText() ? `Surgery: ${esc(surgeryNoteText())}<br>
+        ` : ''}Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lbs<br>
+        <br>
+        Preop BMI was ${bmiWithClass(preopBmi)}<br>
+        BMI change is ${bmiChange(preopBmi, currentBmi)}<br>
+        Preop weight was ${formatNumber(preopWeight)} lbs (${kg(preopWeight)})<br>
+        Preop EBW was ${ebwText(preopEbw)}<br>
+        ${hasNadir ? `<br>
+        Nadir weight was ${formatNumber(nadirWeight)} lbs<br>
+        Max weight loss was ${formatNumber(maxWeightLoss)} lbs<br>
+        Max weight loss at nadir (%TWL) was ${maxWeightLoss > 0 ? (maxWeightLoss / preopWeight * 100).toFixed(0) + '%' : 'n/a (nadir is not below preop weight)'}<br>
+        Current regain from nadir is ${percentRegain(currentWeight, nadirWeight, maxWeightLoss)}<br>` : ''}
+        <br>
+        Current %TWL is ${percentTotalBodyWeightLoss.toFixed(0)}%<br>
+        Current %EWL is ${preopEbw > 0 ? percentExcessBodyWeightLoss.toFixed(0) + '%' : 'n/a (preop BMI was not above 25)'}<br>` + resultFooter();
+
+    const stats = [
+        ['Weight lost (TWL)', `${formatNumber(currentWeightLoss)} lb`, `From ${formatNumber(preopWeight)} lb`],
+        ['%TWL', `${percentTotalBodyWeightLoss.toFixed(0)}%`],
+        ['%EWL', preopEbw > 0 ? `${percentExcessBodyWeightLoss.toFixed(0)}%` : 'n/a'],
+        ['BMI change', bmiChange(preopBmi, currentBmi).split(' (')[0], `From ${preopBmi.toFixed(1)}`],
+    ];
+    if (hasNadir) {
+        stats.push(['Max %TWL at nadir', maxWeightLoss > 0 ? `${(maxWeightLoss / preopWeight * 100).toFixed(0)}%` : 'n/a', `Nadir ${formatNumber(nadirWeight)} lb`]);
+        stats.push(['Regain from nadir', percentRegain(currentWeight, nadirWeight, maxWeightLoss).split(' (')[0], 'Of max weight lost']);
+    }
+    return heroHTML(currentBmi, `${formatNumber(currentWeight)} lb · ${feet}' ${formatNumber(inches, 2)}"`, `Preop BMI ${preopBmi.toFixed(1)}`) +
+        statsHTML(stats) + progressHTML(currentWeight, preopWeight, nadirWeight) + noteHTML(note);
+}
+
+// Calculated results per tab; they only change when Calculate is pressed
+let calculated = {};
+
+function calculate(tab) {
+    const html = { simple: renderSimple, preop: renderPreop, postop: renderPostop }[tab]();
+    calculated[tab] = { html, stale: false };
+    showResults();
+}
+
+function showResults() {
+    const box = document.getElementById('results');
+    const entry = calculated[activeTab];
+    box.classList.toggle('stale', !!(entry && entry.stale));
+    document.getElementById('mobileBar').classList.toggle('stale', !!(entry && entry.stale));
+    if (!entry) { box.innerHTML = emptyHTML('missing'); return; }
+    box.innerHTML = (entry.stale ? `<div class="stale-banner" role="status"><span>Values changed. Press Calculate to update.</span><button type="button" class="btn btn-primary" data-recalc>Calculate</button></div>` : '') + entry.html;
+}
+
+function markStale(tab) {
+    const entry = calculated[tab];
+    if (entry && !entry.stale) { entry.stale = true; if (tab === activeTab) showResults(); }
+}
+
+function showTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
+    const isResources = tab === 'resources';
+    document.getElementById('workspace').hidden = isResources;
+    document.getElementById('resources').hidden = !isResources;
+    document.getElementById('mobileBar').style.visibility = isResources ? 'hidden' : 'visible';
+    if (!isResources) {
+        document.getElementById('formTitle').textContent = TABS[tab].title;
+        document.querySelectorAll('form[data-tab]').forEach(f => { f.hidden = f.dataset.tab !== tab; });
+        showResults();
+    }
+}
+
+function startOver() {
+    FIELDS.forEach(id => { document.getElementById(id).value = ''; });
+    setOperation('');
+    document.getElementById('surgeryMonth').value = '';
+    calculated = {};
+    showTab('simple');
+    window.scrollTo(0, 0);
+    if (window.matchMedia('(hover: hover)').matches) document.getElementById('weight').focus();
+    toast('Cleared');
+}
+
+let toastTimer = null;
+function toast(message) {
+    const el = document.getElementById('toast');
+    el.textContent = message;
+    el.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.hidden = true; }, 2500);
+}
+
+function copyNote() {
+    const body = document.getElementById('noteBody');
+    if (!body) { toast('Nothing to copy yet. Press Calculate first.'); return; }
+    if (calculated[activeTab] && calculated[activeTab].stale) { toast('Values changed. Press Calculate before copying.'); return; }
+    const text = body.innerText.trim();
+    const selectFallback = () => {
+        const area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        let copied = false;
+        try { copied = document.execCommand('copy'); } catch (err) { copied = false; }
+        document.body.removeChild(area);
+        if (copied) { toast('Note copied'); return; }
+        const range = document.createRange();
+        range.selectNodeContents(body);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        toast('Note selected. Press Copy to finish.');
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => toast('Note copied'), selectFallback);
+    } else {
+        selectFallback();
+    }
+}
+
+// Add to Home Screen: Chrome/Edge offer an install prompt; iPhone Safari needs the Share menu
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; });
+function addToHomeScreen() {
+    if (installPrompt) { installPrompt.prompt(); installPrompt = null; return; }
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    toast(isIOS ? 'Tap the Share button, then "Add to Home Screen".' : 'Open your browser menu and choose "Install app" or "Add to Home Screen".');
+}
+if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+    document.getElementById('homeScreenButton').hidden = true;
+}
+
+// ---------- Wire up ----------
+document.getElementById('homeScreenButton').addEventListener('click', addToHomeScreen);
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+document.getElementById('clearAll').addEventListener('click', startOver);
+document.getElementById('clearBottom').addEventListener('click', startOver);
+document.getElementById('copyMobile').addEventListener('click', copyNote);
+document.getElementById('results').addEventListener('click', e => {
+    if (e.target.closest('[data-copy]')) copyNote();
+    if (e.target.closest('[data-clear]')) startOver();
+    if (e.target.closest('[data-recalc]')) calculate(activeTab);
+});
+document.querySelectorAll('form[data-tab]').forEach(f => f.addEventListener('submit', e => {
+    e.preventDefault();
+    calculate(f.dataset.tab);
+    // on a phone, bring the results into view
+    if (window.matchMedia('(max-width: 860px)').matches) {
+        document.activeElement.blur();
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}));
+
+        // Auto-advance: Weight jumps to the next box after 3 digits (or after its
+        // decimal digit); feet jumps after 1 digit. Typing "." right after a weight jump
+        // goes back to the weight box so decimals still work.
+        function nextInput(input) {
+            const inputs = [...input.form.querySelectorAll('input')];
+            return inputs[inputs.indexOf(input) + 1] || null;
         }
 
-        function copyToClipboard(resultId) {
-            const resultDiv = document.getElementById(resultId);
-            const textToCopy = resultDiv ? (resultDiv.innerText || resultDiv.textContent).trim() : '';
-            if (!textToCopy) {
-                alert('Nothing to copy yet. Calculate first.');
-                return;
-            }
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(textToCopy)
-                    .then(() => alert('Results copied to clipboard!'))
-                    .catch(() => fallbackCopy(textToCopy));
-            } else {
-                fallbackCopy(textToCopy);
-            }
+        function previousInput(input) {
+            const inputs = [...input.form.querySelectorAll('input')];
+            return inputs[inputs.indexOf(input) - 1] || null;
         }
 
-        // Older browsers and some in-app browsers block navigator.clipboard
-        function fallbackCopy(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.setAttribute('readonly', '');
-            textArea.style.position = 'fixed';
-            textArea.style.opacity = '0';
-            document.body.appendChild(textArea);
-            textArea.select();
-            let copied = false;
-            try {
-                copied = document.execCommand('copy');
-            } catch (err) {
-                copied = false;
-            }
-            document.body.removeChild(textArea);
-            alert(copied ? 'Results copied to clipboard!' : 'Copy failed. Please select the results and copy them manually.');
+        function jumpTo(input) {
+            if (!input) return;
+            input.focus();
+            input.select();
         }
 
-        // Add to Home Screen: Android/desktop Chrome and Edge offer an install prompt we can trigger;
-        // iPhone Safari has no such prompt, so explain the Share-menu steps instead
-        let installPrompt = null;
-        window.addEventListener('beforeinstallprompt', event => {
-            event.preventDefault();
-            installPrompt = event;
+        function isWeight(input) {
+            return input.dataset.format === 'decimal' && !input.dataset.decimals;
+        }
+
+        document.querySelectorAll('input[data-format]').forEach(input => {
+            input.addEventListener('input', event => {
+                const typed = event.inputType && event.inputType.startsWith('insert');
+                const previous = previousInput(input);
+
+                // "." in the feet box right after a weight jump: send it back to the weight
+                if (typed && input.dataset.format === 'feet' && input.value.includes('.') &&
+                    previous && isWeight(previous) && /^\d+$/.test(previous.value)) {
+                    input.value = input.value.replace(/\./g, '');
+                    previous.value += '.';
+                    previous.focus();
+                    previous.setSelectionRange(previous.value.length, previous.value.length);
+                    return;
+                }
+
+                limitInput(input);
+                if (!typed || input.selectionStart !== input.value.length) return;
+
+                if (isWeight(input) && (/^\d{3}$/.test(input.value) || /^\d+\.\d$/.test(input.value))) {
+                    jumpTo(nextInput(input));
+                } else if (input.dataset.format === 'feet' && /^\d$/.test(input.value)) {
+                    jumpTo(nextInput(input));
+                }
+            });
         });
 
-        function addToHomeScreen() {
-            if (installPrompt) {
-                installPrompt.prompt();
-                installPrompt = null;
-                return;
-            }
-            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
-                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            if (isIOS) {
-                alert('To add this to your Home Screen:\n\n1. Tap the Share button (square with an arrow)\n2. Tap "Add to Home Screen"\n3. Tap "Add"');
-            } else {
-                alert('To install this calculator, open your browser menu and choose "Install app" or "Add to Home Screen".');
-            }
-        }
 
-        // Hide the button when already opened from the Home Screen
-        if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
-            document.getElementById('homeScreenButton').style.display = 'none';
-        }
 
-        // Show the default calculator
-        showCalculator('bmiCalculator');
-    </script>
+// Prototype: auto-advance only moves between the measurement boxes (not into the optional surgery fields)
+function nextInput(input) {
+    const inputs = [...input.form.querySelectorAll('input[data-format]')];
+    return inputs[inputs.indexOf(input) + 1] || null;
+}
+
+document.querySelectorAll('.op-toggle button').forEach(b => b.addEventListener('click', () => {
+    setOperation(b.getAttribute('aria-pressed') === 'true' ? '' : b.dataset.op);
+    markStale('postop');
+}));
+document.getElementById('surgeryYear').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 4);
+    markStale('postop');
+});
+document.getElementById('surgeryMonth').addEventListener('change', () => markStale('postop'));
+
+document.querySelectorAll('input[data-format]').forEach(input => {
+    input.addEventListener('input', () => {
+        markStale(input.form.dataset.tab);
+    });
+});
+
+showTab('simple');
+if (window.matchMedia('(hover: hover)').matches) document.getElementById('weight').focus();
+</script>
 </body>
 </html>

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI calculators (classic) by Elan Witkowski</title>
+    <link rel="icon" type="image/x-icon" href="classic-favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="classic-favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="classic-favicon-16x16.png">
+    <link rel="apple-touch-icon" href="classic-apple-touch-icon.png">
+    <link rel="manifest" href="classic.webmanifest">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#007BFF">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+    <style>
+		body {
+    font-family: Arial, sans-serif;
+    background-color: #007BFF;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 30px 16px 60px;
+    box-sizing: border-box;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.header {
+    background: #0056b3;
+    color: #fff;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    position:relative; 
+    top: 0;
+    left: 0;
+}
+
+.nav-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+}
+
+.nav-buttons button {
+    font-size: 20px;
+    background-color: #2A3235;
+}
+
+.container {
+    background: #fff;
+    color: #000;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    box-sizing: border-box;
+    margin-top: 20px;
+    display: none;
+}
+
+.container.active {
+    display: block;
+}
+
+h1 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    width: 88%;
+    padding: 20px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    -webkit-appearance: none;
+}
+
+label {
+    font-size: 18px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+button {
+    padding: 15px;
+    font-size: 18px;
+    background-color: #28a745;
+    border: none;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.copy-button {
+    background-color: #007BFF;
+}
+
+.reset-button {
+    background-color: #2A3235;
+}
+
+.home-button {
+    width: auto;
+    font-size: 14px;
+    padding: 8px 16px;
+    margin-top: 40px;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.new-design-link {
+    margin-top: 16px;
+    color: #fff;
+    font-size: 15px;
+    text-underline-offset: 3px;
+}
+
+.result {
+    font-size: 16px;
+    margin-top: 20px;
+    text-align: left;
+}
+/* Ensure images don't overflow */
+img {
+    max-width: 95%;
+    height: auto;
+    display: block;
+    margin: 10px auto;
+}
+
+/* Hover colors only for mouse users; on phones a tapped button would stay highlighted */
+@media (hover: hover) {
+    .nav-buttons button:hover {
+        background-color: #000000;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+
+    .copy-button:hover {
+        background-color: #0056b3;
+    }
+
+    .reset-button:hover {
+        background-color: #000000;
+    }
+
+    .home-button:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* Dark mode: follows the phone/computer setting. True black with blue-tinted title and tabs */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #000000;
+    }
+
+    .header {
+        background: #0a2540;
+        color: #64b5ff;
+    }
+
+    .nav-buttons button {
+        background-color: #0b2a4a;
+        color: #64b5ff;
+    }
+
+    .container {
+        background: #1c1c1e;
+        color: #ffffff;
+        box-shadow: none;
+    }
+
+    input[type="text"] {
+        background-color: #2c2c2e;
+        color: #ffffff;
+        border-color: #3a3a3c;
+    }
+
+    input[type="text"]::placeholder {
+        color: #8e8e93;
+    }
+
+    button {
+        background-color: #248a3d;
+    }
+
+    .copy-button {
+        background-color: #0a84ff;
+    }
+
+    .reset-button {
+        background-color: #3a3a3c;
+    }
+
+    .home-button {
+        background-color: transparent;
+        border-color: #8e8e93;
+    }
+
+    a,
+    a:visited {
+        color: #64b5ff;
+    }
+
+    hr {
+        border-color: #3a3a3c;
+    }
+}
+
+@media (prefers-color-scheme: dark) and (hover: hover) {
+    .nav-buttons button:hover {
+        background-color: #12385f;
+    }
+
+    button:hover {
+        background-color: #1e7434;
+    }
+
+    .copy-button:hover {
+        background-color: #0070e0;
+    }
+
+    .reset-button:hover {
+        background-color: #48484a;
+    }
+
+    .home-button:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        Elan's BMI Calculators
+    </div>
+    
+    <div class="nav-buttons">
+        <button onclick="showCalculator('bmiCalculator')">SIMPLE</button>
+	<button onclick="showCalculator('preopCalculator')">PREOP</button>
+        <button onclick="showCalculator('postopCalculator')">POSTOP</button>
+	<button onclick="showCalculator('resources')">RESOURCES</button>
+    </div>
+    
+    <div id="bmiCalculator" class="container">
+        <h1>BMI - SIMPLE</h1>
+        <form id="bmiForm">
+            <label for="weight">Weight (lbs):</label>
+            <input type="text" id="weight" required placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off">
+            <label for="feet">Height:</label>
+            <input type="text" id="feet" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
+            <input type="text" id="inches" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
+            <button type="button" id="simpleButton" onclick="calculateBMI()">Calculate BMI</button>
+        </form>
+        <div class="result" id="result"></div>
+        <button class="copy-button" onclick="copyToClipboard('result')">Copy Results</button>
+		<button class="reset-button" onclick="startOver()">Start Over</button>
+    </div>
+	
+	    <div id="preopCalculator" class="container">
+        <h1>BMI - PREOP</h1>
+        <form id="preopForm">
+            <label for="weightp">Weight (lbs):</label>
+            <input type="text" id="weightp" required placeholder="Pounds" inputmode="decimal" data-format="decimal" autocomplete="off">
+            <label for="feetp">Height:</label>
+            <input type="text" id="feetp" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
+            <input type="text" id="inchesp" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
+            <button type="button" id="preopButton" onclick="calculatePreop()">Calculate Preop</button>
+        </form>
+        <div class="result" id="preopResult"></div>
+        <button class="copy-button" onclick="copyToClipboard('preopResult')">Copy Results</button>
+		<button class="reset-button" onclick="startOver()">Start Over</button>
+    </div>
+
+    <div id="postopCalculator" class="container">
+        <h1>BMI - POSTOP</h1>
+        <form id="postopForm">
+            <label for="currentWeight">Current Weight (lbs):</label>
+            <input type="text" id="currentWeight" required placeholder="Pounds - Current" inputmode="decimal" data-format="decimal" autocomplete="off">
+            <label for="postopFeet">Height:</label>
+            <input type="text" id="postopFeet" required placeholder="Feet" inputmode="decimal" maxlength="1" data-format="feet" autocomplete="off">
+            <input type="text" id="postopInches" required placeholder="Inches" inputmode="decimal" data-format="decimal" data-decimals="2" autocomplete="off">
+	    <label for="preopWeight">Preop Weight (lbs):</label>
+            <input type="text" id="preopWeight" required placeholder="Pounds - Preop" inputmode="decimal" data-format="decimal" autocomplete="off">
+            <label for="lowestPostopWeight">Lowest Postop Weight (lbs) - optional:</label>
+            <input type="text" id="lowestPostopWeight" placeholder="Pounds - Nadir (optional)" inputmode="decimal" data-format="decimal" autocomplete="off">
+            <button type="button" id="postopButton" onclick="calculatePostop()">Calculate Postop</button>
+        </form>
+        <div class="result" id="postopResult"></div>
+        <button class="copy-button" onclick="copyToClipboard('postopResult')">Copy Results</button>
+		<button class="reset-button" onclick="startOver()">Start Over</button>
+
+    </div>
+	    <div id="resources" class="container">
+        <h1>SURGERY RESOURCES</h1>
+		    <br>
+  		<b><p style="text-align: center">Criteria for treatment with / without weight-related comorbidity </p></b>
+		    
+			<br>
+		<em>	Medication: DM2, or BMI <span>&#8805;</span> 27 / 30
+			<br> 
+			Surgery: BMI <span>&#8805;</span> 30 / 35 </em>
+		    	<br><br>
+		    	<hr>
+			<b>
+		    <p style="text-align: center">Links </p></b>
+		    <br>
+		    <em><b><a href="MGH-res-edu-2024.pdf" target="_blank">Resources for MGH Residents (slides)</a></b></em>
+		    <br><br>
+		    <a href="https://achqc.org/uploads/general_images/ACHQC_Abdominal_Core_Surgery_Rehabilitation_Protocol_Patient_Guide_06.17.21.pdf" target="_blank">LINK to ACHQC Patient PT</a>
+		    <br><br>
+		    <a href="https://achqc.org/uploads/general_images/ACHQC_Abdominal_Core_Surgery_Rehabilitation_Protocol_Physical_Therapist_Guide_06.17.21.pdf" target="_blank">LINK to ACHQC Provider PT</a>
+		    <br><br>
+		    <a href="https://asmbs.org/cp_type/procedure/" target="_blank">LINK to ASMBS Procedure Info</a>
+		    <br><br>
+		    <a href="https://www.massgeneral.org/digestive/weight-center/surgical-treatments" target="_blank">LINK to MGH Weight Center Surgery</a>
+			<br>
+		    <a href="https://www.massgeneral.org/digestive/weight-center/appointments-and-referrals" target="_blank">LINK to MGH Weight Center</a>
+		    <br>
+			MGH WC Surgical Coordinator Phone: <br>
+		    -- <a href="tel:+1-617-726-4402">1(617)726-4402</a>  
+			<br><br>  
+		    	<hr>
+			<b>
+		    	<p style="text-align: center"> Surgical Diagrams </p></b>
+		 	<br>	
+		<b>Sleeve:</b>  
+		    <br>
+		    <img loading="lazy" src="Sleeve2.png" alt="Sleeve">
+		    <br><br>
+		<b>Bypass:</b>  
+		    <br>
+		    <img loading="lazy" src="RYGB2.png" alt="Bypass">
+			    <br><br>
+		 <b>Animations:</b>  
+		    <br>
+		    <img loading="lazy" src="sleevegif1.gif" alt="Sleeve animation">
+			    <br>
+		    <img loading="lazy" src="bypassgif1.gif" alt="Bypass animation">
+		    <br><br>
+		<b>SADI-S:</b>  
+		    <br>
+		    <img loading="lazy" src="SADI-S.jpeg" alt="SADI-S">
+		    <br><br>
+		<b>BPD-DS:</b>  
+		    <br>
+		    <img loading="lazy" src="BPD-DS.png" alt="BPD-DS">
+		    <br><br>
+		<b>Band:</b>  
+		    <br>
+		    <img loading="lazy" src="Band.png" alt="Band">
+		    <br><br>
+		<b>OAGB (one-anastomosis gastric bypass) / "mini gastric bypass":</b>  
+		    <br>
+		    <img loading="lazy" src="OABG.png" alt="OAGB">
+		    <br><br>
+		    <hr>
+			<b>
+		    	<p style="text-align: center"> Videos </p></b>
+		 	<br>	
+		<b>Sleeve:</b>  
+			<br><br>
+<iframe loading="lazy" style="width: 100%; aspect-ratio: 16 / 9" title="Sleeve" src="https://www.youtube.com/embed/dv-iTdWgNcI?&theme=dark&autohide=2&rel=0&mute=1" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+			<br><br><br>
+		<b>Bypass:</b>  
+			<br><br>
+<iframe loading="lazy" style="width: 100%; aspect-ratio: 16 / 9" title="Bypass" src="https://www.youtube.com/embed/WscSZJu9htY?&theme=dark&autohide=2&rel=0&mute=1" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+			<br><br><br>
+		    <hr>
+		    <br>
+		<b>Contact card for MGH Patients:</b>  
+		    <br>
+		    <img loading="lazy" src="help.jpg" alt="Help Card">
+		    <br><br>
+	    <br>
+		    <hr>
+		   			<br><br><br>
+		<b>Hernia resources:</b>  
+			<br><br><br>
+	Hiatal hernia:  
+		    <br>
+		    <img loading="lazy" src="hh2.jpg" alt="Hiatal Hernia">
+		    <br><br>
+	Fundoplication:  
+		    <br>
+		    <img loading="lazy" src="nissen1.jpg" alt="Fundoplication">
+		    <br><br>
+	Retrorectus hernia repair:  
+		    <br>
+		    <img loading="lazy" src="retrorectus1.jpg" alt="Retrorectus">
+		    <br><br>
+	Retrorectus hernia repair:  
+		    <br>
+		    <img loading="lazy" src="rr3.jpg" alt="Retrorectus 2">
+		    <br><br>
+	Mesh positions / layers:
+		    <br>
+		    <img loading="lazy" src="retrorectus3.png" alt="Layers">
+		    <br><br>
+<iframe loading="lazy" style="width: 100%; aspect-ratio: 16 / 9" title="Retrorectus" src="https://www.youtube.com/embed/uWPqpiw30NM?&theme=dark&autohide=2&rel=0&mute=1&t=27s" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+			<br><br><br> 
+
+		<button class="reset-button" onclick="startOver()">Start Over</button>
+
+    </div>
+
+    <button id="homeScreenButton" class="home-button" onclick="addToHomeScreen()">Add to Home Screen</button>
+    <a class="new-design-link" href="calc.html">Try the new design</a>
+
+    <script>
+        const LBS_PER_KG = 1 / 0.453592;
+        const DIVIDER = '--------------------------------';
+
+        // Enter key calculates instead of submitting the form
+        [['bmiForm', 'simpleButton'], ['preopForm', 'preopButton'], ['postopForm', 'postopButton']].forEach(([formId, buttonId]) => {
+            document.getElementById(formId).addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    document.getElementById(buttonId).click();
+                }
+            });
+        });
+
+        // Limit what can be typed or pasted: feet is a single digit; weights allow one
+        // decimal place (215.5) and inches two (6.25), set by data-decimals
+        function limitInput(input) {
+            let value = input.value;
+            if (input.dataset.format === 'feet') {
+                value = value.replace(/[^0-9]/g, '').slice(0, 1);
+            } else {
+                value = value.replace(/[^0-9.]/g, '');
+                const dot = value.indexOf('.');
+                if (dot !== -1) {
+                    value = value.slice(0, dot + 1) + value.slice(dot + 1).replace(/\./g, '').slice(0, Number(input.dataset.decimals || 1));
+                }
+            }
+            if (value !== input.value) input.value = value;
+        }
+
+        // Auto-advance: Weight jumps to the next box after 3 digits (or after its
+        // decimal digit); feet jumps after 1 digit. Typing "." right after a weight jump
+        // goes back to the weight box so decimals still work.
+        function nextInput(input) {
+            const inputs = [...input.form.querySelectorAll('input')];
+            return inputs[inputs.indexOf(input) + 1] || null;
+        }
+
+        function previousInput(input) {
+            const inputs = [...input.form.querySelectorAll('input')];
+            return inputs[inputs.indexOf(input) - 1] || null;
+        }
+
+        function jumpTo(input) {
+            if (!input) return;
+            input.focus();
+            input.select();
+        }
+
+        function isWeight(input) {
+            return input.dataset.format === 'decimal' && !input.dataset.decimals;
+        }
+
+        document.querySelectorAll('input[data-format]').forEach(input => {
+            input.addEventListener('input', event => {
+                const typed = event.inputType && event.inputType.startsWith('insert');
+                const previous = previousInput(input);
+
+                // "." in the feet box right after a weight jump: send it back to the weight
+                if (typed && input.dataset.format === 'feet' && input.value.includes('.') &&
+                    previous && isWeight(previous) && /^\d+$/.test(previous.value)) {
+                    input.value = input.value.replace(/\./g, '');
+                    previous.value += '.';
+                    previous.focus();
+                    previous.setSelectionRange(previous.value.length, previous.value.length);
+                    return;
+                }
+
+                limitInput(input);
+                if (!typed || input.selectionStart !== input.value.length) return;
+
+                if (isWeight(input) && (/^\d{3}$/.test(input.value) || /^\d+\.\d$/.test(input.value))) {
+                    jumpTo(nextInput(input));
+                } else if (input.dataset.format === 'feet' && /^\d$/.test(input.value)) {
+                    jumpTo(nextInput(input));
+                }
+            });
+        });
+
+        function showCalculator(calculatorId) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(calculatorId).classList.add('active');
+        }
+
+        // Clears every calculator and goes back to SIMPLE for the next patient
+        function startOver() {
+            document.querySelectorAll('form').forEach(form => form.reset());
+            document.querySelectorAll('.result').forEach(result => { result.innerHTML = ''; });
+            showCalculator('bmiCalculator');
+            window.scrollTo(0, 0);
+        }
+
+        // Reads a field as a number; empty -> NaN
+        function readNumber(id) {
+            const value = document.getElementById(id).value.trim();
+            return value === '' ? NaN : Number(value);
+        }
+
+        // Checks weights (lbs) and height (ft + in) are in a plausible adult range
+        function inputsAreValid(weights, feet, inches) {
+            const all = [...weights, feet, inches];
+            if (all.some(isNaN)) {
+                alert('Please enter numbers for all fields.');
+                return false;
+            }
+            if (weights.some(w => w < 50 || w > 1000)) {
+                alert('Please check the weight: it should be between 50 and 1000 lbs.');
+                return false;
+            }
+            const totalHeightInInches = (feet * 12) + inches;
+            if (feet < 0 || inches < 0 || totalHeightInInches < 36 || totalHeightInInches > 96) {
+                alert('Please check the height: it should be between 3 ft and 8 ft.');
+                return false;
+            }
+            return true;
+        }
+
+        function heightInMeters(feet, inches) {
+            return ((feet * 12) + inches) * 0.0254;
+        }
+
+        function bmiFor(weightLbs, heightM) {
+            return (weightLbs / LBS_PER_KG) / (heightM * heightM);
+        }
+
+        function weightForBmi(bmi, heightM) {
+            return bmi * (heightM * heightM) * LBS_PER_KG;
+        }
+
+        // 200 -> "200", 200.5 -> "200.5"; places sets the maximum decimals shown
+        function formatNumber(n, places = 1) {
+            const factor = 10 ** places;
+            return String(Math.round(n * factor) / factor);
+        }
+
+        function todayString() {
+            const d = new Date();
+            return `${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}/${d.getFullYear()}`;
+        }
+
+        // WHO BMI classes, using the BMI as displayed (1 decimal) so 29.96 -> "30.0 (Class I obesity)"
+        function bmiClass(bmi) {
+            const shown = Math.round(bmi * 10) / 10;
+            if (shown < 18.5) return 'Underweight';
+            if (shown < 25) return 'Normal weight';
+            if (shown < 30) return 'Overweight';
+            if (shown < 35) return 'Class I obesity';
+            if (shown < 40) return 'Class II obesity';
+            return 'Class III obesity';
+        }
+
+        function bmiWithClass(bmi) {
+            return `${bmi.toFixed(1)} (${bmiClass(bmi)})`;
+        }
+
+        function kg(weightLbs) {
+            return (weightLbs / LBS_PER_KG).toFixed(1) + ' kg';
+        }
+
+        function cm(feet, inches) {
+            return (((feet * 12) + inches) * 2.54).toFixed(1) + ' cm';
+        }
+
+        // Excess body weight is only meaningful above a BMI of 25
+        function ebwText(ebw) {
+            return ebw > 0 ? `${ebw.toFixed(0)} lbs` : 'none (BMI 25 or below)';
+        }
+
+        // Shared top of every result: big BMI, date, and current BMI/weight/height
+        function resultHeader(bmi, weight, feet, inches) {
+            return `${DIVIDER}<br>
+                <span style="font-size: 48px"><b>${bmi.toFixed(1)}</b></span><br>
+                Calculated on ${todayString()}: <br>
+                <br>
+                Current BMI is <b>${bmi.toFixed(1)}</b> (${bmiClass(bmi)})<br>
+                Current weight is ${formatNumber(weight)} lbs (${kg(weight)})<br>
+                Current height is ${feet}' ${formatNumber(inches, 2)}" (${cm(feet, inches)})<br>`;
+        }
+
+        function resultFooter() {
+            return `${DIVIDER}<br><br><br>`;
+        }
+
+        function targetWeights(heightM, includeBmi40 = false) {
+            return `Weight for BMI of 25 is ${weightForBmi(25, heightM).toFixed(0)} lbs<br>
+                Weight for BMI of 30 is ${weightForBmi(30, heightM).toFixed(0)} lbs<br>
+                Weight for BMI of 35 is ${weightForBmi(35, heightM).toFixed(0)} lbs<br>` +
+                (includeBmi40 ? `
+                Weight for BMI of 40 is ${weightForBmi(40, heightM).toFixed(0)} lbs<br>` : '');
+        }
+
+        function calculateBMI() {
+            const weight = readNumber('weight');
+            const feet = readNumber('feet');
+            const inches = readNumber('inches');
+            if (!inputsAreValid([weight], feet, inches)) return;
+
+            const heightM = heightInMeters(feet, inches);
+            const bmi = bmiFor(weight, heightM);
+            // Excess body weight is measured against the weight for a BMI of 25
+            const ebw = weight - weightForBmi(25, heightM);
+
+            document.getElementById('result').innerHTML =
+                resultHeader(bmi, weight, feet, inches) + `
+                <br>
+                Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
+                ${targetWeights(heightM)}` + resultFooter();
+        }
+
+        // Expected %TWL after surgery: PCORnet medians with SOPHIA IQRs, as [low, high] %TWL.
+        // An iqr of null leaves the "(IQR ...)" out.
+        const EXPECTED_TWL = [
+            { procedure: 'SLEEVE', abbreviation: 'LSG', rows: [
+                { label: '1 year', median: 25, iqr: [20, 30], bold: true },
+                { label: '5 years', median: 19, iqr: [11, 27] },
+            ] },
+            { procedure: 'BYPASS', abbreviation: 'RYGB', rows: [
+                { label: '1 year', median: 31, iqr: [26, 36], bold: true },
+                { label: '5 years', median: 26, iqr: [19, 32] },
+            ] },
+        ];
+
+        function lbsAt(weight, percent) {
+            return (weight * percent / 100).toFixed(0);
+        }
+
+        // e.g. "* At 1 year: most patients have lost about 56-84 pounds, with the average (median) being about 70lb,
+        //       for an expected weight of about 210lb."
+        function expectedOutcomes(weight) {
+            return `Based on current weight, prior to GLP-1's<br>
+                <br>
+                ` + EXPECTED_TWL.map(({ procedure, rows }) => `After ${procedure}:<br>` + rows.map(row => {
+                const median = `about ${lbsAt(weight, row.median)}lb`;
+                const expectedWeight = (weight - weight * row.median / 100).toFixed(0);
+                const expected = `about ${expectedWeight}lb`;
+                const shownMedian = (row.bold ? `<b>${median}</b>` : median) +
+                    `, for an expected weight of ${row.bold ? `<b>${expected}</b>` : expected}`;
+                const text = row.iqr
+                    ? `most patients have lost about ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])} pounds, with the average (median) being ${shownMedian}`
+                    : `the average (median) patient has lost ${shownMedian}`;
+                return `* At ${row.label}: ${text}.<br>`;
+            }).join('')).join('<br>');
+        }
+
+        // Short 1-year summary from the same %TWL table, e.g.
+        //   SLEEVE:  WL 70lb, Weight 210lb
+        //   IQR: LSG 56-84lb, RYGB 73-101lb
+        function oneYearSummary(weight) {
+            const oneYear = EXPECTED_TWL.map(({ procedure, abbreviation, rows }) => ({ procedure, abbreviation, row: rows.find(row => row.label === '1 year') }));
+            const lines = oneYear.map(({ procedure, row }) =>
+                `<b>${procedure}:&nbsp; WL ${lbsAt(weight, row.median)}lb, Weight ${(weight - weight * row.median / 100).toFixed(0)}lb</b><br>`).join('');
+            const iqrs = oneYear.map(({ abbreviation, row }) =>
+                // nowrap keeps "RYGB 73-101lb" together if the line ever wraps, instead of breaking at the "-"
+                `<span style="white-space: nowrap">${abbreviation} ${lbsAt(weight, row.iqr[0])}-${lbsAt(weight, row.iqr[1])}lb</span>`).join(', ');
+            return `<br>
+                Estimated (median) at 1yr w/o meds:<br>
+                ${lines}
+                <br>
+                IQR: ${iqrs}<br>`;
+        }
+
+        function calculatePreop() {
+            const weight = readNumber('weightp');
+            const feet = readNumber('feetp');
+            const inches = readNumber('inchesp');
+            if (!inputsAreValid([weight], feet, inches)) return;
+
+            const heightM = heightInMeters(feet, inches);
+            const bmi = bmiFor(weight, heightM);
+            const ebw = weight - weightForBmi(25, heightM);
+
+            document.getElementById('preopResult').innerHTML =
+                resultHeader(bmi, weight, feet, inches) + `
+                <br>
+                ${targetWeights(heightM, true)}
+                <br>
+                Excess Body Weight (EBW) is ${ebwText(ebw)}<br>
+                ${oneYearSummary(weight)}
+                <br>
+                ----------<br>
+                <br>
+                ${expectedOutcomes(weight)}` + resultFooter();
+        }
+
+        // Change between the BMIs as displayed, e.g. "-9.7 (45.2 to 35.5)"
+        function bmiChange(fromBmi, toBmi) {
+            const change = Math.round(toBmi * 10) / 10 - Math.round(fromBmi * 10) / 10;
+            return `${change > 0 ? '+' : ''}${change.toFixed(1)} (${fromBmi.toFixed(1)} to ${toBmi.toFixed(1)})`;
+        }
+
+        // Weight regained since nadir, as a percentage of the maximum weight lost
+        // e.g. preop 300, nadir 200, current 230 -> 30 of 100 lbs regained -> 30%
+        function percentRegain(currentWeight, nadirWeight, maxWeightLoss) {
+            if (maxWeightLoss <= 0) return 'n/a (nadir is not below preop weight)';
+            if (currentWeight < nadirWeight) return 'n/a (current weight is below nadir)';
+            return ((currentWeight - nadirWeight) / maxWeightLoss * 100).toFixed(0) + '%';
+        }
+
+        function calculatePostop() {
+            const currentWeight = readNumber('currentWeight');
+            const preopWeight = readNumber('preopWeight');
+            const nadirWeight = readNumber('lowestPostopWeight');
+            const feet = readNumber('postopFeet');
+            const inches = readNumber('postopInches');
+            if (!inputsAreValid([currentWeight, preopWeight], feet, inches)) return;
+
+            // Nadir weight is optional; only check it if one was entered
+            const hasNadir = !isNaN(nadirWeight);
+            if (hasNadir && !inputsAreValid([nadirWeight], feet, inches)) return;
+
+            const heightM = heightInMeters(feet, inches);
+            const currentBmi = bmiFor(currentWeight, heightM);
+            const preopBmi = bmiFor(preopWeight, heightM);
+            const preopEbw = preopWeight - weightForBmi(25, heightM);
+
+            const currentWeightLoss = preopWeight - currentWeight;
+            const maxWeightLoss = hasNadir ? preopWeight - nadirWeight : NaN;
+            const percentTotalBodyWeightLoss = (currentWeightLoss / preopWeight) * 100;
+            const percentExcessBodyWeightLoss = (currentWeightLoss / preopEbw) * 100;
+
+            document.getElementById('postopResult').innerHTML =
+                resultHeader(currentBmi, currentWeight, feet, inches) + `
+                Current weight loss (TWL) is ${formatNumber(currentWeightLoss)} lbs<br>
+                <br>
+                Preop BMI was ${bmiWithClass(preopBmi)}<br>
+                BMI change is ${bmiChange(preopBmi, currentBmi)}<br>
+                Preop weight was ${formatNumber(preopWeight)} lbs (${kg(preopWeight)})<br>
+                Preop EBW was ${ebwText(preopEbw)}<br>
+                ${hasNadir ? `<br>
+                Nadir weight was ${formatNumber(nadirWeight)} lbs<br>
+                Max weight loss was ${formatNumber(maxWeightLoss)} lbs<br>
+                Max weight loss at nadir (%TWL) was ${maxWeightLoss > 0 ? (maxWeightLoss / preopWeight * 100).toFixed(0) + '%' : 'n/a (nadir is not below preop weight)'}<br>
+                Current regain from nadir is ${percentRegain(currentWeight, nadirWeight, maxWeightLoss)}<br>` : ''}
+                <br>
+                Current %TWL is ${percentTotalBodyWeightLoss.toFixed(0)}%<br>
+                Current %EWL is ${preopEbw > 0 ? percentExcessBodyWeightLoss.toFixed(0) + '%' : 'n/a (preop BMI was not above 25)'}<br>` + resultFooter();
+        }
+
+        function copyToClipboard(resultId) {
+            const resultDiv = document.getElementById(resultId);
+            const textToCopy = resultDiv ? (resultDiv.innerText || resultDiv.textContent).trim() : '';
+            if (!textToCopy) {
+                alert('Nothing to copy yet. Calculate first.');
+                return;
+            }
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => alert('Results copied to clipboard!'))
+                    .catch(() => fallbackCopy(textToCopy));
+            } else {
+                fallbackCopy(textToCopy);
+            }
+        }
+
+        // Older browsers and some in-app browsers block navigator.clipboard
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.setAttribute('readonly', '');
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            let copied = false;
+            try {
+                copied = document.execCommand('copy');
+            } catch (err) {
+                copied = false;
+            }
+            document.body.removeChild(textArea);
+            alert(copied ? 'Results copied to clipboard!' : 'Copy failed. Please select the results and copy them manually.');
+        }
+
+        // Add to Home Screen: Android/desktop Chrome and Edge offer an install prompt we can trigger;
+        // iPhone Safari has no such prompt, so explain the Share-menu steps instead
+        let installPrompt = null;
+        window.addEventListener('beforeinstallprompt', event => {
+            event.preventDefault();
+            installPrompt = event;
+        });
+
+        function addToHomeScreen() {
+            if (installPrompt) {
+                installPrompt.prompt();
+                installPrompt = null;
+                return;
+            }
+            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            if (isIOS) {
+                alert('To add this to your Home Screen:\n\n1. Tap the Share button (square with an arrow)\n2. Tap "Add to Home Screen"\n3. Tap "Add"');
+            } else {
+                alert('To install this calculator, open your browser menu and choose "Install app" or "Add to Home Screen".');
+            }
+        }
+
+        // Hide the button when already opened from the Home Screen
+        if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+            document.getElementById('homeScreenButton').style.display = 'none';
+        }
+
+        // Show the default calculator
+        showCalculator('bmiCalculator');
+    </script>
+</body>
+</html>
