@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>BMI calculators by Elan Witkowski</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <meta name="color-scheme" content="light dark">
@@ -101,7 +103,8 @@ button, input { font: inherit; color: inherit; }
     align-items: center;
     gap: 10px 12px;
 }
-.appbar h1 { grid-area: title; }
+.appbar h1 { grid-area: title; display: flex; align-items: center; gap: 10px; }
+.logo-mark { width: 32px; height: 32px; flex: none; border-radius: 8px; }
 .tabs { grid-area: tabs; }
 .clear-btn {
     grid-area: clear;
@@ -633,7 +636,7 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 
 <header class="appbar">
     <div class="appbar-inner">
-        <h1>Elan's BMI Calculators</h1>
+        <h1><svg class="logo-mark" aria-hidden="true" focusable="false" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#0756b5"/><path d="M16.0 70.0 A34 34 0 0 1 24.73 47.25" fill="none" stroke="#3ccf7c" stroke-width="13"/><path d="M27.25 44.73 A34 34 0 0 1 48.22 36.05" fill="none" stroke="#f5cd4b" stroke-width="13"/><path d="M51.78 36.05 A34 34 0 0 1 72.75 44.73" fill="none" stroke="#f59a3c" stroke-width="13"/><path d="M75.27 47.25 A34 34 0 0 1 84.0 70.0" fill="none" stroke="#ff6058" stroke-width="13"/><circle cx="68.02" cy="41.17" r="9.5" fill="#ffffff" stroke="#0756b5" stroke-width="3"/></svg><span>Elan's BMI Calculators</span></h1>
         <nav class="tabs" role="tablist" aria-label="Calculator">
             <button type="button" role="tab" id="tab-simple" data-tab="simple" aria-selected="true">Simple</button>
             <button type="button" role="tab" id="tab-preop" data-tab="preop" aria-selected="false">Preop</button>
