@@ -654,6 +654,10 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .gallery figure { margin: 0; background: var(--surface-2); border-radius: 10px; padding: 10px; display: grid; gap: 8px; align-content: start; }
 .gallery img { width: 100%; height: auto; border-radius: 6px; background: #ffffff; }
 .gallery.diagrams { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+/* two side by side on desktop, stacked on phones */
+.gallery.two-up { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 860px) { .gallery.two-up { grid-template-columns: minmax(0, 1fr); } }
+.res-body > .gallery + .gallery, .res-body > .gallery + .form-hint + .gallery { margin-top: 14px; }
 .gallery.diagrams figure { padding: 6px; }
 .gallery.diagrams a { display: block; border-radius: 6px; }
 .gallery figcaption, .videos figcaption { font-size: 14px; font-weight: 600; }
@@ -861,6 +865,14 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
         <details class="panel" open>
             <summary>Bariatric procedure diagrams</summary>
             <div class="res-body">
+                <div class="gallery two-up">
+                    <figure><img loading="lazy" src="Sleeve2.png" alt="Sleeve gastrectomy diagram"><figcaption>Sleeve</figcaption></figure>
+                    <figure><img loading="lazy" src="RYGB2.png" alt="Roux-en-Y gastric bypass diagram"><figcaption>Bypass</figcaption></figure>
+                </div>
+                <div class="gallery two-up">
+                    <figure><img loading="lazy" src="sleevegif1.gif" alt="Sleeve gastrectomy animation"><figcaption>Sleeve (animation)</figcaption></figure>
+                    <figure><img loading="lazy" src="bypassgif1.gif" alt="Gastric bypass animation"><figcaption>Bypass (animation)</figcaption></figure>
+                </div>
                 <div class="gallery diagrams">
                     <figure><a href="diagrams/sleeve.svg" target="_blank" rel="noopener" title="Open full size"><img loading="lazy" src="diagrams/sleeve.svg" alt="Sleeve gastrectomy (LSG) diagram"></a></figure>
                     <figure><a href="diagrams/rygb.svg" target="_blank" rel="noopener" title="Open full size"><img loading="lazy" src="diagrams/rygb.svg" alt="Roux-en-Y gastric bypass (RYGB) diagram"></a></figure>
@@ -870,10 +882,6 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
                     <figure><a href="diagrams/band.svg" target="_blank" rel="noopener" title="Open full size"><img loading="lazy" src="diagrams/band.svg" alt="Adjustable gastric band diagram"></a></figure>
                 </div>
                 <p class="form-hint">Tap a diagram to open it full size.</p>
-                <div class="gallery">
-                    <figure><img loading="lazy" src="sleevegif1.gif" alt="Sleeve gastrectomy animation"><figcaption>Sleeve (animation)</figcaption></figure>
-                    <figure><img loading="lazy" src="bypassgif1.gif" alt="Gastric bypass animation"><figcaption>Bypass (animation)</figcaption></figure>
-                </div>
             </div>
         </details>
 
