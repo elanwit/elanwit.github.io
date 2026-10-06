@@ -653,6 +653,9 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
 .gallery figure { margin: 0; background: var(--surface-2); border-radius: 10px; padding: 10px; display: grid; gap: 8px; align-content: start; }
 .gallery img { width: 100%; height: auto; border-radius: 6px; background: #ffffff; }
+.gallery.diagrams { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.gallery.diagrams figure { padding: 6px; }
+.gallery.diagrams a { display: block; border-radius: 6px; }
 .gallery figcaption, .videos figcaption { font-size: 14px; font-weight: 600; }
 .videos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
 .videos figure { margin: 0; display: grid; gap: 8px; }
@@ -856,6 +859,25 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 
     <section class="resources" id="resources" hidden>
         <details class="panel" open>
+            <summary>Bariatric procedure diagrams</summary>
+            <div class="res-body">
+                <div class="gallery diagrams">
+                    <figure><a href="diagrams/sleeve.svg" target="_blank" rel="noopener" title="Open full size"><img loading="lazy" src="diagrams/sleeve.svg" alt="Sleeve gastrectomy (LSG) diagram"></a></figure>
+                    <figure><a href="diagrams/rygb.svg" target="_blank" rel="noopener" title="Open full size"><img loading="lazy" src="diagrams/rygb.svg" alt="Roux-en-Y gastric bypass (RYGB) diagram"></a></figure>
+                    <figure><a href="diagrams/oagb.svg" target="_blank" rel="noopener" title="Open full size"><img loading="lazy" src="diagrams/oagb.svg" alt="One-anastomosis gastric bypass (OAGB) diagram"></a></figure>
+                    <figure><a href="diagrams/sadi_s.svg" target="_blank" rel="noopener" title="Open full size"><img loading="lazy" src="diagrams/sadi_s.svg" alt="SADI-S diagram"></a></figure>
+                    <figure><a href="diagrams/bpd_ds.svg" target="_blank" rel="noopener" title="Open full size"><img loading="lazy" src="diagrams/bpd_ds.svg" alt="BPD-DS diagram"></a></figure>
+                    <figure><a href="diagrams/band.svg" target="_blank" rel="noopener" title="Open full size"><img loading="lazy" src="diagrams/band.svg" alt="Adjustable gastric band diagram"></a></figure>
+                </div>
+                <p class="form-hint">Tap a diagram to open it full size.</p>
+                <div class="gallery">
+                    <figure><img loading="lazy" src="sleevegif1.gif" alt="Sleeve gastrectomy animation"><figcaption>Sleeve (animation)</figcaption></figure>
+                    <figure><img loading="lazy" src="bypassgif1.gif" alt="Gastric bypass animation"><figcaption>Bypass (animation)</figcaption></figure>
+                </div>
+            </div>
+        </details>
+
+        <details class="panel" open>
             <summary>Treatment criteria</summary>
             <div class="res-body">
                 <p>Criteria for treatment with / without weight-related comorbidity</p>
@@ -892,22 +914,6 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
                 <div class="group-label">Teaching</div>
                 <div class="links">
                     <a href="MGH-res-edu-2024.pdf" target="_blank" rel="noopener"><span>Resources for MGH residents (slides)</span></a>
-                </div>
-            </div>
-        </details>
-
-        <details class="panel">
-            <summary>Bariatric procedure diagrams</summary>
-            <div class="res-body">
-                <div class="gallery">
-                    <figure><img loading="lazy" src="Sleeve2.png" alt="Sleeve gastrectomy diagram"><figcaption>Sleeve</figcaption></figure>
-                    <figure><img loading="lazy" src="RYGB2.png" alt="Roux-en-Y gastric bypass diagram"><figcaption>Bypass</figcaption></figure>
-                    <figure><img loading="lazy" src="sleevegif1.gif" alt="Sleeve gastrectomy animation"><figcaption>Sleeve (animation)</figcaption></figure>
-                    <figure><img loading="lazy" src="bypassgif1.gif" alt="Gastric bypass animation"><figcaption>Bypass (animation)</figcaption></figure>
-                    <figure><img loading="lazy" src="SADI-S.jpeg" alt="SADI-S diagram"><figcaption>SADI-S</figcaption></figure>
-                    <figure><img loading="lazy" src="BPD-DS.png" alt="BPD-DS diagram"><figcaption>BPD-DS</figcaption></figure>
-                    <figure><img loading="lazy" src="Band.png" alt="Gastric band diagram"><figcaption>Band</figcaption></figure>
-                    <figure><img loading="lazy" src="OABG.png" alt="OAGB diagram"><figcaption>OAGB (one-anastomosis gastric bypass) / "mini gastric bypass"</figcaption></figure>
                 </div>
             </div>
         </details>
