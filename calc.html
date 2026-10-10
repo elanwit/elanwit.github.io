@@ -631,6 +631,12 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .source-table tbody th { color: var(--proc); font-weight: 800; }
 .source-table td b { font-size: 17px; }
 .source-table td small { display: block; color: var(--muted); font-size: 13px; white-space: nowrap; }
+.evidence { display: grid; gap: 10px; margin-top: 4px; }
+.ev-group { display: grid; gap: 2px; font-size: 14px; }
+.ev-group > b { font-size: 14px; }
+.ev-group > span { color: var(--muted); }
+.ev-group ul { margin: 2px 0 0; padding-left: 18px; display: grid; gap: 3px; font-size: 13px; color: var(--muted); }
+.ev-group a { color: var(--brand); }
 .criteria { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
 .criteria div { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; }
 .criteria span { display: block; font-size: 13px; color: var(--muted); }
@@ -653,7 +659,22 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
 .gallery figure { margin: 0; background: var(--surface-2); border-radius: 10px; padding: 10px; display: grid; gap: 8px; align-content: start; }
 .gallery img { width: 100%; height: auto; border-radius: 6px; background: #ffffff; }
-.gallery.diagrams { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+/* MGH contact card: crisp HTML instead of a photo, with tappable numbers */
+.contact-card { max-width: 560px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); }
+.cc-head { padding: 14px 16px; background: var(--bar); color: var(--bar-ink); display: grid; gap: 2px; }
+.cc-head strong { font-size: 17px; }
+.cc-head span { font-size: 15px; opacity: 0.9; }
+.cc-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.cc-urgent { background: var(--surface-2); }
+.cc-text { display: grid; gap: 2px; min-width: 0; flex: 1 1 220px; }
+.cc-text b { font-size: 15px; }
+.cc-text small { font-size: 14px; color: var(--muted); }
+.cc-text small b { color: var(--ink); font-size: 14px; }
+.cc-call { display: inline-flex; align-items: center; gap: 7px; padding: 9px 13px; border-radius: 10px; background: var(--brand); color: var(--brand-ink); font-family: var(--font-num); font-weight: 700; font-size: 16px; text-decoration: none; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cc-call svg { width: 16px; height: 16px; }
+.cc-call:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.cc-web { display: block; padding: 10px 16px; border-top: 1px solid var(--line); font-size: 14px; color: var(--brand); text-decoration: none; }
+.gallery.diagrams { grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); }
 /* two side by side on desktop, stacked on phones */
 .gallery.two-up { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 860px) { .gallery.two-up { grid-template-columns: minmax(0, 1fr); } }
@@ -886,12 +907,47 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
         </details>
 
         <details class="panel" open>
+            <summary>Other bariatric calculators</summary>
+            <div class="res-body">
+                <div class="links">
+                    <a href="https://www.facs.org/quality-programs/mbsaqip/calculator" target="_blank" rel="noopener"><span>MBSAQIP Bariatric Surgical Risk/Benefit Calculator (ACS)<small>30-day complications, 1-year weight curve, diabetes / BP / sleep apnea remission</small></span></a>
+                    <a href="https://riskcalc.org/Metabolic_Surgery_Score/" target="_blank" rel="noopener"><span>Individualized Metabolic Surgery (IMS) Score<small>Diabetes severity to help choose sleeve vs bypass (Cleveland Clinic)</small></span></a>
+                    <a href="https://riskcalc.org/" target="_blank" rel="noopener"><span>Cleveland Clinic risk calculator library<small>Includes 10-year diabetes complication risk with vs without surgery (also the BariatricCalc app)</small></span></a>
+                    <a href="https://www.stopbang.ca/" target="_blank" rel="noopener"><span>STOP-Bang<small>Sleep apnea screening</small></span></a>
+                </div>
+            </div>
+        </details>
+
+        <details class="panel" open>
+            <summary>Other non-bariatric calculators</summary>
+            <div class="res-body">
+                <div class="links">
+                    <a href="https://riskcalculator.facs.org/" target="_blank" rel="noopener"><span>ACS NSQIP Surgical Risk Calculator<small>30-day risks for almost any operation, by procedure code</small></span></a>
+                    <a href="https://www.mdcalc.com/calc/3970/caprini-score-venous-thromboembolism-2005" target="_blank" rel="noopener"><span>Caprini score (MDCalc)<small>Blood clot (VTE) risk and prophylaxis</small></span></a>
+                    <a href="https://www.mdcalc.com/revised-cardiac-risk-index-pre-operative-risk" target="_blank" rel="noopener"><span>Revised Cardiac Risk Index (MDCalc)<small>Cardiac complications after noncardiac surgery</small></span></a>
+                    <a href="https://www.mdcalc.com/calc/4038/gupta-perioperative-risk-myocardial-infarction-cardiac-arrest-mica" target="_blank" rel="noopener"><span>Gupta MICA (MDCalc)<small>Heart attack or cardiac arrest after surgery</small></span></a>
+                    <a href="https://www.mdcalc.com/calc/10022/ariscat-score-postoperative-pulmonary-complications" target="_blank" rel="noopener"><span>ARISCAT (MDCalc)<small>Lung complications after surgery</small></span></a>
+                    <a href="https://apps.apple.com/us/app/cedar-ventral-hernia/id830530974" target="_blank" rel="noopener"><span>CeDAR: Ventral Hernia (iPhone app)<small>Wound complication risk and cost after ventral hernia repair</small></span></a>
+                </div>
+            </div>
+        </details>
+
+        <details class="panel" open>
             <summary>Treatment criteria</summary>
             <div class="res-body">
                 <p>Criteria for treatment with / without weight-related comorbidity</p>
                 <div class="criteria">
                     <div><span>Medication</span><strong>DM2, or BMI &#8805; 27 / 30</strong></div>
                     <div><span>Surgery</span><strong>BMI &#8805; 30 / 35</strong></div>
+                </div>
+                <div class="evidence">
+                    <div class="group-label">Supporting guidelines and trials</div>
+                    <div class="ev-group"><b>All adults</b><span>Surgery for BMI &#8805; 35 regardless of comorbidity; consider BMI 30&ndash;34.9 with metabolic disease.</span><ul><li>Eisenberg D, et al. 2022 ASMBS and IFSO indications for metabolic and bariatric surgery. <i>Surg Obes Relat Dis</i> 2022. <a href="https://doi.org/10.1016/j.soard.2022.08.013" target="_blank" rel="noopener">doi</a></li></ul></div>
+                    <div class="ev-group"><b>Type 2 diabetes</b><span>Metabolic surgery for BMI &#8805; 30 (&#8805; 27.5 in Asian Americans) who are good surgical candidates.</span><ul><li>American Diabetes Association. 8. Obesity and weight management: Standards of Care in Diabetes&ndash;2026. <i>Diabetes Care</i> 2026;49(Suppl 1):S166. <a href="https://doi.org/10.2337/dc26-S008" target="_blank" rel="noopener">doi</a></li><li>Rubino F, et al. Metabolic surgery in the treatment algorithm for type 2 diabetes (DSS-II). <i>Diabetes Care</i> 2016;39:861&ndash;877. <a href="https://doi.org/10.2337/dc16-0236" target="_blank" rel="noopener">doi</a></li></ul></div>
+                    <div class="ev-group"><b>Asian ancestry</b><span>Lower BMI cut-offs: obesity from BMI &#8805; 25, surgery considered from BMI &#8805; 27.5.</span><ul><li>WHO Expert Consultation. Appropriate body-mass index for Asian populations. <i>Lancet</i> 2004;363:157&ndash;163. <a href="https://doi.org/10.1016/S0140-6736(03)15268-3" target="_blank" rel="noopener">doi</a></li><li>ASMBS/IFSO 2022 and ADA 2026, above.</li></ul></div>
+                    <div class="ev-group"><b>Medication</b><span>BMI &#8805; 30, or &#8805; 27 with a weight-related condition.</span><ul><li>Grunvald E, et al. AGA guideline on pharmacological interventions for adults with obesity. <i>Gastroenterology</i> 2022;163:1198&ndash;1225. <a href="https://doi.org/10.1053/j.gastro.2022.08.045" target="_blank" rel="noopener">doi</a></li><li>Wilding JPH, et al. Semaglutide 2.4 mg in adults with overweight or obesity (STEP 1). <i>N Engl J Med</i> 2021;384:989&ndash;1002. <a href="https://doi.org/10.1056/NEJMoa2032183" target="_blank" rel="noopener">doi</a></li><li>Jastreboff AM, et al. Tirzepatide once weekly for the treatment of obesity (SURMOUNT-1). <i>N Engl J Med</i> 2022;387:205&ndash;216. <a href="https://doi.org/10.1056/NEJMoa2206038" target="_blank" rel="noopener">doi</a></li></ul></div>
+                    <div class="ev-group"><b>Adolescents</b><span>Surgery for BMI &#8805; 35 (or 120% of the 95th percentile) with a major comorbidity, or &#8805; 40 (140%).</span><ul><li>Hampl SE, et al. AAP clinical practice guideline for children and adolescents with obesity. <i>Pediatrics</i> 2023;151:e2022060640. <a href="https://doi.org/10.1542/peds.2022-060640" target="_blank" rel="noopener">doi</a></li><li>ASMBS/IFSO 2022, above.</li></ul></div>
+                    <div class="ev-group"><b>Beyond BMI</b><span>Diagnose "clinical obesity" from excess fat plus organ or functional effects, not BMI alone.</span><ul><li>Rubino F, et al. Definition and diagnostic criteria of clinical obesity (Lancet Commission). <i>Lancet Diabetes Endocrinol</i> 2025. <a href="https://doi.org/10.1016/S2213-8587(24)00316-4" target="_blank" rel="noopener">doi</a></li></ul></div>
                 </div>
             </div>
         </details>
@@ -940,7 +996,25 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
         <details class="panel">
             <summary>Contact card for MGH patients</summary>
             <div class="res-body">
-                <div class="gallery"><figure><img loading="lazy" src="help.jpg" alt="MGH patient help card"></figure></div>
+                <div class="contact-card">
+                    <div class="cc-head">
+                        <strong>Massachusetts General Hospital</strong>
+                        <span>Weight Center (Surgery)</span>
+                    </div>
+                    <div class="cc-row">
+                        <div class="cc-text"><b>Bariatric Surgery RN</b><small>Monday–Friday, 9:00am–4:30pm</small></div>
+                        <a class="cc-call" href="tel:+16176436150"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>617-643-6150</a>
+                    </div>
+                    <div class="cc-row cc-urgent">
+                        <div class="cc-text"><b>After hours, weekends &amp; holidays</b><small>Call the hospital operator and ask them to page the bariatric surgeon on call, <b>page #20377</b></small></div>
+                        <a class="cc-call" href="tel:+16177262000"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>617-726-2000</a>
+                    </div>
+                    <div class="cc-row">
+                        <div class="cc-text"><b>Weight Center Surgical Coordinator</b><small>Monday–Friday, 8:00am–4:30pm</small></div>
+                        <a class="cc-call" href="tel:+16176434002"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>617-643-4002</a>
+                    </div>
+                    <a class="cc-web" href="https://www.massgeneral.org" target="_blank" rel="noopener">massgeneral.org</a>
+                </div>
             </div>
         </details>
 
